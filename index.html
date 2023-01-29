@@ -9,15 +9,17 @@
 
   <button onclick="addTime();">addTime</button>
   <script>
-    const time = document.getElementById('time')
+    const time = document.getElementById('in')
     let date = new Date();   
     
     function addTime() {
       date.setMinutes(1 + +time.innerHTML.match(/\d{2}/)[0]);
       date.setSeconds(0);
-      time.innerHTML = String(date).slice(19, 24);
+      pay.innerHTML = String(date).slice(19, 24);
     }
   </script>
+  
+    <time id='pay'> 5:00 </pay>
 
 </body>
 </html>

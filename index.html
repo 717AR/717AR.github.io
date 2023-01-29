@@ -2,17 +2,19 @@
 <html>
 <body>
 <h1>Airport Reserve Credit Calculator</h1>
-<form action="/action_page.php">
+
+ <form action="/action_page.php">
 <label for="in">Enter Block-in time: </label>
 <input id="in" type="time" name="in" value="18:30" />
   <input type="submit">
 </form>
   
-var currentDateObj = new Date();
-var numberOfMlSeconds = currentDateObj.getTime();
-var addMlSeconds = 60 * 60 * 1000;
-var newDateObj = new Date(numberOfMlSeconds + addMlSeconds);
-
+<script>
+let x = 5;
+let y = 2;
+let z = x + y;
+document.getElementById("demo").innerHTML = z;
+</script>
 
 </body>
 </html>

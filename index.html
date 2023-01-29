@@ -3,11 +3,10 @@
 <body>
 <h1>Airport Reserve Credit Calculator</h1>
 
- <form action="/action_page.php">
 <label for="in">Enter Block-in time: </label>
 <input id="in" type="time" name="in" value="18:30" />
-  <input type="submit">
-</form>
+<input type="submit">
+
   
 <p id="demo"></p>
 <script>
@@ -16,6 +15,11 @@ let y = 2;
 let z = x + y;
 document.getElementById("demo").innerHTML = z;
 </script>
+ 
+ var in = new Date (),
+    d2 = new Date ( d1 );
+d2.setMinutes ( d1.getMinutes() + 30 );
+alert ( d2 );
 
 </body>
 </html>

@@ -18,11 +18,11 @@ calc.addEventListener("click", function() {
     //use todays date and set 10:00 start
     var ten_am = new Date();
     ten_am.setHours(10, 0, 0, 0);
-    alert(time);
   
     //grab inputted in-time
     var time = document.getElementById("time").value;
     var in_time = new Date(ten_am.toDateString() + " " + time);
+    alert(time);
     
    //add 15 min to in time for off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);

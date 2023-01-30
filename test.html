@@ -5,14 +5,14 @@
 <body>
     
 <div class="w3-container w3-card">
-  <h1>Airport Reserve $ Calculator v18</h1>
+  <h1>Airport Reserve $ Calculator v19</h1>
 </div>
     <p> Notes: Only works for 1000-1800 AR. Doesn't work for off duty times after midnight.</p>
      
 Enter your Block in time:<input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
 
-Off Duty: <div id="offduty"></div><br>
+//Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig (or min 5:00):<div id="rig"></div><br>
 M4M (DEXT):<div id="m4m"></div><br>
@@ -36,6 +36,8 @@ calc.addEventListener("click", function() {
     //grab hours and minutes from off duty time to do some math
     var hour = plus15.getHours();
     var min = plus15.getMinutes();
+    //var offduty = 
+    //document.getElementById("duty").innerHTML = offduty;
     
     //compute duty day from 1000 in minutes
     var duty = (hour * 60 + min) - 600   

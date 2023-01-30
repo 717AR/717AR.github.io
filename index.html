@@ -30,9 +30,10 @@ calc.addEventListener("click", function() {
     
     var duty = (hour * 60 + min) - 600     //all duty (all in minutes)
     
-    let hours = duty / 60 
+    let hours = Math.floor(duty / 60); 
     let minutes = duty % 60
-    alert(hours, minutes)
+    alert(hours);
+    alert(minutes);
     
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig; //all duty after 1800

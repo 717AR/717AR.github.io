@@ -20,10 +20,10 @@ calc.addEventListener("click", function() {
     start_time.setHours(10, 0, 0, 0);
   
     //user input in-time
-    var date = "2023-01-29"
     var time = document.getElementById("time").value
-    var in_time = new Date(date + " " + time)
-    alert(time);
+    var in_time = new Date();
+    in_time.setHours(time);
+    alert(in_time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);
@@ -31,7 +31,6 @@ calc.addEventListener("click", function() {
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-   
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - start_time.getTime());

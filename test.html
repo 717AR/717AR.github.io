@@ -13,17 +13,22 @@ calc.addEventListener("click", function() {
     var time = document.getElementById("time").value
     const d = new Date(date + " " + time)
     
-    alert(new Date(date + " " + time))
     alert(d)
 
-   var newDateObj = new Date(d.getTime() + 15*60000);
-    alert(newDateObj) 
+   var plus15 = new Date(d.getTime() + 15*60000);
+    alert(plus15) 
 
     
 })
 </script>
-  
-    test6
+<h3 class='title' style='text-align: center'>Off Duty:<span style='font-weight:bold'>"+plus15+"</span></h3>
+60% Duty Rig:
+M4M:
+    
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"++"</span></h3>
+
+    
+
     
     
  </body> 

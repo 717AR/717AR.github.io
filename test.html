@@ -12,7 +12,6 @@
 Enter your Block in time:<input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
 
-//Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig (or min 5:00):<div id="rig"></div><br>
 M4M (DEXT):<div id="m4m"></div><br>
@@ -36,15 +35,12 @@ calc.addEventListener("click", function() {
     //grab hours and minutes from off duty time to do some math
     var hour = plus15.getHours();
     var min = plus15.getMinutes();
-    //var offduty = 
-    //document.getElementById("duty").innerHTML = offduty;
     
     //compute duty day from 1000 in minutes
     var duty = (hour * 60 + min) - 600   
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     document.getElementById("duty").innerHTML = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
-    //var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`; //converts minutes back to HH:MM
     
     //compute duty rig
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher
@@ -72,9 +68,6 @@ calc.addEventListener("click", function() {
     document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
     }
  
-    
-   /*
-   */
  
 })
 </script>

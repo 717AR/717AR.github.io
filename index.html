@@ -8,7 +8,7 @@
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
 M4M ("DEXT"):<div id="m4m"></div><br>
-Total Pay and Credit:<div id="pay" style='font-weight:bold'> </div><br>
+Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
     
     
 <script>
@@ -21,15 +21,16 @@ calc.addEventListener("click", function() {
     //user input in-time
     var time = document.getElementById("time").value;
     //var in_time = new Date("2022-03-25" + " " + time);
+    //var newDateObj = new Date(in_time.getTime() + 15*60000);
     
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
     
-    var duty = (hour * 60 + min) - 600     //duty day in minutes computed from 1000
+    var duty = (hour * 60 + min) - 600     //duty day computed from 1000, in minutes
     let hours = Math.floor(duty / 60); 
-    let minutes = Math.round(duty % 60);
-    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+    let minutes = duty % 60;
+    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`; //converts minutes back to HH:MM
     
     var rig = duty * .6; //60% duty rig
     const h2= Math.floor(rig / 60); 
@@ -47,17 +48,14 @@ calc.addEventListener("click", function() {
     var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
     
     document.getElementById("duty").innerHTML = duty_day;
-    document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    document.getElementById("rig").innerHTML = rig_pay;
     document.getElementById("m4m").innerHTML = m4m_pay;
     document.getElementById("pay").innerHTML = tot_pay;
- 
     
 })
 </script>
 
 <h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"18"</span></h3>
-
-   
     
  </body> 
 </html>

@@ -22,7 +22,6 @@ calc.addEventListener("click", function() {
     //grab inputted in-time
     var time = document.getElementById("time").value;
     var in_time = new Date(ten_am.toDateString() + " " + time);
-    alert(in_time);
 
    //add 15 min to in time for off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);
@@ -32,9 +31,11 @@ calc.addEventListener("click", function() {
     let tot_min = h*60 + m
     document.getElementById("offduty").innerHTML = offduty;
     alert(offduty);
+    alert(tot_min);
     
     //duty day calculations
-    var duty_day = new Date(plus15.getTime() - 36000000);   //off duty time minus 10:00 in milliseconds
+    var duty = new Date(plus15.getTime() - 36000000);   //off duty time minus 10:00 in milliseconds
+    var duty_day = new Date(duty).toISOString().slice(11,16)   // convert to HH:MM for display
     let rig = (duty_day * .6) / 60;
     alert(duty_day);
     alert(rig);

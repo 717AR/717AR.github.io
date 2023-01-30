@@ -22,8 +22,10 @@ calc.addEventListener("click", function() {
     let h = plus15.getHours();
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
-    alert(offduty) 
     document.getElementById("offduty").innerHTML = offduty;
+    
+    var diff = new Date(plus15.getTime() - start_time.getTime())
+    alert(diff)
  
     
 })

@@ -18,14 +18,11 @@ calc.addEventListener("click", function() {
     //set todays start time at 10:00
     var start_time = new Date();
     start_time.setHours(10, 0, 0, 0);
-    alert(start_time);
-    
-    
+  
     //user input in-time
     var date = "2023-01-29"
     var time = document.getElementById("time").value
     var in_time = new Date(date + " " + time)
-    alert(in_time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);

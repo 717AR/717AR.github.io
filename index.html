@@ -42,8 +42,8 @@ calc.addEventListener("click", function() {
     var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
     
     var pay = m4m + rig; //all duty after 1800
-    let h4= Math.floor(rig / 60); 
-    let m4 = rig % 60;
+    let h4= Math.floor(pay / 60); 
+    let m4 = pay % 60;
     var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
     
     document.getElementById("duty").innerHTML = duty_day;
@@ -55,7 +55,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"17"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"18"</span></h3>
 
    
     

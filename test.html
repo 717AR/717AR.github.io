@@ -3,18 +3,19 @@
 <body>
 
 <div>Block in time:<input id="time" type="time" min ="18:00"</div><br>
-<button id="calc">Do Stuff</button>
+<button id="calc">Do Stuff</button><br>
 
-Off Duty: <div id="offduty"></div>
-60% Duty Rig:<div id="rig"></div>
-M4M:<div id="money"></div>
+Off Duty: <div id="offduty"></div><br>
+Duty Day:<div id="duty"></div><br>
+60% Duty Rig:<div id="rig"></div><br>
+M4M:<div id="money"></div><br>
     
 <script>
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     var start_time = new Date(1675022400)
-    var date = "2023-01-25"
+    var date = "2023-01-29"
     var time = document.getElementById("time").value
     var in_time = new Date(date + " " + time)
 
@@ -24,8 +25,8 @@ calc.addEventListener("click", function() {
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
     
-    var diff = new Date(plus15.getTime() - start_time.getTime())
-    alert(diff)
+    var duty = new Date(plus15.getTime() - start_time.getTime());
+    document.getElementById("offduty").innerHTML = duty;
  
     
 })

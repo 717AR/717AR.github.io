@@ -28,7 +28,7 @@ calc.addEventListener("click", function() {
     
     var duty = (hour * 60 + min) - 600     //duty day in minutes computed from 1000
     let hours = Math.floor(duty / 60); 
-    let minutes = Mathh.round(duty % 60)
+    let minutes = Math.round(duty % 60);
     var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
     
     var rig = duty * .6; //60% duty rig

@@ -40,7 +40,7 @@ function padTo2Digits(num) {
     var rig = duty * .6; //60% duty rig
     let h2= Math.floor(rig / 60); 
     let m2 = rig % 60;
-   var rig_pay = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+   var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
     
     var pay = (duty - 480) + rig; //all duty after 1800

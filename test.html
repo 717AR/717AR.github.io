@@ -2,7 +2,7 @@
 <html>
 <body>
 
-Block in time:<input id="time" type="time" name="task_time" />
+Block in time:<input id="time" type="time" name="task_time" min ="18:00"/>
 <button id="calc">Do Stuff</button>
 
 <script>
@@ -10,19 +10,14 @@ var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     var time = document.getElementById("time").value
-    let date = new Date();  
-    alert(new Date(date + " " + time))
-    document.body.innerHTML = time;
+    
+    alert(new Date("2022-03-25" + time))
+
     
 })
 </script>
   
-        <h1>
-      the value for time is:
-      <script type="text/javascript">
-        document.write(time)
-      </script>
-    </h1>
+    test3
     
     
  </body> 

@@ -2,10 +2,9 @@
 <html>
 <body>
 
-<div>Block in time:<input id="time" type="time" min ="18:00"</div><br>
+<div>Off Duty time:<input id="time" type="time" min ="18:00"</div><br>
 <button id="calc">Do Stuff</button><br>
 
-Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
 M4M:<div id="pay"></div><br>
@@ -20,26 +19,19 @@ calc.addEventListener("click", function() {
     
     //user input in-time
     var time = document.getElementById("time").value;
-    var in_time = new Date("2022-03-25" + " " + time);
-    alert(in_time);
+    //var in_time = new Date("2022-03-25" + " " + time);
     
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
     
-
-    var plus15 = new Date(in_time.getTime() + 900000);
-    alert(plus15); 
-    
-var offduty = new Date(plus15.getTime() - (plus15.getTimezoneOffset() * 60000)).toISOString().slice(11,16);
-    
+    //var plus15 = new Date(in_time.getTime() + 900000); 
     //var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
     
-    var duty = (hour * 60 + min + 15) - 600     //off-duty time minus 1000 (all in minutes)
+    var duty = (hour * 60 + min) - 600     //all duty from 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;
     
-    document.getElementById("offduty").innerHTML = offduty;
     document.getElementById("duty").innerHTML = duty;
     document.getElementById("rig").innerHTML = rig;
     document.getElementById("pay").innerHTML = pay;
@@ -48,7 +40,7 @@ var offduty = new Date(plus15.getTime() - (plus15.getTimezoneOffset() * 60000)).
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"13"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"14"</span></h3>
 
    
     

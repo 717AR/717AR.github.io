@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h2>Airport Reserve Pay and Credit Calculator - 12</h2>
+<h2>Airport Reserve Pay and Credit Calculator - 13</h2>
     
 Enter your Block in time:<input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
@@ -39,9 +39,10 @@ calc.addEventListener("click", function() {
     
     //compute duty day from 1000 in minutes
     var duty = (hour * 60 + min) - 600   
-    let hours = Math.floor(duty / 60); 
-    let minutes = duty % 60;
-    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`; //converts minutes back to HH:MM
+    let h = Math.floor(duty / 60); 
+    let m = duty % 60;
+    document.getElementById("duty").innerHTML = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
+    //var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`; //converts minutes back to HH:MM
     
     //compute duty rig
     var rig = duty * .6; //60% duty rig
@@ -61,7 +62,7 @@ calc.addEventListener("click", function() {
     let m4 = pay % 60;
     var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
     
-    document.getElementById("duty").innerHTML = duty_day;
+    
     document.getElementById("rig").innerHTML = rig_pay;
     document.getElementById("m4m").innerHTML = m4m_pay;
     document.getElementById("pay").innerHTML = tot_pay;

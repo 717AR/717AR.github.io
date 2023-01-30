@@ -28,9 +28,14 @@ calc.addEventListener("click", function() {
     //var plus15 = new Date(in_time.getTime() + 900000); 
     //var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
     
-    var duty = (hour * 60 + min) - 600     //all duty from 1000 (all in minutes)
+    var duty = (hour * 60 + min) - 600     //all duty (all in minutes)
+    
+    let hours = duty / 60 
+    let minutes = duty % 60
+    alert(hours, minutes)
+    
     var rig = duty * .6; //60% duty rig
-    var pay = (duty - 480) + rig;
+    var pay = (duty - 480) + rig; //all duty after 1800
     
     document.getElementById("duty").innerHTML = duty;
     document.getElementById("rig").innerHTML = rig;

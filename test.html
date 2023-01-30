@@ -18,16 +18,15 @@ calc.addEventListener("click", function() {
     //set todays start date/ 10:00, 18:00
     var ten_am = new Date();
     ten_am.setHours(10, 0, 0, 0);
-   // var six_pm = new Date();
-   // six_pm.setUTCHours(18, 0, 0, 0);
   
-    //user input in-time, todays date
+    //user input in-time
     var time = document.getElementById("time").value
     var in_time = new Date(ten_am.toDateString() + " " + time);
    alert(in_time);
 
    //add 15 min to in time, format to HH:MM
-    var plus15 = new Date(in_time.getTime() + 15*60000);
+    //var plus15 = new Date(in_time.getTime() + 15*60000);
+    var plus15 = in_time + 15*60000;
     var offduty = new Date(plus15).toISOString().slice(11,16);
     //let h = plus15.getHours();
     //let m = plus15.getMinutes();

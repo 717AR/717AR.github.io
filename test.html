@@ -15,16 +15,15 @@ var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
-    //set todays start time at 10:00
+    //set todays start date/ 10:00
     var start_time = new Date();
     start_time.setHours(10, 0, 0, 0);
   
     //user input in-time
     var time = document.getElementById("time").value
-    var in_time = new Date();
-    in_time.setTime(time);
-    alert(time); 
-    alert(time +15);
+    var in_time = new Date(start_time.toDateString() + " " + time);
+    alert(in_time); 
+    alert(in_time +15);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);

@@ -26,11 +26,11 @@ calc.addEventListener("click", function() {
     var duty = (hour * 60 + plus15) - 600     //off-duty time - 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;
-    alert(off); 
+    //alert(off); 
     
     var duty_day = new Date(duty * 60 * 1000).toISOString().substr(11, 8);
 
-    document.getElementById("offduty").innerHTML = off;
+    //document.getElementById("offduty").innerHTML = off;
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
     document.getElementById("pay").innerHTML = pay;
@@ -39,7 +39,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"8"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"9"</span></h3>
 
    
     

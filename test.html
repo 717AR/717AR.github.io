@@ -14,7 +14,11 @@ M4M:<div id="money"></div><br>
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
-    var start_time = new Date(1675022400)
+    var start_time = new Date();
+    start_time.setHours(10, 0, 0, 0);
+    alert(start_time);
+    
+    
     var date = "2023-01-29"
     var time = document.getElementById("time").value
     var in_time = new Date(date + " " + time)

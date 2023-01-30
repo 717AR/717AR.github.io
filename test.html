@@ -29,10 +29,11 @@ calc.addEventListener("click", function() {
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-    alert(offduty)
+    alert(offduty);
     
     var duty = new Date(plus15.getTime() - start_time.getTime());
     document.getElementById("offduty").innerHTML = duty;
+    alert(duty);
  
     
 })

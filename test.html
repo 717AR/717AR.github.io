@@ -22,12 +22,14 @@ calc.addEventListener("click", function() {
     var date = "2023-01-29"
     var time = document.getElementById("time").value
     var in_time = new Date(date + " " + time)
+    alert(in_time);
 
    var plus15 = new Date(in_time.getTime() + 15*60000);
     let h = plus15.getHours();
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
+    alert(offduty)
     
     var duty = new Date(plus15.getTime() - start_time.getTime());
     document.getElementById("offduty").innerHTML = duty;

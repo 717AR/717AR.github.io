@@ -20,11 +20,12 @@ calc.addEventListener("click", function() {
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
+    var plus15 = min + 15
     
-    hour = (hour < 10 ? "0" : "") + hour;
-    min = (min < 10 ? "0" : "") + min;  
+    //hour = (hour < 10 ? "0" : "") + hour;
+    //min = (min < 10 ? "0" : "") + min;  
     
-    var off = hour + ":" + min + 15; 
+    var off = hour + ":" + plus15; 
     var duty = hour * 60 + min + 15 - 600     //off-duty time - 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;

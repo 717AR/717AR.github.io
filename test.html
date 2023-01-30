@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h2>Airport Reserve Pay and Credit Calculator - 8</h2>
+<h2>Airport Reserve Pay and Credit Calculator - 9</h2>
     
 Enter your Block in time:<input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
@@ -9,7 +9,7 @@ Enter your Block in time:<input id="time" type="time"><br>
 Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
-Pay and Credit:<div id="pay">5:00</div><br>
+Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
     
 <script>
 function padTo2Digits(num) {return num.toString().padStart(2, '0');}
@@ -20,12 +20,13 @@ calc.addEventListener("click", function() {
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
+    alert(time);
     var in_time = new Date("2023-01-01" +" "+ time);
     alert(in_time);
       
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
-    alert("Off duty time is: " plus15);
+    alert(plus15);
     
     /*
     

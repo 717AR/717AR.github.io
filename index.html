@@ -14,17 +14,18 @@ M4M:<div id="money"></div><br>
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
+    
    
   
     //user input in-time
     var time = document.getElementById("time").value
     var parts = time.split(":");
     var hour = parts[0];
-    var minute = parts[1];
+    var minute = Number(parts[1]);
     var duty = hour * 60 + minute + 15 - 600     //calculate duty day
-    alert(hour * 60);
-    alert(minute + 15);
-    alert(duty);
+    alert(hour * 60); //this works
+    alert(minute + 15); //this doesnt. t reats the minutes as a string not number
+    alert(duty); //doesnt work bc of minutes
 
    // var duty = new Date(plus15.getTime() - start_time.getTime());
    // var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS

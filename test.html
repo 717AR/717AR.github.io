@@ -11,7 +11,10 @@ var calc = document.getElementById("calc")
 calc.addEventListener("click", function() {
     var time = document.getElementById("time").value
     
-    alert(new Date("2022-03-25" + time))
+    const d = new Date("October 13, 2014" + time);
+    
+    alert(new Date(+time))
+    alert "d"
 
     
 })

@@ -23,7 +23,8 @@ calc.addEventListener("click", function() {
     var time = document.getElementById("time").value
     var in_time = new Date();
     in_time.setTime(time);
-    alert(in_time);
+    alert(time); 
+    alert(time +15);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);

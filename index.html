@@ -31,22 +31,29 @@ calc.addEventListener("click", function() {
     let minutes = duty % 60
    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
     
-function padTo2Digits(num) {
-  return num.toString().padStart(2, '0');
-}
-    
     var rig = duty * .6; //60% duty rig
     let h2= Math.floor(rig / 60); 
     let m2 = rig % 60;
    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
     var m4m = duty - 480;
+    let h3 = Math.floor(m4m / 60); 
+    let m3 = m4m % 60;
+    var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
+    
     var pay = m4m + rig; //all duty after 1800
+    let h4= Math.floor(rig / 60); 
+    let m4 = rig % 60;
+    var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
+    
+    function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
     
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
-    document.getElementById("m4m").innerHTML = m4m;
-    document.getElementById("pay").innerHTML = pay;
+    document.getElementById("m4m").innerHTML = m4m_pay;
+    document.getElementById("pay").innerHTML = tot_pay;
  
     
 })

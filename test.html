@@ -16,15 +16,17 @@ calc.addEventListener("click", function() {
     var start_time = new Date(1675022400)
     var date = "2023-01-25"
     var time = document.getElementById("time").value
-    var in = new Date(date + " " + time)
+    var in_time = new Date(date + " " + time)
 
-   var plus15 = new Date(in=.getTime() + 15*60000);
+   var plus15 = new Date(in_time=.getTime() + 15*60000);
     let hour = plus15.getHours();
     let min = plus15.getMinutes();
     let offduty = h + ":" + m;
     alert(offduty) 
     document.getElementById("offduty").innerHTML = offduty;
     
+    var diff = new Date(plus15-start_time)
+    alert(diff)
     
     document.getElementById("rig").innerHTML = rig;
     

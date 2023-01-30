@@ -9,12 +9,13 @@ Block in time:<input id="time" type="time" min ="18:00"/>
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
+    var date = "2023-01-25"
     var time = document.getElementById("time").value
+    const d = new Date(date + " " + time)
     
-    const d = new Date("October 13, 2014" + time);
-    
-    alert(new Date(time))
+    alert(new Date(date + " " + time))
     alert d
+
    var newDateObj = new Date(d.getTime() + 15*60000);
     alert newDateObj 
 

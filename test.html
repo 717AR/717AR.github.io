@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-Date:<input id="date" type="date" name="task_date" /> 
+
 Time:<input id="time" type="time" name="task_time" />
 <button id="calc">Calculate</button>
 
@@ -9,18 +9,17 @@ Time:<input id="time" type="time" name="task_time" />
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
-    var date = document.getElementById("date").value;
-        time = document.getElementById("time").value
+    var time = document.getElementById("time").value
 
-    alert(new Date(date + " " + time))
+    alert(new Date(time))
     
 })
 </script>
   
         <h1>
-      the value for date is:
+      the value for time is:
       <script type="text/javascript">
-        document.write(Date)
+        document.write(time)
       </script>
     </h1>
  </body> 

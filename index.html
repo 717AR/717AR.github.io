@@ -19,12 +19,15 @@ calc.addEventListener("click", function() {
     //user input in-time
     var time = document.getElementById("time").value
     var parts = time.split(":");
-    var hour = time[0];
-    var minute = time[1];
+    var hour = parts[0];
+    var minute = parts[1];
     
     alert(time);
     alert(hour);
     alert(minute);
+    
+    var h2m = hour * 60;
+    alert(h2m);
 
    //add 15 min to in time, format to HH:MM
     //var plus15 = new Date(in_time.getTime() + 15*60000);

@@ -23,6 +23,7 @@ calc.addEventListener("click", function() {
     var date = "2023-01-29"
     var time = document.getElementById("time").value
     var in_time = new Date(date + " " + time)
+    alert(time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);
@@ -30,7 +31,7 @@ calc.addEventListener("click", function() {
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-    alert(offduty);
+   
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - start_time.getTime());
@@ -39,9 +40,6 @@ calc.addEventListener("click", function() {
     var rig = new Date(rig_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
-
-    alert(duty_day);
-    alert(rig);
  
     
 })

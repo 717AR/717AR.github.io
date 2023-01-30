@@ -15,24 +15,24 @@ var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
-    //set todays start date/ 10:00, 18:00
+    //use todays date and set 10:00 start
     var ten_am = new Date();
     ten_am.setHours(10, 0, 0, 0);
   
-    //user input in-time
-    var time = document.getElementById("time").value
+    //grab inputted in-time
+    var time = document.getElementById("time").value;
     var in_time = new Date(ten_am.toDateString() + " " + time);
 
-   //add 15 min to in time, format to HH:MM
+   //add 15 min to in time for off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);
-    //var plus15 = in_time + 15*60000;
-    //var offduty = new Date(plus15).toISOString().slice(11,16);
-    let h = plus15.getHours();
-    let m = plus15.getMinutes();
-    let offduty = h + ":" + m;
+    var offduty = new Date(plus15).toString().slice(11,16); //format to HH:MM for display
+   // let h = plus15.getHours();
+   // let m = plus15.getMinutes();
+   // let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
     
-    let duty_day = plus15 - 36000000
+    //duty day calculations
+    var duty_day = new Date(plus15.getTime() - 36000000);   //off duty time minus 10:00 in milliseconds
     let rig = (duty_day * .6) / 60;
     alert(duty_day);
     alert(rig);

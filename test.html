@@ -22,7 +22,7 @@ calc.addEventListener("click", function() {
     //user input in-time
     var time = document.getElementById("time").value
     var in_time = new Date();
-    in_time.setHours(time);
+    in_time.setTime(time);
     alert(in_time);
 
    //add 15 min to in time, format to HH:MM

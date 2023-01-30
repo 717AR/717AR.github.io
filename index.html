@@ -21,23 +21,9 @@ calc.addEventListener("click", function() {
     var parts = time.split(":");
     var hour = parts[0];
     var minute = parts[1];
-    
-    alert(time);
-    alert(hour);
-    alert(minute);
-    
-    var h2m = hour * 60;
-    alert(h2m);
+    var duty = ((hour * 60) + (minute + 15)) - 600     //calculate duty day
+    alert(duty);
 
-   //add 15 min to in time, format to HH:MM
-    //var plus15 = new Date(in_time.getTime() + 15*60000);
-    //let h = plus15.getHours();
-   // let m = plus15.getMinutes();
-   // let offduty = h + ":" + m;
-   // document.getElementById("offduty").innerHTML = offduty;
-   
-    
-    //calculate duty day
    // var duty = new Date(plus15.getTime() - start_time.getTime());
    // var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS
     //let rig_calc = duty * 0.6;

@@ -22,7 +22,6 @@ calc.addEventListener("click", function() {
     //user input in-time
     var time = document.getElementById("time").value
     var in_time = new Date(ten_am.toDateString() + " " + time);
-   alert(in_time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);
@@ -32,20 +31,24 @@ calc.addEventListener("click", function() {
     let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-    alert(offduty);
     
+    let duty_day = (h*60 + m) / 60;
+    let rig = (duty_day * .6) / 60;
+    alert(duty_day);
+    alert(rig);
     //calculate duty day
-    var duty = new Date(plus15.getTime() - ten_am.getTime());
-    var duty_day = new Date(duty).toISOString().slice(11,16)   // convert to HH:MM
-    let rig_calc = duty * 0.6;
-    var rig = new Date(rig_calc).toISOString().slice(11,16)   // convert to HH:MM
+    //var duty = new Date(plus15.getTime() - ten_am.getTime());
+    //var duty_day = new Date(duty).toISOString().slice(11,16)   // convert to HH:MM
+    //let rig_calc = duty * 0.6;
+    //var rig = new Date(rig_calc).toISOString().slice(11,16)   // convert to HH:MM
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
     
     
     //show me the money
-    var pay_calc = offduty - 64800000 + rig; //calc time past 1800 (in milliseconds) 
-    var pay = new Date(pay_calc).toISOString().slice(11,16);  // convert to HH:MM
+   // var pay_calc = offduty - 64800000 + rig; //calc time past 1800 (in milliseconds) 
+   // var pay = new Date(pay_calc).toISOString().slice(11,16);  // convert to HH:MM
+    let pay = rig + ((h*60 + m - 600) / 60)
     document.getElementById("pay").innerHTML = pay;
     alert(pay)
 })

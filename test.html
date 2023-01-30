@@ -18,6 +18,8 @@ calc.addEventListener("click", function() {
     //set todays start date/ 10:00
     var start_time = new Date();
     start_time.setHours(10, 0, 0, 0);
+    var ten_pm = new Date();
+    ten_pm.setHours(22, 0, 0, 0);
   
     //user input in-time
     var time = document.getElementById("time").value
@@ -34,12 +36,15 @@ calc.addEventListener("click", function() {
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - start_time.getTime());
-    var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS
+    var duty_day = new Date(duty).toISOString().slice(11,17)   // convert to HH:MM:SS
     let rig_calc = duty * 0.6;
     var rig = new Date(rig_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
- 
+    
+    //show me the money
+    var pay_calc = offduty - ten_pm + rig
+    var pay = new Date(pay_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
     
 })
 </script>

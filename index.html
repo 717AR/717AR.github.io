@@ -29,7 +29,6 @@ calc.addEventListener("click", function() {
     //var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
     
     var duty = (hour * 60 + min) - 600     //all duty (all in minutes)
-    
     let hours = Math.floor(duty / 60); 
     let minutes = duty % 60
    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
@@ -39,10 +38,15 @@ function padTo2Digits(num) {
 }
     
     var rig = duty * .6; //60% duty rig
+    let h2= Math.floor(rig / 60); 
+    let m2 = rig % 60;
+   var rig_pay = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+    
+    
     var pay = (duty - 480) + rig; //all duty after 1800
     
     document.getElementById("duty").innerHTML = duty_day;
-    document.getElementById("rig").innerHTML = rig;
+    document.getElementById("rig").innerHTML = rig_pay;
     document.getElementById("pay").innerHTML = pay;
  
     

@@ -26,15 +26,15 @@ calc.addEventListener("click", function() {
     var hour = (parts[0]);
     var min = Number(parts[1]);
     
-    var duty = (hour * 60 + min) - 600     //all duty (all in minutes)
+    var duty = (hour * 60 + min) - 600     //duty day in minutes computed from 1000
     let hours = Math.floor(duty / 60); 
-    let minutes = duty % 60
-   var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+    let minutes = Mathh.round(duty % 60)
+    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
     
     var rig = duty * .6; //60% duty rig
     const h2= Math.floor(rig / 60); 
     const m2 = rig % 60;
-   var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
     var m4m = duty - 480;
     let h3 = Math.floor(m4m / 60); 

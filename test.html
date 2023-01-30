@@ -25,11 +25,11 @@ calc.addEventListener("click", function() {
 
    //add 15 min to in time for off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);
-    var offduty = new Date(plus15).toISOString(True).slice(11,16); //format to HH:MM for display
-   // let h = plus15.getHours();
-   // let m = plus15.getMinutes();
-   // let offduty = h + ":" + m;
+    let h = plus15.getHours();
+    let m = plus15.getMinutes();
+    let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
+    alert(offduty);
     
     //duty day calculations
     var duty_day = new Date(plus15.getTime() - 36000000);   //off duty time minus 10:00 in milliseconds

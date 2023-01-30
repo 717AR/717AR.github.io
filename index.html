@@ -30,12 +30,13 @@ calc.addEventListener("click", function() {
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
-    var minplus15 = min + 15 
     
-    var off = new Date(time.getTime();
-   // var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS
+    var in_time = new Date("2022-03-25" + " " + time);
+    alert(in_time);
+    var plus15 = new Date(in_time.getTime() + 900000);
+    var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM
     
-    var duty = (hour * 60 + min + 15) - 600     //off-duty time - 1000 (all in minutes)
+    var duty = (hour * 60 + min + 15) - 600     //off-duty time minus 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;
     alert(plus 15); 

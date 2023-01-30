@@ -11,24 +11,63 @@ Duty Day:<div id="duty"></div><br>
 Pay and Credit:<div id="pay"></div><br>
     
 <script>
+function padTo2Digits(num) {return num.toString().padStart(2, '0');}
+    
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
-    //use todays date and set 10:00 start
-    var ten_am = new Date();
-    ten_am.setHours(10, 0, 0, 0);
-    alert(ten_am)
-  
-    //grab inputted in-time
+    //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
-    var in_time = new Date(ten_am.toDateString() + " " + time);
-    alert(time);
-    
-   //add 15 min to in time for off duty time
+    var in_time = new Date("2023-01-01" + " " + time);
+      
+    //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);
+    alert("Off duty time is: " plus15);
+    
+    //grab H and M from off duty time to do some math
     var hour = plus15.getHours();
     var min = plus15.getMinutes();
+
+   // var parts = time.split(":");
+    //var hour = (parts[0]);
+    //var min = Number(parts[1]);
+    
+    var duty = (hour * 60 + min) - 600     //duty day computed from 1000, in minutes
+    let hours = Math.floor(duty / 60); 
+    let minutes = duty % 60;
+    var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`; //converts minutes back to HH:MM
+    
+    var rig = duty * .6; //60% duty rig
+    const h2= Math.floor(rig / 60); 
+    const m2 = rig % 60;
+    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    
+    var m4m = duty - 480;
+    let h3 = Math.floor(m4m / 60); 
+    let m3 = m4m % 60;
+    var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
+    
+    var pay = m4m + rig; //all duty after 1800
+    let h4= Math.floor(pay / 60); 
+    let m4 = pay % 60;
+    var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
+    
+    document.getElementById("duty").innerHTML = duty_day;
+    document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    document.getElementById("m4m").innerHTML = m4m_pay;
+    document.getElementById("pay").innerHTML = tot_pay;
+ 
+    
+})
+</script>
+    
+    
+    var calc = document.getElementById("calc")
+
+calc.addEventListener("click", function() {
+    
+
 
     //hour = (hour < 10 ? "0" : "") + hour;
     //min = (min < 10 ? "0" : "") + min;

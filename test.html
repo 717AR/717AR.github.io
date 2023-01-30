@@ -25,12 +25,12 @@ calc.addEventListener("click", function() {
    alert(in_time);
 
    //add 15 min to in time, format to HH:MM
-    //var plus15 = new Date(in_time.getTime() + 15*60000);
-    var plus15 = in_time + 15*60000;
-    var offduty = new Date(plus15).toISOString().slice(11,16);
-    //let h = plus15.getHours();
-    //let m = plus15.getMinutes();
-    //let offduty = h + ":" + m;
+    var plus15 = new Date(in_time.getTime() + 15*60000);
+    //var plus15 = in_time + 15*60000;
+    //var offduty = new Date(plus15).toISOString().slice(11,16);
+    let h = plus15.getHours();
+    let m = plus15.getMinutes();
+    let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
     alert(offduty);
     

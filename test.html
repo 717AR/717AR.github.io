@@ -34,7 +34,7 @@ calc.addEventListener("click", function() {
     document.getElementById("offduty").innerHTML = offduty;
     
     //calculate duty day
-    var duty = new Date(plus15.getTime() - start_time.getTime());
+    var duty = new Date(plus15.getTime() - ten_am.getTime());
     var duty_day = new Date(duty).toISOString().slice(11,16)   // convert to HH:MM
     let rig_calc = duty * 0.6;
     var rig = new Date(rig_calc).toISOString().slice(11,16)   // convert to HH:MM

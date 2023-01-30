@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h1>Airport Reserve Credit Calculator</h1>
 
-<label for="in">Enter Block-in time: </label>
-<input id="in" type="time" value="18:00" />
+<div>Block in time:<input id="time" type="time" min ="18:00"</div><br>
+<button id="calc">Do Stuff</button><br>
 
-Pay: <time id='pay'> 5:00 </pay>
-  <button onclick="addTime();">Go!</button>
-  <script>
-       
-    const time = top.consoleRef.document.getElementById('in').innerHTML;
-    let date = new Date();   
-    var newDateObj = new Date(oldDateObj.getTime() + 15*60000);
-
-  </script>
-     
- <time id='time'> 10:00 </time>
-  <button onclick="addTime();">addTime</button>
-  <script>
-    const time = document.getElementById('time')
-    let date = new Date();   
+Off Duty: <div id="offduty"></div><br>
+Duty Day:<div id="duty"></div><br>
+60% Duty Rig:<div id="rig"></div><br>
+M4M:<div id="money"></div><br>
     
-    function addTime() {
-      date.setMinutes(1 + +time.innerHTML.match(/\d{2}/)[0]);
-      date.setSeconds(0);
-      time.innerHTML = String(date).slice(19, 24);
-    }
-  </script>
-     
-     alert ( newDateObj )
+<script>
+var calc = document.getElementById("calc")
+
+calc.addEventListener("click", function() {
+    
+    //set todays start time at 10:00
+   // var start_time = new Date();
+    //start_time.setHours(10, 0, 0, 0);
   
+    //user input in-time
+    //var date = "2023-01-29"
+    var time = document.getElementById("time").value
+    //var in_time = new Date(date + " " + time)
+    alert(time);
+
+   //add 15 min to in time, format to HH:MM
+    //var plus15 = new Date(in_time.getTime() + 15*60000);
+    //let h = plus15.getHours();
+   // let m = plus15.getMinutes();
+   // let offduty = h + ":" + m;
+   // document.getElementById("offduty").innerHTML = offduty;
+   
+    
+    //calculate duty day
+   // var duty = new Date(plus15.getTime() - start_time.getTime());
+   // var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS
+    //let rig_calc = duty * 0.6;
+    //var rig = new Date(rig_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
+    //document.getElementById("duty").innerHTML = duty_day;
+    //document.getElementById("rig").innerHTML = rig;
+ 
+    
+})
+</script>
 
 
-</body>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"++"</span></h3>
+
+    
+
+    
+    
+ </body> 
 </html>
+
+

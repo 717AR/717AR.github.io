@@ -18,10 +18,13 @@ calc.addEventListener("click", function() {
   
     //user input in-time
     var time = document.getElementById("time").value
-    var parts = time.value.split(':');
-    var hour = parseInt(parts[0]);
-    var minute = parseInt(parts[1]);
+  //  var parts = time.value.split(':');
+    //var hour = parseInt(parts[0]);
+    //var minute = parseInt(parts[1]);
     
+    var parts = time.split(":");
+    var hour = time[0];
+    var minute = time[1];
     
     //var in_time = new Date(date + " " + time)
     alert(hour);

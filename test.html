@@ -5,6 +5,10 @@
 Block in time:<input id="time" type="time" min ="18:00"/>
 <button id="calc">Do Stuff</button>
 
+Off Duty: <div id="offduty"></div>
+60% Duty Rig:<div id="rig"></div>
+M4M:<div id="money"></div>
+    
 <script>
 var calc = document.getElementById("calc")
 
@@ -17,14 +21,14 @@ calc.addEventListener("click", function() {
 
    var plus15 = new Date(d.getTime() + 15*60000);
     alert(plus15) 
+    
+    document.getElementById("offduty").innerHTML = plus15;
 
     
 })
 </script>
-<h3 class='title' style='text-align: center'>Off Duty:<span style='font-weight:bold'>"+plus15+"</span></h3>
-60% Duty Rig:
-M4M:
-    
+
+
 <h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"++"</span></h3>
 
     

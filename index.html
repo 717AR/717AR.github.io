@@ -14,25 +14,22 @@ M4M:<div id="pay"></div><br>
     
     
 <script>
-    
-var minutes = totalMinutes % 60;
-var hours = (totalMinutes-minutes)/60;
-var output = hours + ':' + minutes;
-    
-    
+
     
 var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
     //user input in-time
-    var time = document.getElementById("time").value
+    var time = document.getElementById("time").value;
+    var in_time = new Date("2022-03-25" + " " + time);
+    alert(in_time);
+    
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
     
-    var in_time = new Date("2022-03-25" + " " + time);
-    alert(in_time);
+
     var plus15 = new Date(in_time.getTime() + 900000);
     alert(plus15); 
     var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
@@ -50,7 +47,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"11"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"12"</span></h3>
 
    
     

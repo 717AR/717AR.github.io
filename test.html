@@ -25,7 +25,7 @@ calc.addEventListener("click", function() {
 
    //add 15 min to in time for off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000);
-    var offduty = new Date(plus15).toString().slice(11,16); //format to HH:MM for display
+    var offduty = new Date(plus15).toISOString(True).slice(11,16); //format to HH:MM for display
    // let h = plus15.getHours();
    // let m = plus15.getMinutes();
    // let offduty = h + ":" + m;

@@ -12,7 +12,7 @@ Total Pay and Credit:<div id="pay"></div><br>
     
     
 <script>
-
+  function padTo2Digits(num) {return num.toString().padStart(2, '0');}
     
 var calc = document.getElementById("calc")
 
@@ -46,10 +46,6 @@ calc.addEventListener("click", function() {
     let m4 = rig % 60;
     var tot_pay = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
     
-    function padTo2Digits(num) {
-  return num.toString().padStart(2, '0');
-}
-    
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     document.getElementById("m4m").innerHTML = m4m_pay;
@@ -59,7 +55,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"16"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"17"</span></h3>
 
    
     

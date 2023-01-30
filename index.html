@@ -10,8 +10,6 @@ Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
 M4M:<div id="pay"></div><br>
     
-   
-    
     
 <script>
 
@@ -32,7 +30,11 @@ calc.addEventListener("click", function() {
 
     var plus15 = new Date(in_time.getTime() + 900000);
     alert(plus15); 
-    var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
+    
+\
+var offduty = new Date(plus15.getTime() - (plus15.getTimezoneOffset() * 60000)).toISOString().slice(11,16);
+    
+    //var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
     
     var duty = (hour * 60 + min + 15) - 600     //off-duty time minus 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig

@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<div>Block in time:<input id="time" type="time" min ="18:00"</div><br>
+<div>Block in time:<input id="in" type="time" min ="18:00"</div><br>
 <button id="calc">Do Stuff</button><br>
 
 Off Duty: <div id="offduty"></div><br>
@@ -21,9 +21,15 @@ calc.addEventListener("click", function() {
   
     //user input in-time
     //var date = "2023-01-29"
-    var time = document.getElementById("time").value
+    var in_time = document.getElementById("in").value
+    var parts = in_time.value.split(':');
+    var hour = parseInt(parts[0]);
+    var minute = parseInt(parts[1]);
+    
+    
     //var in_time = new Date(date + " " + time)
-    alert(time);
+    alert(hour);
+    alert(minute);
 
    //add 15 min to in time, format to HH:MM
     //var plus15 = new Date(in_time.getTime() + 15*60000);

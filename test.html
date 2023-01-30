@@ -2,7 +2,7 @@
 <html>
 <body>
 
-<div>Block in time:<input id="time" type="time" min ="18:00"</div><br>
+<div>Block in time:<input id="time" type="time" min ="18:00" max "23:59"</div><br>
 <button id="calc">Do Stuff</button><br>
 
 Off Duty: <div id="offduty"></div><br>
@@ -15,37 +15,37 @@ var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
-    //set todays start date/ 10:00
-    var start_time = new Date();
-    start_time.setHours(10, 0, 0, 0);
-    var ten_pm = new Date();
-    ten_pm.setHours(22, 0, 0, 0);
+    //set todays start date/ 10:00, 18:00
+    var ten_am = new Date();
+    ten_am.setHours(10, 0, 0, 0);
+    var six_pm = new Date();
+    six_pm.setHours(18, 0, 0, 0);
   
-    //user input in-time
+    //user input in-time, todays date
     var time = document.getElementById("time").value
-    var in_time = new Date(start_time.toDateString() + " " + time);
-    alert(in_time); 
+    var in_time = new Date(ten_am.toDateString() + " " + time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);
-    let h = plus15.getHours();
-    let m = plus15.getMinutes();
-    let offduty = h + ":" + m;
+    var offduty = new Date(plus15).toISOString().slice(11,16)
+    //let h = plus15.getHours();
+    //let m = plus15.getMinutes();
+    //let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-    alert(offduty);
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - start_time.getTime());
-    var duty_day = new Date(duty).toISOString().slice(11,17)   // convert to HH:MM:SS
+    var duty_day = new Date(duty).toISOString().slice(11,16)   // convert to HH:MM
     let rig_calc = duty * 0.6;
-    var rig = new Date(rig_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
+    var rig = new Date(rig_calc).toISOString().slice(11,16)   // convert to HH:MM
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
     
     //show me the money
-    var pay_calc = offduty - ten_pm + rig
-    var pay = new Date(pay_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
-    
+    var pay_calc = offduty - six_pm + rig
+    var pay = new Date(pay_calc).toISOString().slice(11,16)   // convert to HH:MM
+    document.getElementById("pay").innerHTML = pay;
+    alert(pay)
 })
 </script>
 

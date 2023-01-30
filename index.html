@@ -32,13 +32,16 @@ calc.addEventListener("click", function() {
     
     let hours = Math.floor(duty / 60); 
     let minutes = duty % 60
-    alert(hours);
-    alert(minutes);
+   var duty_day = `${padTo2Digits(hours)}:${padTo2Digits(minutes)}`;
+    
+function padTo2Digits(num) {
+  return num.toString().padStart(2, '0');
+}
     
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig; //all duty after 1800
     
-    document.getElementById("duty").innerHTML = duty;
+    document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
     document.getElementById("pay").innerHTML = pay;
  
@@ -46,7 +49,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"14"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"15"</span></h3>
 
    
     

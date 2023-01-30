@@ -34,14 +34,15 @@ calc.addEventListener("click", function() {
     var in_time = new Date("2022-03-25" + " " + time);
     alert(in_time);
     var plus15 = new Date(in_time.getTime() + 900000);
-    var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM
+    alert(plus15); 
+    var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
     
     var duty = (hour * 60 + min + 15) - 600     //off-duty time minus 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;
-    alert(plus 15); 
     
-    document.getElementById("duty").innerHTML = duty_day;
+    document.getElementById("offduty").innerHTML = offduty;
+    document.getElementById("duty").innerHTML = duty;
     document.getElementById("rig").innerHTML = rig;
     document.getElementById("pay").innerHTML = pay;
  
@@ -49,7 +50,7 @@ calc.addEventListener("click", function() {
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"10"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"11"</span></h3>
 
    
     

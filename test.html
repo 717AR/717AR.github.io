@@ -2,13 +2,13 @@
 <html>
 <body>
 
-<div>Block in time:<input id="time" type="time" min ="18:00" max "23:59"</div><br>
-<button id="calc">Do Stuff</button><br>
+<div>Enter your Block in time:<input id="time" type="time" min ="18:00" max "23:59"</div><br>
+<button id="calc">Calculate</button><br>
 
 Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
-Pay and Credit:<div id="pay">5:00</div><br>
+Pay and Credit:<div id="pay"></div><br>
     
 <script>
 var calc = document.getElementById("calc")
@@ -40,6 +40,7 @@ calc.addEventListener("click", function() {
     var rig = new Date(rig_calc).toISOString().slice(11,16)   // convert to HH:MM
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
+    
     
     //show me the money
     var pay_calc = offduty - six_pm + rig

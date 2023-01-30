@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <body>
-<h2>Airport Reserve Pay and Credit Calculator - 11</h2>
+<h2>Airport Reserve Pay and Credit Calculator - 12</h2>
     
 Enter your Block in time:<input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
@@ -9,6 +9,7 @@ Enter your Block in time:<input id="time" type="time"><br>
 Off Duty: <div id="offduty"></div><br>
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
+M4M (DEXT):<div id="m4m"></div><br>
 Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
     
 <script>
@@ -19,7 +20,6 @@ calc.addEventListener("click", function() {
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
-    alert(time);
     var in_time = new Date("2023-01-01" +" "+ time);
     alert(in_time);
       
@@ -28,8 +28,7 @@ calc.addEventListener("click", function() {
     alert(plus15);
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}
-    /*
-    
+   
     //grab H and M from off duty time to do some math
     var hour = plus15.getHours();
     var min = plus15.getMinutes();
@@ -67,7 +66,8 @@ calc.addEventListener("click", function() {
     document.getElementById("m4m").innerHTML = m4m_pay;
     document.getElementById("pay").innerHTML = tot_pay;
     
-    */
+   /*
+   */
  
 })
 </script>

@@ -2,7 +2,7 @@
 <html>
 <body>
 
-Block in time:<input id="time" type="time" min ="18:00"/>
+<div>Block in time:<input id="time" type="time" min ="18:00"</div>
 <button id="calc">Do Stuff</button>
 
 Off Duty: <div id="offduty"></div>
@@ -16,8 +16,6 @@ calc.addEventListener("click", function() {
     var date = "2023-01-25"
     var time = document.getElementById("time").value
     const d = new Date(date + " " + time)
-    
-    alert(d)
 
    var plus15 = new Date(d.getTime() + 15*60000);
     alert(plus15) 

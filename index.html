@@ -15,24 +15,25 @@ var calc = document.getElementById("calc")
 
 calc.addEventListener("click", function() {
     
-   
-  
     //user input in-time
     var time = document.getElementById("time").value
     var parts = time.split(":");
-    var hour = parts[0];
-    var minute = Number(parts[1]);
-    var duty = hour * 60 + minute + 15 - 600     //calculate duty day
-    alert(hour * 60); //this works
-    alert(minute + 15); //this doesnt. t reats the minutes as a string not number
-    alert(duty); //doesnt work bc of minutes
+    var hour = Number(parts[0]);
+    var min = Number(parts[1]);
+    
+    hour = (hour < 10 ? "0" : "") + hour;
+    min = (min < 10 ? "0" : "") + min;  
+    
+    var off = hour + ":" + min; 
+    var duty = hour * 60 + min + 15 - 600     //off-duty time - 1000 (all in minutes)
+    var rig = duty * .6; //60% duty rig
+    var pay = (duty - 480) + rig;
+    alert(min + 15); 
 
-   // var duty = new Date(plus15.getTime() - start_time.getTime());
-   // var duty_day = new Date(duty).toISOString().slice(11,19)   // convert to HH:MM:SS
-    //let rig_calc = duty * 0.6;
-    //var rig = new Date(rig_calc).toISOString().slice(11,19)   // convert to HH:MM:SS
-    //document.getElementById("duty").innerHTML = duty_day;
-    //document.getElementById("rig").innerHTML = rig;
+    document.getElementById("offduty").innerHTML = off;
+    document.getElementById("duty").innerHTML = duty;
+    document.getElementById("rig").innerHTML = rig;
+    document.getElementById("pay").innerHTML = pay;
  
     
 })

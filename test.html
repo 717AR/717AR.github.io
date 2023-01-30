@@ -24,14 +24,16 @@ calc.addEventListener("click", function() {
     //user input in-time, todays date
     var time = document.getElementById("time").value
     var in_time = new Date(ten_am.toDateString() + " " + time);
+   alert(in_time);
 
    //add 15 min to in time, format to HH:MM
     var plus15 = new Date(in_time.getTime() + 15*60000);
-    var offduty = new Date(plus15).toISOString().slice(11,16)
+    var offduty = new Date(plus15).toISOString().slice(11,16);
     //let h = plus15.getHours();
     //let m = plus15.getMinutes();
     //let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
+    alert(offduty);
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - ten_am.getTime());
@@ -43,8 +45,8 @@ calc.addEventListener("click", function() {
     
     
     //show me the money
-    var pay_calc = offduty - six_pm + rig
-    var pay = new Date(pay_calc).toISOString().slice(11,16)   // convert to HH:MM
+    var pay_calc = offduty - six_pm + rig;
+    var pay = new Date(pay_calc).toISOString().slice(11,16);  // convert to HH:MM
     document.getElementById("pay").innerHTML = pay;
     alert(pay)
 })

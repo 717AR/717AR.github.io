@@ -32,7 +32,7 @@ calc.addEventListener("click", function() {
     let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
     
-    let duty_day = (h*60 + m) / 60;
+    let duty_day = h*60 + m;
     let rig = (duty_day * .6) / 60;
     alert(duty_day);
     alert(rig);

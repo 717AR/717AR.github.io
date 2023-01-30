@@ -11,7 +11,7 @@ var calc = document.getElementById("calc")
 calc.addEventListener("click", function() {
     var time = document.getElementById("time").value
 
-    alert(new Date(time))
+    alert(new Date(this.time))
     
 })
 </script>
@@ -19,7 +19,7 @@ calc.addEventListener("click", function() {
         <h1>
       the value for time is:
       <script type="text/javascript">
-        document.write(time)
+        document.write("time")
       </script>
     </h1>
  </body> 

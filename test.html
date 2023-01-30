@@ -18,8 +18,8 @@ calc.addEventListener("click", function() {
     //set todays start date/ 10:00, 18:00
     var ten_am = new Date();
     ten_am.setHours(10, 0, 0, 0);
-    var six_pm = new Date();
-    six_pm.setHours(18, 0, 0, 0);
+   // var six_pm = new Date();
+   // six_pm.setUTCHours(18, 0, 0, 0);
   
     //user input in-time, todays date
     var time = document.getElementById("time").value
@@ -33,7 +33,7 @@ calc.addEventListener("click", function() {
     //let m = plus15.getMinutes();
     //let offduty = h + ":" + m;
     document.getElementById("offduty").innerHTML = offduty;
-    alert(offduty);
+    alert(plus15);
     
     //calculate duty day
     var duty = new Date(plus15.getTime() - ten_am.getTime());
@@ -45,7 +45,7 @@ calc.addEventListener("click", function() {
     
     
     //show me the money
-    var pay_calc = offduty - six_pm + rig;
+    var pay_calc = offduty - 64800000 + rig; //calc time past 1800 (in milliseconds) 
     var pay = new Date(pay_calc).toISOString().slice(11,16);  // convert to HH:MM
     document.getElementById("pay").innerHTML = pay;
     alert(pay)

@@ -19,14 +19,12 @@ calc.addEventListener("click", function() {
     var in_time = new Date(date + " " + time)
 
    var plus15 = new Date(in_time.getTime() + 15*60000);
-    let hour = plus15.getHours();
-    let min = plus15.getMinutes();
+    let h = plus15.getHours();
+    let m = plus15.getMinutes();
     let offduty = h + ":" + m;
     alert(offduty) 
     document.getElementById("offduty").innerHTML = offduty;
-    
-    var diff = new Date(plus15-start_time)
-    alert(diff)
+ 
     
 })
 </script>

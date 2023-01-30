@@ -4,34 +4,28 @@
 <h1>Airport Reserve Credit Calculator</h1>
 
 <label for="in">Enter Block-in time: </label>
-<input id="time" type="time" value="18:00" />
+<input id="in" type="time" value="18:00" />
 
-     Pay: <time id='pay'> 5:00 </pay>
+Pay: <time id='pay'> 5:00 </pay>
   <button onclick="addTime();">Go!</button>
   <script>
-
        
-    const time = top.consoleRef.document.getElementById('time').innerHTML;
+    const time = top.consoleRef.document.getElementById('in').innerHTML;
     let date = new Date();   
     var newDateObj = new Date(oldDateObj.getTime() + 15*60000);
+
+  </script>
+     
+ <time id='time'> 10:00 </time>
+  <button onclick="addTime();">addTime</button>
+  <script>
+    const time = document.getElementById('time')
+    let date = new Date();   
     
     function addTime() {
       date.setMinutes(1 + +time.innerHTML.match(/\d{2}/)[0]);
       date.setSeconds(0);
-      pay.innerHTML = String(date).slice(19, 24);
-    }
-  </script>
-     
- <time id='time2'> 10:00 </time>
-  <button onclick="addTime();">addTime</button>
-  <script>
-    const time = document.getElementById('time2')
-    let date = new Date();   
-    
-    function addTime() {
-      date.setMinutes(1 + +time2.innerHTML.match(/\d{2}/)[0]);
-      date.setSeconds(0);
-      time2.innerHTML = String(date).slice(19, 24);
+      time.innerHTML = String(date).slice(19, 24);
     }
   </script>
      

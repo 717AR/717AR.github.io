@@ -20,19 +20,18 @@ calc.addEventListener("click", function() {
     var parts = time.split(":");
     var hour = (parts[0]);
     var min = Number(parts[1]);
-    var plus15 = min + 15
+    var plus15 = (hour * 60 + (min + 15)) 
     
-    //hour = (hour < 10 ? "0" : "") + hour;
-    //min = (min < 10 ? "0" : "") + min;  
-    
-    var off = hour + ":" + plus15; 
-    var duty = hour * 60 + min + 15 - 600     //off-duty time - 1000 (all in minutes)
+    //var off = hour + ":" + plus15; 
+    var duty = (hour * 60 + plus15) - 600     //off-duty time - 1000 (all in minutes)
     var rig = duty * .6; //60% duty rig
     var pay = (duty - 480) + rig;
     alert(off); 
+    
+    var duty_day = new Date(duty * 60 * 1000).toISOString().substr(11, 8);
 
     document.getElementById("offduty").innerHTML = off;
-    document.getElementById("duty").innerHTML = duty;
+    document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig;
     document.getElementById("pay").innerHTML = pay;
  

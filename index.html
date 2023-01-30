@@ -7,7 +7,8 @@
 
 Duty Day:<div id="duty"></div><br>
 60% Duty Rig:<div id="rig"></div><br>
-M4M:<div id="pay"></div><br>
+M4M:<div id="m4m"></div><br>
+Total Pay and Credit:<div id="pay"></div><br>
     
     
 <script>
@@ -25,9 +26,6 @@ calc.addEventListener("click", function() {
     var hour = (parts[0]);
     var min = Number(parts[1]);
     
-    //var plus15 = new Date(in_time.getTime() + 900000); 
-    //var offduty = new Date(plus15).toISOString().slice(11,16);  // convert to HH:MM for display
-    
     var duty = (hour * 60 + min) - 600     //all duty (all in minutes)
     let hours = Math.floor(duty / 60); 
     let minutes = duty % 60
@@ -42,18 +40,19 @@ function padTo2Digits(num) {
     let m2 = rig % 60;
    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
-    
-    var pay = (duty - 480) + rig; //all duty after 1800
+    var m4m = duty - 480;
+    var pay = m4m + rig; //all duty after 1800
     
     document.getElementById("duty").innerHTML = duty_day;
     document.getElementById("rig").innerHTML = rig_pay;
+    document.getElementById("m4m").innerHTML = m4m;
     document.getElementById("pay").innerHTML = pay;
  
     
 })
 </script>
 
-<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"15"</span></h3>
+<h3 class='title' style='text-align: center'>Pay/ Credit:<span style='font-weight:bold'>"16"</span></h3>
 
    
     

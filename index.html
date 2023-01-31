@@ -18,6 +18,7 @@
     <div id="intro" style='font-weight:bold';></div><br>
     <div id="pay"></div><br>  
     <div id="results"></div><br>
+    <div id="quote"></div><br>
     
 <script>
 
@@ -70,8 +71,8 @@ calc.addEventListener("click", function() {
     var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
          if (pay < 300) {                                       //5 hours (in minutes)
              document.getElementById("pay").innerHTML = "5:00";
-             document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."<br>
-                 "'I am always reasonably available at the airport' -Tim Dobbins";           
+             document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
+             document.getElementById("quote").innerHTML = "'I am always reasonably available at the airport' -Tim Dobbins";
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = 
@@ -79,6 +80,7 @@ calc.addEventListener("click", function() {
                 "(your duty day) = " + rig_pay + 
                 " (min 5 hours). PLUS 'Minute for Minute' (DEXT) of  " + m4m_pay + 
                 " = " + pay_all + "."
+            document.getElementById("quote").innerHTML = "'Cha-CHING, BABY!!!' -Marc DeRego";
     ;
     }
  

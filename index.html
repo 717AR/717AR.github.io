@@ -10,9 +10,9 @@
      
 <div>
     <br>
-    <h3>Enter your BLOCK IN time and press the button:</h3>
+    <h3>Enter your BLOCK IN time and click the button:</h3>
     <input id="time" type="time"><br><br>
-<button id="calc">Show Me The Money</button><br>
+<button id="calc">Calculate</button><br>
     </div>    
 <br>
     <div id="intro" style='font-weight:bold';></div>
@@ -71,6 +71,7 @@ calc.addEventListener("click", function() {
              document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
              document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";
   //           document.getElementById("quote").innerHTML = "'Well, we tried, didn't we?' -Tim Dobbins";
+   //          document.getElementById("quote").innerHTML = "'I'm the guy who can get if for you...damn near anything within reason.' -Ed Wong" 
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5): " + rig_pay;

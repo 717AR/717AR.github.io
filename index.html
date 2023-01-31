@@ -74,10 +74,10 @@ calc.addEventListener("click", function() {
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = 
-                "Your total duty was: " + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
-                " 60% of that (or 5 hour minimum) is " + rig_pay + 
+                "0.6 times your total duty day of " + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
+                " (or 5 hour minimum) is " + rig_pay + 
                 " plus 'Minute for Minute' (DEXT) of  " + m4m_pay + 
-                " for a total of " + pay_all + "."
+                " equals " + pay_all + "."
     ;
     }
  

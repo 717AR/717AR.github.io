@@ -9,13 +9,16 @@
 </div>
     <p> Notes: Only works for 1000-1800 AR. Doesn't work for off duty times after midnight.</p>
      
-Enter your Block in time:<input id="time" type="time"><br>
+Enter your Block in time and press the button.<br>
+    <input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
 
-Duty Day:<div id="duty"></div><br>
+Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
+    
+
 60% Duty Rig (or min 5:00):<div id="rig"></div><br>
 M4M (DEXT):<div id="m4m"></div><br>
-Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
+
     
 <script>
 
@@ -40,7 +43,7 @@ calc.addEventListener("click", function() {
     var duty = (hour * 60 + min) - 600   
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
-    document.getElementById("duty").innerHTML = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
+    document.getElementById("duty").innerHTML = "Duty Day:" + '${padTo2Digits(h)}:${padTo2Digits(m)}';
     
     //compute duty rig
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher

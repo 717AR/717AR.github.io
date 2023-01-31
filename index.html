@@ -14,15 +14,19 @@
     <input id="time" type="time"><br><br>
 <button id="calc">Go!</button><br>
     </div>    
-
-    <div id="pay" style='font-weight:bold';><h1></h1></div><br>  
+<br>
+    <div id="pay" style='font-weight:bold';></div><br>  
+    <div id="intro"></div>    
 <div id="results"></div><br>
     
 <script>
 
  var calc = document.getElementById("calc")
+ 
 
 calc.addEventListener("click", function() {
+    
+    document.getElementById("intro").innerHTML = "Total Pay and Credit:";
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
@@ -66,15 +70,15 @@ calc.addEventListener("click", function() {
     let m4 = Math.round(pay % 60);
     var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
          if (pay < 300) {                                       //5 hours (in minutes)
-            document.getElementById("pay").innerHTML = "5:00";
-            document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily pay and credit. Deal with it.";           
+             document.getElementById("pay").innerHTML = "5:00";
+             document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily pay and credit. Deal with it.";           
     }  else {
-    document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-    document.getElementById("results").innerHTML = 
-        "Your Duty Day was " + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
-        ". 60% of that (or 5 hour minimum) is " + rig_pay + 
-        " plus 'Minute for Minute' (DEXT) of  " + m4m_pay + 
-        " for a total of " + pay_all + "."
+            document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
+            document.getElementById("results").innerHTML = 
+                "Your total duty was: " + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
+                " 60% of that (or 5 hour minimum) is " + rig_pay + 
+                " plus 'Minute for Minute' (DEXT) of  " + m4m_pay + 
+                " for a total of " + pay_all + "."
     ;
     }
  

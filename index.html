@@ -10,16 +10,16 @@
      
 <div>
     <br>
-    <h3>Enter your BLOCK IN time and press "Go":</h3>
+    <h3>Enter your BLOCK IN time and press the button:</h3>
     <input id="time" type="time"><br><br>
-<button id="calc">Go!</button><br>
+<button id="calc">Show Me The Money</button><br>
     </div>    
 <br>
     <div id="intro" style='font-weight:bold';></div>
     <div id="pay"></div><br>  
     <div id="results"></div>
     <div id="results2"></div>
-    <div id="results3"></div>
+    <div id="results3"></div><br>
     <div id="quote"></div>
     
 <script>
@@ -73,8 +73,8 @@ calc.addEventListener("click", function() {
   //           document.getElementById("quote").innerHTML = "'Welcome to my office.' -Tim Dobbins";
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-            document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5) =" + rig_pay;
-            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT) of  " + m4m_pay;          
+            document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5): " + rig_pay;
+            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT): " + m4m_pay;          
             document.getElementById("results3").innerHTML = " = " + pay_all + ".";
             document.getElementById("quote").innerHTML = "'Cha-CHING, Baby' -Marc DeRego";
     ;

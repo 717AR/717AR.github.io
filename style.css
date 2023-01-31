@@ -6,6 +6,11 @@
   font-size: 2.5em;
 } 
 
+#quote {
+  font-style: italic;
+  font-size: 1em;
+} 
+
 p {text-align: center;}
 div {text-align: center;}
 

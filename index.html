@@ -56,7 +56,7 @@ calc.addEventListener("click", function() {
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
     //Calculate minutes on duty past 1800
-    var m4m = duty - 480;
+    var m4m = Math.max(0, (duty - 480));
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);
     var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;

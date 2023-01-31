@@ -16,8 +16,7 @@
 <button id="calc">Go!</button><br>
     </div>    
 
-    <div id="pay" style='font-weight:bold';></div><br>
-    
+    <div id="pay" style='font-weight:bold';></div><br>  
 <div id="results"></div><br>
     
 <script>
@@ -51,7 +50,7 @@ calc.addEventListener("click", function() {
     const h2= Math.floor(rig / 60); 
     const m2 = Math.round(rig % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
-    document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    //document.getElementById("rig").innerHTML = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
     //compute m4m past 1800
     var m4m = duty - 480;
@@ -75,8 +74,9 @@ calc.addEventListener("click", function() {
  
 
     document.getElementById("results").innerHTML = 
-        "Your Duty Day was" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ". 
-        "60% Duty rig (or 5 hour minimum) is " + rig_pay
+        "Your Duty Day was" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
+        ". 60% Duty rig (or 5 hour minimum) is " + rig_pay + 
+        "plus Minute for Minute (DEXT) of  " + m4m
     ;
 })
     

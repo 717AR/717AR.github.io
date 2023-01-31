@@ -16,7 +16,7 @@
 <button id="calc">Go!</button><br>
     </div>    
 
-    <div id="pay" style='font-weight:bold';><h1></h1><</div><br>  
+    <div id="pay" style='font-weight:bold';><h1></h1></div><br>  
 <div id="results"></div><br>
     
 <script>
@@ -75,7 +75,7 @@ calc.addEventListener("click", function() {
     document.getElementById("results").innerHTML = 
         "Your Duty Day was " + `${padTo2Digits(h)}:${padTo2Digits(m)}` + 
         ". 60% of that (or 5 hour minimum) is " + rig_pay + 
-        "plus Minute for Minute (DEXT) of  " + m4m
+        " plus 'Minute for Minute' (DEXT) of  " + m4m_pay + "."
     ;
     }
  

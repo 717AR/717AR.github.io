@@ -5,14 +5,15 @@
 <link rel="stylesheet" href="style.css">
 <body>
     
-<div class="w3-container w3-indigo">
-  <h1>Airport Reserve Calculator</h1>
-</div>
-    <p> Notes: Only works for 1000-1800 AR. Doesn't work for off duty times after midnight.</p>
+<header class="w3-container w3-card-4 w3-theme">
+  <h1>Airport Reserve Pay & Credit</h1>
+</header>
      
+<div>
 Enter your Block in time and press the button.<br>
-    <input id="time" type="time"><br>
+    <input id="time" type="time"><br><br>
 <button id="calc">Calculate</button><br>
+    </div>    
 
 Total Pay and Credit:<div id="pay" style='font-weight:bold'>5:00</div><br>
     
@@ -44,7 +45,7 @@ calc.addEventListener("click", function() {
     var duty = (hour * 60 + min) - 600   
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
-    document.getElementById("duty").innerHTML = "Duty Day:" + '${padTo2Digits(h)}:${padTo2Digits(m)}';
+    document.getElementById("duty").innerHTML = "Duty Day:" + ${padTo2Digits(h)}:${padTo2Digits(m)};
     
     //compute duty rig
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher

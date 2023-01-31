@@ -10,7 +10,7 @@
      
 <div>
     <br>
-    <h3>Enter your BLOCK IN time and click the button:</h3>
+    <h5>Enter your BLOCK IN time and click the button:</h5>
     <input id="time" type="time"><br>
 <button id="calc">Calculate</button><br>
     </div>    
@@ -60,14 +60,13 @@ calc.addEventListener("click", function() {
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);
     var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
-    alert(m4m_pay);
     
     //show me the money
     var pay = m4m + rig;
     let h4= Math.floor(pay / 60); 
     let m4 = Math.round(pay % 60);
     var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-         if (pay < 301) {                                       //5 hours (in minutes)
+         if (pay <= 300) {                                       //5 hours (in minutes)
              document.getElementById("pay").innerHTML = "5:00";
              document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
              document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";

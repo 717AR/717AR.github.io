@@ -14,7 +14,7 @@
     <h3>Enter your BLOCK IN time and press "Go":</h3>
     <br>
     <input id="time" type="time"><br><br>
-<button id="calc">Calculate</button><br>
+<button id="calc">Go!</button><br>
     </div>    
 
 
@@ -48,7 +48,7 @@ calc.addEventListener("click", function() {
     var duty = (hour * 60 + min) - 600   
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
-    document.getElementById("duty").innerHTML = "Duty Day:" + ${padTo2Digits(h)}:${padTo2Digits(m)};
+    document.getElementById("duty").innerHTML = "Duty Day:" + `${padTo2Digits(h)}:${padTo2Digits(m)}`;
     
     //compute duty rig
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher

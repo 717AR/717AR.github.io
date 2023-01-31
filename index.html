@@ -66,11 +66,11 @@ calc.addEventListener("click", function() {
     let h4= Math.floor(pay / 60); 
     let m4 = Math.round(pay % 60);
     var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-         if (pay < 300) {                                       //5 hours (in minutes)
+         if (pay < 301) {                                       //5 hours (in minutes)
              document.getElementById("pay").innerHTML = "5:00";
              document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
              document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";
-  //           document.getElementById("quote").innerHTML = "'Welcome to my office.' -Tim Dobbins";
+  //           document.getElementById("quote").innerHTML = "'Well, we tried, didn't we?' -Tim Dobbins";
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5): " + rig_pay;

@@ -60,11 +60,6 @@ calc.addEventListener("click", function() {
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);
     var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
-    //         if (m4m < 0) {                                       
-    //        document.getElementById("m4m").innerHTML = "0:00";
-    //}  else {
-    //document.getElementById("m4m").innerHTML = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
-    //}
     
     //show me the money
     var pay = m4m + rig;
@@ -78,8 +73,8 @@ calc.addEventListener("click", function() {
   //           document.getElementById("quote").innerHTML = "'Welcome to my office.' -Tim Dobbins";
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-            document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5) =" + rig_pay";
-            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT) of  " + m4m_pay";          
+            document.getElementById("results").innerHTML = "Duty (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` +") x 60% (min 5) =" + rig_pay;
+            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT) of  " + m4m_pay;          
             document.getElementById("results3").innerHTML = " = " + pay_all + ".";
             document.getElementById("quote").innerHTML = "'Cha-CHING, Baby' -Marc DeRego";
     ;

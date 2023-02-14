@@ -13,7 +13,7 @@
 <body>
     
 <header class="w3-container w3-card-4 w3-theme">
-  <h1>Airport Reserve Pay/Credit Calculator v2.05</h1>
+  <h1>Airport Reserve Pay/Credit Calculator v2.06</h1>
 </header>
     
     <div>
@@ -57,9 +57,9 @@ calc.addEventListener("click", function() {
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
         
-    var duty = Math.abs(in_time - plus15);
+    var duty = Math.abs(plus15 - st_time);
     
-    alert("Duty day was" + duty);
+    alert("Duty day was " + duty + " milliseconds");
     
     //grab H and M from duty time to do some math
     var hour = duty.getHours();

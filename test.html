@@ -13,22 +13,23 @@
 <body>
     
 <header class="w3-container w3-card-4 w3-theme">
-  <h1>Airport Reserve Pay/Credit Calculator v1.20</h1>
+  <h1>Airport Reserve Pay/Credit Calculator v2.1</h1>
 </header>
+    
     <div>
         <br>
-// <h5>Airport Reserve START time:</h5>
-        <label for="appt">Select your Airport Reserve START time:</label>
+
 <input type="time" id="start" name="start"
        min="03:00" max="18:00" value="05:00" step=3600 required>
-    </div>    
- and
+    </div>  
+    
 <div>
-    <h5>BLOCK IN time:</h5>
-    <input id="time" type="time"><br>
+<label for="start">and BLOCK IN time:</label>
+<input id="time" type="time"><br>
     <br>
 <button id="calc">Calculate</button><br>
-    </div>    
+</div>    
+    
 <br>
     <div id="intro" style='font-weight:bold';></div>
     <div id="pay"></div><br>  

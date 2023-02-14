@@ -57,9 +57,9 @@ calc.addEventListener("click", function() {
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
         
-    var duty = Math.abs(plus15 - st_time);
+    var duty = Math.abs(plus15 - st_time)*60000; //compute duty day in milliseconds, convert to minutes
     
-    alert("Duty day was " + duty + " milliseconds");
+    alert("Duty day was " + duty + " minutes");
     
     //grab H and M from duty time to do some math
     var hour = duty.getHours();

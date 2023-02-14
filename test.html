@@ -57,20 +57,20 @@ calc.addEventListener("click", function() {
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
         
-    var duty = Math.abs(plus15 - st_time)*60000; //compute duty day in milliseconds, convert to minutes
+    var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
     alert("Duty day was " + duty + " minutes");
     
     //grab H and M from duty time to do some math
-    var hour = duty.getHours();
-    var min = duty.getMinutes();
+  //  var hour = duty.getHours();
+  //  var min = duty.getMinutes();
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
     
     //convert duty day to minutes, 
-    var duty2 = (hour * 60 + min);
-    let h = Math.floor(duty2 / 60); 
-    let m = duty2 % 60;
+    //var duty2 = (hour * 60 + min);
+    let h = Math.floor(duty / 60); 
+    let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
     
     //compute 60% duty rig 

@@ -13,18 +13,18 @@
 <body>
     
 <header class="w3-container w3-card-4 w3-theme">
-  <h1>Airport Reserve Pay/Credit Calculator v2.04</h1>
+  <h1>Airport Reserve Pay/Credit Calculator v2.05</h1>
 </header>
     
     <div>
         <br>
-<label for="start">Airport Reserve started at:</label>
+<label for="start">Airport Reserve start time:</label>
 <input type="time" id="start" name="start"
        min="03:00" max="18:00" value="05:00" step=3600 required>
     </div>  
     
 <div>
-<label for="time">and I BLOCKED IN at:</label>
+<label for="time">Final BLOCK IN time:</label>
 <input id="time" type="time"><br>
     <br>
 <button id="calc">Calculate</button><br>
@@ -59,7 +59,7 @@ calc.addEventListener("click", function() {
         
     var duty = Math.abs(in_time - plus15);
     
-    alert(duty);
+    alert("Duty day was" + duty);
     
     //grab H and M from duty time to do some math
     var hour = duty.getHours();
@@ -72,8 +72,6 @@ calc.addEventListener("click", function() {
     let h = Math.floor(duty2 / 60); 
     let m = duty2 % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
-    
-     alert(duty_day);
     
     //compute 60% duty rig 
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher

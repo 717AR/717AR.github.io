@@ -59,16 +59,9 @@ calc.addEventListener("click", function() {
         
     var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
-    alert("Duty day was " + duty + " minutes");
-    
-    //grab H and M from duty time to do some math
-  //  var hour = duty.getHours();
-  //  var min = duty.getMinutes();
-    
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
     
-    //convert duty day to minutes, 
-    //var duty2 = (hour * 60 + min);
+    //convert duty day to HH:MM for display
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
@@ -79,7 +72,7 @@ calc.addEventListener("click", function() {
     const m2 = Math.round(rig % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
-    //Calculate minutes on duty past 1800
+    //Calculate minutes on duty beyond 8 hours
     var m4m = Math.max(0, (duty - 480));
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);

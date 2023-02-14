@@ -48,7 +48,7 @@ calc.addEventListener("click", function() {
     
     //get start time, convert to js date
     var start = document.getElementById("start").value;
-    var start_time = new Date("2023-01-01" +" "+ time);
+    var st_time = new Date("2023-01-01" +" "+ time);
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
@@ -58,8 +58,7 @@ calc.addEventListener("click", function() {
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
    
     //get hours and minutes from start time to do some math
-    var start_time_h = start_time.getHours();
-    var start_time_m = start_time.getMinutes();
+    var start_time = st_time.getHours(); * 60;
     
     //grab hours and minutes from off duty time to do some math
     var hour = plus15.getHours();
@@ -68,7 +67,7 @@ calc.addEventListener("click", function() {
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
     
     //compute duty day from start time in minutes
-    var duty = (hour * 60 + min) - start_time 
+    var duty = (hour * 60 + min) - start_time;
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;

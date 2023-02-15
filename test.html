@@ -39,7 +39,8 @@
     <div id="quote"></div>
     
 <script>
-
+function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
+    
  var calc = document.getElementById("calc")
  
 calc.addEventListener("click", function() {
@@ -59,7 +60,9 @@ calc.addEventListener("click", function() {
         
     var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
-    function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
+    if duty < 0 {  document.getElementById("results").innerHTML = "Error: You can't finish before you start."; 
+        }  else {
+
     
     //convert duty day to HH:MM for display
     let h = Math.floor(duty / 60); 
@@ -94,13 +97,12 @@ calc.addEventListener("click", function() {
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = m4m_pay + " (Minute for Minute pay) plus"; 
-            document.getElementById("results2").innerHTML = rig_pay + " Duty Rig (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + x 60% ");        
+            document.getElementById("results2").innerHTML = rig_pay + " Duty Rig (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% ");        
          //   document.getElementById("results3").innerHTML = "Total = " + pay_all;
             document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
     ;
-    }
- 
- 
+    }               
+  } 
 })
     
     

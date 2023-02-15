@@ -60,10 +60,8 @@ calc.addEventListener("click", function() {
         
     var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
-    if duty < 0 {  document.getElementById("results").innerHTML = "Error: You can't finish before you start."; 
-        }  else {
+    if (duty < 0) {alert("ERROR: You can't finish before you start");} 
 
-    
     //convert duty day to HH:MM for display
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
@@ -102,7 +100,6 @@ calc.addEventListener("click", function() {
             document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
     ;
     }               
-  } 
 })
     
     

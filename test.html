@@ -40,7 +40,6 @@
     
 <script>
 
-    
  var calc = document.getElementById("calc")
  
 calc.addEventListener("click", function() {
@@ -57,16 +56,20 @@ calc.addEventListener("click", function() {
       
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
+    
+       
+      if (plus15 < st_time)  { 
+           document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";                             
+           }  else {
+
+
         
-    var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
+            var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
-  //  alert(duty);
+    function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
     
- //   if (duty < 0) {alert("ERROR: You can't finish before you start");} 
-    
-function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
-    
-    //convert duty day to HH:MM for display
+    //convert duty day to minutes, 
+    //var duty2 = (hour * 60 + min);
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
@@ -98,12 +101,14 @@ function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes h
   //           "'You don't get anything for flying during the footprint of your day.' -Joe Whiteley";
     }  else {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-            document.getElementById("results").innerHTML = m4m_pay + " (Minute for Minute pay) plus"; 
-            document.getElementById("results2").innerHTML = rig_pay + " Duty Rig (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% ");        
+            document.getElementById("results").innerHTML = "Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
+            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT): " + m4m_pay;          
          //   document.getElementById("results3").innerHTML = "Total = " + pay_all;
             document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
     ;
-    }               
+    }
+ 
+} 
 })
     
     

@@ -13,7 +13,7 @@
 <body>
     
 <header class="w3-container w3-card-4 w3-theme">
-  <h1>Airport Reserve Pay/Credit Calculator v6</h1>
+  <h1>Airport Reserve Pay/Credit Calculator</h1>
 </header>
     
     <div>
@@ -97,10 +97,10 @@ calc.addEventListener("click", function() {
     }  else {
         
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
- //           document.getElementById("results").innerHTML = "Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
+ //           document.getElementById("results").innerHTML = Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
             document.getElementById("results").innerHTML = m4m_pay+ " (DEXT /'Minute for Minute')"; 
-            document.getElementById("results2").innerHTML = "+";
-            document.getElementById("results3").innerHTML = rig_pay + " (Duty Day x 60%)"; 
+            document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Duty Day x 60%)";
+     //       document.getElementById("results3").innerHTML = ; 
 
 
         //    document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";

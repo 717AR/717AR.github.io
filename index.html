@@ -2,7 +2,7 @@
 <html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!--  
-    <meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
  -->   
 <link rel="apple-touch-icon" href="icon.png">
 <link rel="stylesheet" href="style.css">
@@ -15,16 +15,24 @@
 <header class="w3-container w3-card-4 w3-theme">
   <h1>Airport Reserve Pay/Credit Calculator</h1>
 </header>
-     
+    
+    <div>
+        <br>
+<label for="start">Reserve START time:</label>
+<input type="time" id="start" name="start"
+       min="03:00" max="18:00" value="10:00" step="3600">
+    </div>  
+    
 <div>
-    <br>
-    <h5>Enter BLOCK IN time and press button:</h5>
-    <input id="time" type="time"><br>
+<label for="time">Final BLOCK IN time:</label>
+<input id="time" type="time"><br>
+<br>
 <button id="calc">Calculate</button><br>
-    </div>    
+</div>    
+    
 <br>
     <div id="intro" style='font-weight:bold';></div>
-    <div id="pay"></div><br>  
+    <div id="pay"></div><br><br>
     <div id="results"></div>
     <div id="results2"></div>
     <div id="results3"></div><br>
@@ -38,21 +46,26 @@ calc.addEventListener("click", function() {
     
     document.getElementById("intro").innerHTML = "Total Pay and Credit:";
     
+    //get start time, convert to js date
+    var start = document.getElementById("start").value;
+    var st_time = new Date("2023-01-01" +" "+ start);
+    
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
     var in_time = new Date("2023-01-01" +" "+ time);
       
     //add 15 min to in-time to get off duty time
-    var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min
-   
-    //grab hours and minutes from off duty time to do some math
-    var hour = plus15.getHours();
-    var min = plus15.getMinutes();
+    var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
+       
+      if (plus15 < st_time)  { 
+           document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";                             
+           }  else {
+            var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     
-    function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //makes hours and minutes look like HH:MM
+    function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     
-    //compute duty day from 1000 in minutes
-    var duty = (hour * 60 + min) - 600   
+    //convert duty day to minutes, 
+    //var duty2 = (hour * 60 + min);
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
@@ -63,7 +76,7 @@ calc.addEventListener("click", function() {
     const m2 = Math.round(rig % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
     
-    //Calculate minutes on duty past 1800
+    //Calculate minutes on duty beyond 8 hours
     var m4m = Math.max(0, (duty - 480));
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);
@@ -80,25 +93,25 @@ calc.addEventListener("click", function() {
              document.getElementById("results2").innerHTML = "";          
              document.getElementById("results3").innerHTML = "";
              document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";
-  //           "'Well, we tried - didn't we?' -Tim Dobbins";
+             
     }  else {
+        
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-            document.getElementById("results").innerHTML = "Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
-            document.getElementById("results2").innerHTML = " plus 'Minute for Minute' (DEXT): " + m4m_pay;          
-         //   document.getElementById("results3").innerHTML = "Total = " + pay_all;
-            document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
+ //           document.getElementById("results").innerHTML = Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
+            document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 
+            document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
+     //       document.getElementById("results3").innerHTML = ; 
+
+
+        //    document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
     ;
     }
  
- 
+} 
 })
     
     
 </script>
-
     
 </body> 
 </html>
-
-
-

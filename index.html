@@ -53,13 +53,13 @@ calc.addEventListener("click", function() {
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
     var in_time = new Date("2023-01-01" +" "+ time);
- 
-    if (Number.isNaN(time)) {
-    alert("Enter Block-in time and try again");
-  };
       
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
+ 
+     if (Number.isNaN(plus15)) {
+    alert("Enter Block-in time and try again");
+  };
        
       if (plus15 < st_time)  { 
            document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";     

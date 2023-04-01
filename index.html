@@ -58,7 +58,11 @@ calc.addEventListener("click", function() {
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
        
       if (plus15 < st_time)  { 
-           document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";                             
+           document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";     
+           document.getElementById("results").innerHTML = ""; 
+           document.getElementById("results2").innerHTML = "";          
+           document.getElementById("results3").innerHTML = "";
+           document.getElementById("quote").innerHTML = "";
            }  else {
             var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
     

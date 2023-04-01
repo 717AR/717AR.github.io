@@ -25,7 +25,7 @@
     
 <div>
 <label for="time">Final BLOCK IN time:</label>
-<input id="time" type="time" required="true"><br>
+<input id="time" type="time"><br>
 <br>
 <button id="calc">Calculate</button><br>
 </div>    
@@ -57,9 +57,8 @@ calc.addEventListener("click", function() {
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
  
-     if (Number.isNaN("plus15")) {
-    alert("Enter Block-in time and try again");
-  };
+     if (Number.isNaN(plus15)) {alert("Enter Block-in time and try again");}
+ else {alert("Is a number");}
        
       if (plus15 < st_time)  { 
            document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";     

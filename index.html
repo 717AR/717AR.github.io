@@ -56,24 +56,25 @@ calc.addEventListener("click", function() {
       
     //add 15 min to in-time to get off duty time
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
+    var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
+ 
+     if (Number.isNaN(duty)) {
+     document.getElementById("intro").innerHTML = "ERROR: Enter Block in time and try again.";     
+     document.getElementById("pay").innerHTML = "";
+     document.getElementById("results").innerHTML = ""; 
+     document.getElementById("results2").innerHTML = "";          
+     document.getElementById("results3").innerHTML = "You went public school or what?";
+     document.getElementById("quote").innerHTML = "";
        
-      if (plus15 < st_time)  { 
+         } else if (plus15 < st_time)  { 
            document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";     
            document.getElementById("pay").innerHTML = "";
-           document.getElementById("results").innerHTML = ""; 
-           document.getElementById("results2").innerHTML = "";          
-           document.getElementById("results3").innerHTML = "";
+           document.getElementById("results").innerHTML = "Did you know:"; 
+           document.getElementById("results2").innerHTML = "Airport reserve was a cherry 1000-1800 pairing";          
+           document.getElementById("results3").innerHTML = "until 65% of your fellow coworkers fucked it up? ;
            document.getElementById("quote").innerHTML = "";
+                   
            }  else {
-            var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
-                 if (Number.isNaN(duty)) {
-                     document.getElementById("intro").innerHTML = "ERROR: Enter Block in time and try again.";     
-                     document.getElementById("pay").innerHTML = "";
-                     document.getElementById("results").innerHTML = ""; 
-                     document.getElementById("results2").innerHTML = "";          
-                     document.getElementById("results3").innerHTML = "You went public school or what?";
-                     document.getElementById("quote").innerHTML = "";
-                  }  else {
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     

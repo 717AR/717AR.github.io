@@ -66,9 +66,8 @@ calc.addEventListener("click", function() {
            document.getElementById("quote").innerHTML = "";
            }  else {
             var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
-            
-                 if (Number.isNaN(duty)) {alert("Enter Block-in time and try again");}
- else {alert("duty var is a number");}
+                 if (Number.isNaN(duty)) {alert("Block-in time is required. You went public school or what?.");}
+
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     

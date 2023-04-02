@@ -16,12 +16,11 @@
   <h1>Airport Reserve Pay/Credit Calculator</h1>
 </header>
     
-    <div>
-        <br>
+ <div>
+ <br>
 <label for="start">Reserve START time:</label>
-<input type="time" id="start" name="start"
-       min="03:00" max="18:00" value="05:00" step="3600">
-    </div>  
+<input type="time" id="start" name="start" min="03:00" max="16:00" value="05:00" step="3600">
+ </div>  
     
 <div>
 <label for="time">Final BLOCK IN time:</label>
@@ -44,8 +43,6 @@
  
 calc.addEventListener("click", function() {
     
-    document.getElementById("intro").innerHTML = "Total Pay and Credit:";
-    
     //get start time, convert to js date
     var start = document.getElementById("start").value;
     var st_time = new Date("2023-01-01" +" "+ start);
@@ -58,7 +55,7 @@ calc.addEventListener("click", function() {
     var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
     var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
  
-     if (Number.isNaN(duty)) {
+     if (Number.isNaN(duty)) {                   //Displays error if no IN time selected by user
      document.getElementById("intro").innerHTML = "ERROR: Block in time is required";     
      document.getElementById("pay").innerHTML = "";
      document.getElementById("results").innerHTML = ""; 
@@ -66,7 +63,7 @@ calc.addEventListener("click", function() {
      document.getElementById("results3").innerHTML = "";
      document.getElementById("quote").innerHTML = "You went public school or what?";
        
-         } else if (plus15 < st_time)  { 
+         } else if (plus15 < st_time)  {         //Displays error if off duty time is before start time
            document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";     
            document.getElementById("pay").innerHTML = "";
            document.getElementById("results").innerHTML = ""; 
@@ -78,8 +75,7 @@ calc.addEventListener("click", function() {
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     
-    //convert duty day to minutes, 
-    //var duty2 = (hour * 60 + min);
+    //convert duty day to minutes
     let h = Math.floor(duty / 60); 
     let m = duty % 60;
     var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
@@ -101,27 +97,26 @@ calc.addEventListener("click", function() {
     let h4= Math.floor(pay / 60); 
     let m4 = Math.round(pay % 60);
     var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-         if (pay <= 300) {                                       //5 hours (in minutes)
+            
+    document.getElementById("intro").innerHTML = "Total Pay and Credit:";
+            
+    if (pay <= 300) {                                       //5 hours (in minutes)
              document.getElementById("pay").innerHTML = "5:00";
              document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
              document.getElementById("results2").innerHTML = "";          
              document.getElementById("results3").innerHTML = "";
-             document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";
-             
-    }  else {
-        
+             document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";            
+    }  else {       
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 
             document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
             document.getElementById("results3").innerHTML = ""; 
-            document.getElementById("quote").innerHTML = "Scheduling usually updates the pay and adds the DEXT in CrewTrac within 24-48 hours.";
+            document.getElementById("quote").innerHTML = "Allow 24-48 hours for Scheduling to update the pairing and add the DEXT in CrewTrac";
     }
  
 } 
 })
-    
-    
-</script>
-    
+       
+</script>    
 </body> 
 </html>

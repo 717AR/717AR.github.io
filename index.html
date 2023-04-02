@@ -75,18 +75,18 @@ calc.addEventListener("click", function() {
     
     function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     
-    //convert duty day to minutes
-    let h = Math.floor(duty / 60); 
-    let m = duty % 60;
-    var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
+ //This section converts duty_day to HH:MM for display to user. Presently not used.
+ //   let h = Math.floor(duty / 60); 
+ //   let m = duty % 60;
+ //   var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
     
-    //compute 60% duty rig 
+    //compute 60% duty rig, format to HH:MM
     var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher
     const h2= Math.floor(rig / 60); 
     const m2 = Math.round(rig % 60);
-    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
+    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`; 
     
-    //Calculate minutes on duty beyond 8 hours
+    //Calculate minutes on duty beyond 8 hours, format to HH:MM
     var m4m = Math.max(0, (duty - 480));
     let h3 = Math.floor(m4m / 60); 
     let m3 = Math.round(m4m % 60);
@@ -110,7 +110,7 @@ calc.addEventListener("click", function() {
             document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
             document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 
             document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
-            document.getElementById("results3").innerHTML = ""; 
+            document.getElementById("results3").innerHTML = pay_all; 
             document.getElementById("quote").innerHTML = "Allow 24-48 hours for Scheduling to update the pairing and add the DEXT in CrewTrac";
     }
  

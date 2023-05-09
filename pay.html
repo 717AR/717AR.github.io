@@ -25,7 +25,7 @@ Enter Pairing Details:
     <label>Duty Minutes:</label>
     <input type="number" id="minutes" min="0" max="59" value="0">
     <br><br>
-    <button onclick="calculate()">Calculate</button>
+    <button onclick="calculateTime()">Calculate</button>
     <br><br>
     <label>Result:</label>
     <span id="result"></span>
@@ -58,27 +58,23 @@ Enter Pairing Details:
     
 <script>
 
-       function calculate() {
-        // Get the input values
-        const hoursInput = document.getElementById("hours").value;
-        const minutesInput = document.getElementById("minutes").value;
-        
-        // Convert the input to minutes and multiply by 0.6
-        const totalMinutes = (hoursInput * 60) + Number(minutesInput);
-        const resultMinutes = Math.round(totalMinutes * 0.6);
-        
-        // Convert the result back to hours and minutes
-        const resultHours = Math.floor(resultMinutes / 60);
-        const resultMinutesMod = resultMinutes % 60;
-        
-        // Format the result as HH:MM
-        const resultString = `${resultHours.toString().padStart(2, "0")}:${resultMinutesMod.toString().padStart(2, "0")}`;
-        
-        // Set the result in the output field
-        document.getElementById("results").value = resultString;
+       function calculateTime() {
+        // Get user input
+        let hours = parseInt(document.getElementById("hours").value);
+        let minutes = parseInt(document.getElementById("minutes").value);
+
+        // Calculate result
+        let resultMinutes = (hours * 60 + minutes) * 0.6;
+        let resultHours = Math.floor(resultMinutes / 60);
+        let resultMinutesRemainder = Math.round(resultMinutes % 60);
+
+        // Format result as HH:MM
+        let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
+
+        // Set result in input field
+        document.getElementById("result").value = formattedResult;
       }
-
-
+ 
 
  var calc = document.getElementById("calc")
  

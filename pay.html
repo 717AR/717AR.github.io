@@ -84,7 +84,6 @@ calc.addEventListener("click", function() {
     var duty = document.getElementById("duty").value;
     var dt = new Date("2023-01-01" +" "+ duty);
     var duty_min = Math.abs(dt) / 60000; //compute duty day in milliseconds, convert to minutes
-    alert(duty_min);
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;

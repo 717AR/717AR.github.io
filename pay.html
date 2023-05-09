@@ -89,11 +89,6 @@ calc.addEventListener("click", function() {
     const h2= Math.floor(duty_minutes / 60); 
     const m2 = Math.round(duty_minutes % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`; 
-   
-    //get user input in-time, convert to js date
-    var pay = document.getElementById("sched_pay").value;
-    var pay_date = new Date("2023-01-01" +" "+ pay);
-    var pay_minutes = Math.abs(pay_date) / 60000; 
  
     var block = document.getElementById("block").value;
     var block_date = new Date("2023-01-01" +" "+ block);

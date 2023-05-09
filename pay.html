@@ -37,18 +37,16 @@ Enter Pairing Details:
   <br>
 <label for="block">Block Hours:</label>
 <input type="time" id="block" name="block" min="00:01" max="8:00">
- </div>  
- <br>
-<div>
-<label for="pay">Pay:</label>
-<input id="pay" type="time"><br>
+  <label for="pay">Pay:</label>
+<input id="sched_pay" type="time"><br>
 <br>
- <label for="land"># Landings:</label>
+   <label for="land"># Landings:</label>
 <input id="landings" type="number" min="1" max="10"><br>
 <br>
 <button id="calc">Calculate</button><br>
-</div>    
-    
+ </div>  
+ 
+ <br>    
 <br>
     <div id="intro" style='font-weight:bold';></div>
     <div id="pay"></div><br><br>
@@ -87,7 +85,7 @@ calc.addEventListener("click", function() {
     var duty_minutes = Math.abs(dt) / 60000; //compute duty day in milliseconds, convert to minutes
     
     //get user input in-time, convert to js date
-    var pay = document.getElementById("pay").value;
+    var pay = document.getElementById("sched_pay").value;
     var pay_minutes = new Date("2023-01-01" +" "+ pay);
  
     var block = document.getElementById("block").value;

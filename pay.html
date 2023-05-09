@@ -29,11 +29,6 @@ Enter Pairing Details:
       <input type="number" id="block_h" name="block_h">
       <label for="bl_m">Minutes:</label>
       <input type="number" id="block_m" name="block_m"><br>
-  
-       <label for="pay_h">Pay:</label>
-      <input type="number" id="pay_h" name="pay_h">
-      <label for="pay_m">Minutes:</label>
-      <input type="number" id="pay_m" name="pay_m"><br><br> 
     <br>
    
 <label for="duty">Duty Day:</label>
@@ -46,7 +41,7 @@ Enter Pairing Details:
 <input id="sched_pay" type="time"><br>
 <br>
 <label for="land"># Landings:</label>
-<input id="landings" type="number" min="1" max="10"><br>
+<input id="land" type="number" min="1" max="10"><br>
 <br>
 <button id="calc">Calculate</button><br>
  </div>  
@@ -61,13 +56,13 @@ Enter Pairing Details:
     <div id="quote"></div>
     
 <script>
-
  var calc = document.getElementById("calc")
  
 calc.addEventListener("click", function() {
  
         let hours = parseInt(document.getElementById("hours").value);
         let minutes = parseInt(document.getElementById("minutes").value);
+        let landings = parseInt(document.getElementById("land").value);
 
         // Calculate result
         let resultMinutes = (hours * 60 + minutes) * 0.6;
@@ -78,7 +73,7 @@ calc.addEventListener("click", function() {
         let bl_minutes = parseInt(document.getElementById("block_m").value);
  
          // Calculate result
-        let resultBLMinutes = (bl_hours * 60 + bl_minutes) * 0.6;
+        let resultBLMinutes = (bl_hours * 60 + bl_minutes) + (landings * 6);
         let resultBLHours = Math.floor(resultBLMinutes / 60);
         let resultBLMinutesRemainder = Math.round(resultBLMinutes % 60);
 
@@ -92,7 +87,7 @@ calc.addEventListener("click", function() {
     var d = new Date();
     d.setHours(0,0,0,0);
     var duty = document.getElementById("duty").value;
-    var duty_date = new Date("2023-01-01" +" "+ duty);
+    var duty_date = new Date(0,0 +" "+ duty);
     var duty_minutes = Math.abs(duty_date-d) / 60000; //compute duty day from midnight in milliseconds, convert to minutes
     const h2= Math.floor(duty_minutes / 60); 
     const m2 = Math.round(duty_minutes % 60);

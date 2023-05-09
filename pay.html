@@ -59,8 +59,13 @@ Enter Pairing Details:
     
 <script>
 
-      function calculateTime() {
-        // Get user input
+
+ 
+
+ var calc = document.getElementById("calc")
+ 
+calc.addEventListener("click", function() {
+ 
         let hours = parseInt(document.getElementById("hours").value);
         let minutes = parseInt(document.getElementById("minutes").value);
 
@@ -75,12 +80,6 @@ Enter Pairing Details:
         // Set result in input field
         document.getElementById("result").value = formattedResult;
         document.getElementById("results").value = formattedResult;
-      }
- 
-
- var calc = document.getElementById("calc")
- 
-calc.addEventListener("click", function() {
     
     //get duty time, convert to js date
     var duty = document.getElementById("duty").value;
@@ -91,26 +90,17 @@ calc.addEventListener("click", function() {
     var pay = document.getElementById("pay").value;
     var pay_minutes = new Date("2023-01-01" +" "+ pay);
  
-     var block = document.getElementById("block").value;
+    var block = document.getElementById("block").value;
     var block_time = new Date("2023-01-01" +" "+ block);
       
-    //add 15 min to in-time to get off duty time
-  //  var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
-  //  var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
  
  function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
-    
- //This section converts duty_day to HH:MM for display to user. Presently not used.
- //   let h = Math.floor(duty / 60); 
- //   let m = duty % 60;
- //   var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
     
     //compute 60% duty rig, format to HH:MM
     const h2= Math.floor(duty_minutes / 60); 
     const m2 = Math.round(duty_minutes % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`; 
     
-            
     document.getElementById("intro").innerHTML = "Total Pay and Credit:";
     document.getElementById("pay").innerHTML = pay_all; 
     document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 

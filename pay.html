@@ -19,28 +19,23 @@
  <div>
  <br>
 Enter Pairing Details:   
-    <br>
-  
-      <form>
+    <br>  
       <label for="hours">Duty Hours:</label>
       <input type="number" id="hours" name="hours">
       <label for="minutes">Minutes:</label>
-      <input type="number" id="minutes" name="minutes"><br><br>
-      <input type="button" value="Calculate" onclick="calculateTime()"><br><br>
-      <label for="result">Result:</label>
-      <input type="text" id="result" name="result" disabled><br><br>
-    </form>    
-
+      <input type="number" id="minutes" name="minutes"><br><br> 
+    <br>
    
 <label for="duty">Duty Day:</label>
 <input type="time" id="duty" name="start" min="04:10" max="10:00" value="05:00">
   <br>
 <label for="block">Block Hours:</label>
 <input type="time" id="block" name="block" min="00:01" max="8:00">
-  <label for="pay">Pay:</label>
+  <br>
+<label for="pay">Pay:</label>
 <input id="sched_pay" type="time"><br>
 <br>
-   <label for="land"># Landings:</label>
+<label for="land"># Landings:</label>
 <input id="landings" type="number" min="1" max="10"><br>
 <br>
 <button id="calc">Calculate</button><br>
@@ -76,7 +71,6 @@ calc.addEventListener("click", function() {
         let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
 
         // Set result in input field
-        document.getElementById("result").value = formattedResult;
         document.getElementById("results").value = formattedResult;
     
     //get duty time, convert to js date
@@ -99,12 +93,12 @@ calc.addEventListener("click", function() {
     const m2 = Math.round(duty_minutes % 60);
     var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`; 
     
-    document.getElementById("intro").innerHTML = "Total Pay and Credit:";
-    document.getElementById("pay").innerHTML = pay_all; 
-    document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 
+    document.getElementById("intro").innerHTML = "This is a (Duty Rig/ MDG/ Block) Day";
+    document.getElementById("pay").innerHTML = ""; 
+    document.getElementById("results").innerHTML = "    " " (Block plus Landing Credits)"; 
     document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
     document.getElementById("results3").innerHTML = ""; 
-    document.getElementById("quote").innerHTML = "Allow 24-48 hours for Scheduling to update the pairing and add the DEXT in CrewTrac";
+    document.getElementById("quote").innerHTML = "";
 
 })
        

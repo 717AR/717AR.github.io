@@ -18,10 +18,11 @@
     
  <div>
  <br>
-   
-   <label>Pairing Duty Hours:</label>
+Enter Pairing Details:   
+    <br>
+   <label>Duty Hours:</label>
       <input type="number" id="hours" min="0" max="16" value="0">
-    <label>And Minutes:</label>
+    <label>Duty Minutes:</label>
     <input type="number" id="minutes" min="0" max="59" value="0">
     <br><br>
     <button onclick="calculateTime()">Calculate</button>
@@ -32,6 +33,8 @@
    
 <label for="start">Duty Day:</label>
 <input type="time" id="start" name="start" min="04:10" max="10:00" value="05:00" step="3600">
+<label for="block">Block Hours:</label>
+<input type="time" id="block" name="block" min="00:01" max="8:00">
  </div>  
     
 <div>
@@ -39,7 +42,7 @@
 <input id="time" type="time"><br>
 <br>
  <label for="land"># Landings:</label>
-<input id="landings" type="number"><br>
+<input id="landings" type="number" min="1" max="10"><br>
 <br>
 <button id="calc">Calculate</button><br>
 </div>    

@@ -62,9 +62,6 @@ Enter Pairing Details:
     
 <script>
 
-
- 
-
  var calc = document.getElementById("calc")
  
 calc.addEventListener("click", function() {
@@ -76,9 +73,18 @@ calc.addEventListener("click", function() {
         let resultMinutes = (hours * 60 + minutes) * 0.6;
         let resultHours = Math.floor(resultMinutes / 60);
         let resultMinutesRemainder = Math.round(resultMinutes % 60);
+ 
+        let bl_hours = parseInt(document.getElementById("block_h").value);
+        let bl_minutes = parseInt(document.getElementById("block_m").value);
+ 
+         // Calculate result
+        let resultBLMinutes = (bl_hours * 60 + bl_minutes) * 0.6;
+        let resultBLHours = Math.floor(resultBLMinutes / 60);
+        let resultBLMinutesRemainder = Math.round(resultBLMinutes % 60);
 
         // Format result as HH:MM
         let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
+        let formattedBLResult = (resultBLHours < 10 ? "0" : "") + resultBLHours + ":" + (resultBLMinutesRemainder < 10 ? "0" : "") + resultBLMinutesRemainder;
  
  function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
     
@@ -105,7 +111,7 @@ calc.addEventListener("click", function() {
     document.getElementById("pay").innerHTML = ""; 
     document.getElementById("results").innerHTML = formattedResult;
     document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
-    document.getElementById("results3").innerHTML = "Block Minutes" +block_minutes+ "";; 
+    document.getElementById("results3").innerHTML = formattedBLResult; 
     document.getElementById("quote").innerHTML = "";
 
 })

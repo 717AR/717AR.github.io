@@ -22,8 +22,8 @@ Enter Pairing Details:
     <br>
   
       <form>
-      <label for="hours">Hours:</label>
-      <input type="number" id="hours" name="hours"><br><br>
+      <label for="hours">Duty Hours:</label>
+      <input type="number" id="hours" name="hours">
       <label for="minutes">Minutes:</label>
       <input type="number" id="minutes" name="minutes"><br><br>
       <input type="button" value="Calculate" onclick="calculateTime()"><br><br>
@@ -33,7 +33,7 @@ Enter Pairing Details:
 
    
 <label for="duty">Duty Day:</label>
-<input type="time" id="duty" name="start" min="04:10" max="10:00" value="05:00" step="3600">
+<input type="time" id="duty" name="start" min="04:10" max="10:00" value="05:00">
   <br>
 <label for="block">Block Hours:</label>
 <input type="time" id="block" name="block" min="00:01" max="8:00">
@@ -60,23 +60,6 @@ Enter Pairing Details:
 <script>
 
       function calculateTime() {
-        // Get user input
-        let hours = parseInt(document.getElementById("hours").value);
-        let minutes = parseInt(document.getElementById("minutes").value);
-
-        // Calculate result
-        let resultMinutes = (hours * 60 + minutes) * 0.6;
-        let resultHours = Math.floor(resultMinutes / 60);
-        let resultMinutesRemainder = Math.round(resultMinutes % 60);
-
-        // Format result as HH:MM
-        let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
-
-        // Set result in input field
-        document.getElementById("result").value = formattedResult;
-      }
-
-       function calculateTime() {
         // Get user input
         let hours = parseInt(document.getElementById("hours").value);
         let minutes = parseInt(document.getElementById("minutes").value);

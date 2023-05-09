@@ -92,10 +92,10 @@ calc.addEventListener("click", function() {
     var block_minutes = Math.abs(block_date) / 60000; 
     
     document.getElementById("intro").innerHTML = "This is a (Duty Rig/ MDG/ Block) Day";
-    document.getElementById("pay").innerHTML = "Block Minutes" +block_minutes+ ""; 
-    document.getElementById("results").value = formattedResult;
+    document.getElementById("pay").innerHTML = ""; 
+    document.getElementById("results").innerHTML = formattedResult;
     document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
-    document.getElementById("results3").innerHTML = ""; 
+    document.getElementById("results3").innerHTML = "Block Minutes" +block_minutes+ "";; 
     document.getElementById("quote").innerHTML = "";
 
 })

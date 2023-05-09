@@ -71,10 +71,12 @@ calc.addEventListener("click", function() {
         let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
     
     //get duty time, convert to js date
+    var d = new Date();
+    d.setHours(0,0,0,0);
     var duty = document.getElementById("duty").value;
     var duty_date = new Date("2023-01-01" +" "+ duty);
-    var duty_minutes = Math.abs(duty_date) / 60000; //compute duty day in milliseconds, convert to minutes
-    
+    var duty_minutes = Math.abs(duty_date-d) / 60000; //compute duty day from midnight in milliseconds, convert to minutes
+   
     //get user input in-time, convert to js date
     var pay = document.getElementById("sched_pay").value;
     var pay_date = new Date("2023-01-01" +" "+ pay);

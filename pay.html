@@ -31,8 +31,8 @@ Enter Pairing Details:
     <span id="result"></span>
    <br>
    
-<label for="start">Duty Day:</label>
-<input type="time" id="start" name="start" min="04:10" max="10:00" value="05:00" step="3600">
+<label for="duty">Duty Day:</label>
+<input type="time" id="duty" name="start" min="04:10" max="10:00" value="05:00" step="3600">
   <br>
 <label for="block">Block Hours:</label>
 <input type="time" id="block" name="block" min="00:01" max="8:00">
@@ -85,16 +85,21 @@ Enter Pairing Details:
 calc.addEventListener("click", function() {
     
     //get start time, convert to js date
-    var start = document.getElementById("start").value;
-    var st_time = new Date("2023-01-01" +" "+ start);
+    var duty = document.getElementById("duty").value;
+    var dt = new Date("2023-01-01" +" "+ duty);
+    var duty_min = Math.abs(dt) / 60000; //compute duty day in milliseconds, convert to minutes
+    alert(duty_min);
     
     //get user input in-time, convert to js date
     var time = document.getElementById("time").value;
     var in_time = new Date("2023-01-01" +" "+ time);
+ 
+     var block = document.getElementById("block").value;
+    var block_time = new Date("2023-01-01" +" "+ block);
       
     //add 15 min to in-time to get off duty time
-    var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
-    var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
+  //  var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
+  //  var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
  
      if (Number.isNaN(duty)) {                   //Displays error if no IN time selected by user
      document.getElementById("intro").innerHTML = "ERROR: Block in time is required";     

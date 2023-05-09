@@ -20,9 +20,9 @@
  <br>
    
    <label>Pairing Duty Hours:</label>
-    <input type="number" id="hours" placeholder="Enter hours">
+      <input type="number" id="hours" min="0" max="16" value="0">
     <label>And Minutes:</label>
-    <input type="number" id="minutes" placeholder="Enter minutes">
+    <input type="number" id="minutes" min="0" max="59" value="0">
     <br><br>
     <button onclick="calculateTime()">Calculate</button>
     <br><br>
@@ -53,15 +53,27 @@
     <div id="quote"></div>
     
 <script>
-  
 
-    function calculateTime() {
-      var hours = parseInt(document.getElementById("hours").value);
-      var minutes = parseInt(document.getElementById("minutes").value);
-      var timeInMinutes = (hours * 60) + minutes;
-      var duty_rig = timeInMinutes * 0.6;
-      document.getElementById("results").innerHTML = duty_rig;
-    }
+       function calculate() {
+        // Get the input values
+        const hoursInput = document.getElementById("hours").value;
+        const minutesInput = document.getElementById("minutes").value;
+        
+        // Convert the input to minutes and multiply by 0.6
+        const totalMinutes = (hoursInput * 60) + Number(minutesInput);
+        const resultMinutes = Math.round(totalMinutes * 0.6);
+        
+        // Convert the result back to hours and minutes
+        const resultHours = Math.floor(resultMinutes / 60);
+        const resultMinutesMod = resultMinutes % 60;
+        
+        // Format the result as HH:MM
+        const resultString = `${resultHours.toString().padStart(2, "0")}:${resultMinutesMod.toString().padStart(2, "0")}`;
+        
+        // Set the result in the output field
+        document.getElementById("results").value = resultString;
+      }
+
 
 
  var calc = document.getElementById("calc")

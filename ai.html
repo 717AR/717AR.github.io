@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Time Calculator</title>
+  </head>
+  <body>
+    <h1>Time Calculator</h1>
+    <form>
+      <label for="hours">Hours:</label>
+      <input type="number" id="hours" name="hours"><br><br>
+      <label for="minutes">Minutes:</label>
+      <input type="number" id="minutes" name="minutes"><br><br>
+      <input type="button" value="Calculate" onclick="calculateTime()"><br><br>
+      <label for="result">Result:</label>
+      <input type="text" id="result" name="result" disabled><br><br>
+    </form>
+
+    <script>
+      function calculateTime() {
+        // Get user input
+        let hours = parseInt(document.getElementById("hours").value);
+        let minutes = parseInt(document.getElementById("minutes").value);
+
+        // Calculate result
+        let resultMinutes = (hours * 60 + minutes) * 0.6;
+        let resultHours = Math.floor(resultMinutes / 60);
+        let resultMinutesRemainder = Math.round(resultMinutes % 60);
+
+        // Format result as HH:MM
+        let formattedResult = (resultHours < 10 ? "0" : "") + resultHours + ":" + (resultMinutesRemainder < 10 ? "0" : "") + resultMinutesRemainder;
+
+        // Set result in input field
+        document.getElementById("result").value = formattedResult;
+      }
+    </script>
+  </body>
+</html>

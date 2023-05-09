@@ -2,6 +2,28 @@
 <html>
   <head>
     <title>Time Calculator</title>
+    <style>
+      /* Style the range input as a scroll wheel */
+      input[type="range"] {
+        -webkit-appearance: none;
+        width: 200px;
+        height: 200px;
+        margin: 20px;
+        background-color: #ddd;
+        border-radius: 100%;
+        outline: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 50px;
+        height: 50px;
+        background-color: #333;
+        border-radius: 100%;
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <h1>Time Calculator</h1>
@@ -49,4 +71,3 @@
     </script>
   </body>
 </html>
-

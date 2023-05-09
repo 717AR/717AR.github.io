@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Time Calculator</title>
+  </head>
+  <body>
+    <label>Enter hours:</label>
+    <input type="number" id="hours" placeholder="Enter hours">
+    <br><br>
+    <label>Enter minutes:</label>
+    <input type="number" id="minutes" placeholder="Enter minutes">
+    <br><br>
+    <button onclick="calculateTime()">Calculate</button>
+    <br><br>
+    <label>Result:</label>
+    <span id="result"></span>
+  </body>
+
+  <script>
+    function calculateTime() {
+      var hours = parseInt(document.getElementById("hours").value);
+      var minutes = parseInt(document.getElementById("minutes").value);
+      var timeInMinutes = (hours * 60) + minutes;
+      var result = timeInMinutes * 0.6;
+      document.getElementById("result").innerHTML = result;
+    }
+  </script>
+</html>

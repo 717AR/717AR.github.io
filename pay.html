@@ -87,7 +87,7 @@ calc.addEventListener("click", function() {
     var d = new Date();
     d.setHours(0,0,0,0);
     var duty = document.getElementById("duty").value;
-    var duty_date = new Date(0,0 +" "+ duty);
+    var duty_date = new Date(+ duty);
     var duty_minutes = Math.abs(duty_date-d) / 60000; //compute duty day from midnight in milliseconds, convert to minutes
     const h2= Math.floor(duty_minutes / 60); 
     const m2 = Math.round(duty_minutes % 60);
@@ -106,7 +106,7 @@ calc.addEventListener("click", function() {
     document.getElementById("pay").innerHTML = ""; 
     document.getElementById("results").innerHTML = formattedResult;
     document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
-    document.getElementById("results3").innerHTML = formattedBLResult; 
+    document.getElementById("results3").innerHTML = "Block plus landing credits:" +formattedBLResult+ ""; 
     document.getElementById("quote").innerHTML = "";
 
 })

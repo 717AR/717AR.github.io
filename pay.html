@@ -92,13 +92,16 @@ calc.addEventListener("click", function() {
     var block = document.getElementById("block").value;
     var block_date = new Date("2023-01-01" +" "+ block);
     var block_minutes = Math.abs(block_date - d) / 60000; 
+    const h3= Math.floor(block_minutes / 60); 
+    const m3 = Math.round(block_minutes % 60);
+    var block_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`; 
     
     document.getElementById("intro").innerHTML = "This is a (Duty Rig/ MDG/ Block) Day";
     document.getElementById("pay").innerHTML = ""; 
-    document.getElementById("results").innerHTML = formattedResult;
-    document.getElementById("results2").innerHTML = "Block plus landing credits:" +formattedBLResult+ "";
-    document.getElementById("results3").innerHTML = "Rig Pay from AM Field" +rig_pay + " (Total Duty Day x 60%)";
-    document.getElementById("quote").innerHTML = "Block from AM field" +block_minutes;
+    document.getElementById("results").innerHTML = "Duty Rig Upper Input: " +formattedResult;
+    document.getElementById("results2").innerHTML = "Block plus landing credits:" +formattedBLResult;
+    document.getElementById("results3").innerHTML = "Duty Rig AM Field: " +rig_pay;
+    document.getElementById("quote").innerHTML = "Block from AM field: " +block_pay;
 
 })
        

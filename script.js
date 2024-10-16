@@ -1,3 +1,5 @@
+pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build/pdf.worker.js';
+
 const loadPdfButton = document.getElementById('load-pdf');
 const pdfTextOutput = document.getElementById('pdf-text');
 

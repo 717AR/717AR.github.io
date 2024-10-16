@@ -41,4 +41,3 @@ document.getElementById('test-fetch-pdf').addEventListener('click', async () => 
     } catch (error) {
         console.error('Failed to fetch PDF:', error);
     }
-});

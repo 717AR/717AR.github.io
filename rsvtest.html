@@ -55,8 +55,9 @@
 
             const pdfContainer = document.getElementById('pdf-container');
             pdfContainer.innerHTML = `
-                <p>"${formattedToday}"</p>
+                <h2>${formattedToday}</h2>
                 <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today</a>
+                </br>
                 <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow</a>
             `;
         }

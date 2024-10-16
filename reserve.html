@@ -52,6 +52,9 @@
 
         // Set today's date in the title
         document.getElementById('current-date').innerText = new Date().toLocaleDateString();
+        
+         // Display the constructed PDF URL
+        document.getElementById('pdf-url').innerText = pdfUrl;
 
         // Function to fetch and display the PDF content
         async function fetchAndDisplayPdf() {

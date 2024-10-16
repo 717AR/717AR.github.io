@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -22,7 +22,7 @@
         }
     </style>
     <!-- Include PDF.js from CDN -->
-   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 </head>
 <body>
     <h1 id="current-date">Loading...</h1>
@@ -31,8 +31,7 @@
     </div>
 
     <script>
-
-             // Function to get today's date in the correct format DDMMMYY
+        // Function to get today's date in the correct format (DDMMMYY)
         function getFormattedDate() {
             const today = new Date();
             const days = String(today.getDate()).padStart(2, '0');  // Get day of month
@@ -42,15 +41,14 @@
             return `${days}${month}${year}`; // Format as DDMMMYY
         }
 
-        // Function to display the PDF link
-        function displayPDFLink() {
-            const formattedDate = getFormattedDate();
-            const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-PI PAX RSV LIST.PDF`;
-         
+        // Construct the PDF URL based on today's date
+        const formattedDate = getFormattedDate();
+        const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-PI PAX RSV LIST.PDF`; // Update URL as needed
+
 
         // Set today's date in the title
-        document.getElementById('current-date').innerText = getFormattedDate();
-        
+        document.getElementById('current-date').innerText = new Date().toLocaleDateString();
+
         // Function to fetch and display the PDF content
         async function fetchAndDisplayPdf() {
             const pdfDocument = await pdfjsLib.getDocument(pdfUrl).promise;

@@ -29,9 +29,7 @@
 </head>
 <body>
     <h1>Today's Flight Schedule</h1>
-    <div id="pdf-container">
-        Loading...
-    </div>
+    <div id="pdf-container">Loading...</div>
 
     <script>
         // Function to get today's date in the correct format DDMMMYY
@@ -46,14 +44,21 @@
 
         // Function to display the PDF link
         function displayPDFLink() {
-            const formattedDate = getFormattedDate();
-            const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-PI PAX RSV LIST.PDF`;
+            const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1); // Increment date by 1 for tomorrow
+
+            const formattedToday = getFormattedDate(); // For today
+            const formattedTomorrow = `${String(tomorrow.getDate()).padStart(2, '0')}${tomorrow.toLocaleString('default', { month: 'short' }).toUpperCase()}${String(tomorrow.getFullYear()).slice(-2)}`; // Calculate tomorrow's formatted date
+
+            const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
+            const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
             const pdfContainer = document.getElementById('pdf-container');
             pdfContainer.innerHTML = `
                 <p>Reserve Dashboard:</p>
-                <a href="${pdfUrl}" target="_blank" class="pdf-link">Today</a>
-                <a href="${pdfUrl}" target="_blank" class="pdf-link">Tomorrow</a>
+                <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today</a>
+                <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow</a>
             `;
         }
 

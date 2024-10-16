@@ -22,19 +22,11 @@
  <br>
 <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/02OCT24-PI%20PAX%20RSV%20LIST.PDF?CT=1727853537569&OR=ItemsView">Tomorrow</a>
 
- </div>  
-    
-  <div id="message">Loading...</div>
-  <div id="viewer" style="display:none"></div>
-  
-  <div>Uses <a href="https://github.com/arturadib/pdf.js/tree/text-select/" target="_blank">pdf.js + text-select</a>, by Mozilla and Artur Adib.<br><a href="https://github.com/hubgit/hubgit.github.com/tree/master/2011/11/pdftotext" target="_blank">Code on GitHub</a></div>
+    <h1>PDF to HTML - Last Page Viewer</h1>
+    <input type="text" id="pdf-url" placeholder="Enter PDF URL here">
+    <button id="load-pdf">Load PDF</button>
+    <canvas id="pdf-canvas"></canvas>
 
-  <script id="pdf-js" src="pdf.js"></script>
-  <script>PDFJS.workerSrc = document.getElementById("pdf-js").getAttribute("src");</script>
-
-  <script src="app.js"></script>
-  <script>var app = new App;</script>   
-<br>
-   
-</body> 
+    <script src="script.js"></script>
+</body>
 </html>

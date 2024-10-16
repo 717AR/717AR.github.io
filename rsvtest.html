@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF Table Extraction - After 789</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.15.349/pdf.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        td, th {
+            border: 1px solid black;
+            padding: 5px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <button id="load-pdf">Load PDF</button>
+    <div id="output"></div>
+
+    <script>
+        async function loadPdfWithTables() {
+            const url = 'https://717ar.github.io/test.pdf';
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            const output = document.getElementById('output');
+            output.innerHTML = ''; // Clear previous output
+            let tableData = [];
+            let captureData = false; // Flag to indicate whether to start capturing after '789'
+
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                
+                // Temporary array to hold the text items with their position information
+                const textItems = textContent.items.map(item => ({
+                    str: item.str,
+                    yPosition: item.transform[5] // Get Y position
+                }));
+
+                // Check for the trigger text "789"
+                textItems.forEach(item => {
+                    if (item.str.includes("789")) {
+                        captureData = true; // Start capturing after this text
+                    } else if (captureData) {
+                        // As soon as we start capturing, we process text into table rows
+                        updateTableData(tableData, item);
+                    }
+                });
+            }
+
+            renderTable(tableData);
+        }
+
+        function updateTableData(tableData, item) {
+            // Logic to organize the text items into a table-like structure
+            if (tableData.length === 0 || Math.abs(tableData[tableData.length - 1][0].yPosition - item.yPosition) >= 10) {
+                tableData.push([item]); // Start a new row
+            } else {
+                tableData[tableData.length - 1].push(item); // Push to the current row
+            }
+        }
+
+        function renderTable(tableData) {
+            if (tableData.length === 0) {
+                const noDataMessage = document.createElement('p');
+                noDataMessage.textContent = 'No tables found after text "789".';
+                document.getElementById('output').appendChild(noDataMessage);
+                return;
+            }
+
+            const tableElement = document.createElement('table');
+
+            tableData.forEach(row => {
+                const tr = document.createElement('tr');
+
+                row.forEach(item => {
+                    const td = document.createElement('td');
+                    td.textContent = item.str;
+                    tr.appendChild(td);
+                });
+
+                tableElement.appendChild(tr);
+            });
+
+            document.getElementById('output').appendChild(tableElement);
+        }
+
+        document.getElementById('load-pdf').addEventListener('click', loadPdfWithTables);
+    </script>
+</body>
+</html>

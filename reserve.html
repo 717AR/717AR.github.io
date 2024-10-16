@@ -20,20 +20,28 @@
             margin-left: auto;
             margin-right: auto;
         }
+        #url-display {
+            margin-top: 20px;
+        }
+        #current-date {
+            margin-top: 10px;
+            font-weight: bold;
+        }
     </style>
     <!-- Include PDF.js from CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
 </head>
 <body>
     <h1>787 Reserves</h1>
-    <div id="current-date">Loading...</div>
-     <p id="url-display">PDF URL: <span id="pdf-url">Loading URL...</span> </p>
+    <div id="current-date">Loading date...</div>
     <div id="pdf-output">
         Loading PDF...
     </div>
     
+    <p id="url-display">
+        PDF URL: <span id="pdf-url">Loading URL...</span>
+    </p>
 
-    
     <script>
         // Function to get today's date in the correct format (DDMMMYY)
         function getFormattedDate() {
@@ -47,41 +55,44 @@
 
         // Construct the PDF URL based on today's date
         const formattedDate = getFormattedDate();
-        const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-PI PAX RSV LIST.PDF`; // Update URL as needed
+        const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/last_two_pages-${formattedDate}.pdf`; // Update URL as needed
 
-
-        // Set today's date in the title
-        document.getElementById('current-date').innerText = new Date().toLocaleDateString();
-        
-         // Display the constructed PDF URL
+        // Display the constructed PDF URL
         document.getElementById('pdf-url').innerText = pdfUrl;
+
+        // Set today's date in the current date div
+        const currentDateString = new Date().toLocaleDateString();
+        document.getElementById('current-date').innerText = currentDateString;
 
         // Function to fetch and display the PDF content
         async function fetchAndDisplayPdf() {
-            const pdfDocument = await pdfjsLib.getDocument(pdfUrl).promise;
-            let fullText = '';
+            try {
+                const pdfDocument = await pdfjsLib.getDocument(pdfUrl).promise;
+                let fullText = '';
 
-            // Loop through each page
-            for (let i = 1; i <= pdfDocument.numPages; i++) {
-                const page = await pdfDocument.getPage(i);
-                const textContent = await page.getTextContent();
-                const pageText = textContent.items.map(item => item.str).join(' ');
+                // Loop through each page
+                for (let i = 1; i <= pdfDocument.numPages; i++) {
+                    const page = await pdfDocument.getPage(i);
+                    const textContent = await page.getTextContent();
+                    const pageText = textContent.items.map(item => item.str).join(' ');
 
-                // Append page text to full text
-                fullText += pageText + '\n\n';
+                    // Append page text to full text
+                    fullText += pageText + '\n\n';
+                }
+
+                // Filter text after "789"
+                const filteredText = fullText.split('789')[1] || 'No text found after 789.';
+
+                // Display the filtered text
+                document.getElementById('pdf-output').innerText = filteredText;
+
+            } catch (error) {
+                document.getElementById('pdf-output').innerText = 'Error loading PDF: ' + error.message;
             }
-
-            // Filter text after "789"
-            const filteredText = fullText.split('789')[1] || 'No text found after 789.';
-
-            // Display the filtered text
-            document.getElementById('pdf-output').innerText = filteredText;
         }
 
         // Call the function to fetch and display the PDF
         fetchAndDisplayPdf();
     </script>
-
-    pdfUrl
 </body>
 </html>

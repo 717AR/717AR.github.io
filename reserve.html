@@ -1,18 +1,75 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to HTML - Text Extractor</title>
-    <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.worker.js"></script>
+    <title>787 Reserves</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #0077cc;
+        }
+        #pdf-output {
+            margin-top: 20px;
+            text-align: left;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+    <!-- Include PDF.js from CDN -->
+   <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist/build/pdf.js"></script>
 </head>
 <body>
-    <h1>PDF to HTML - Text Extractor</h1>
-    <button id="load-pdf">Load test.pdf</button>
-    <pre id="pdf-text"></pre>
+    <h1 id="current-date">Loading...</h1>
+    <div id="pdf-output">
+        Loading PDF...
+    </div>
 
-    <script src="script.js"></script>
+    <script>
+        const pdfUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/original.pdf'; // Replace with your PDF URL
+
+        // Function to get today's date in the correct format
+        function getCurrentDateString() {
+            const today = new Date();
+            const days = String(today.getDate()).padStart(2, '0');  // Get day of month
+            const month = today.toLocaleString('default', { month: 'long' }); // Get full month name
+            const year = today.getFullYear(); // Get full year
+            
+            return `${months} ${days}, ${year}`; // Format as Month Day, Year
+        }
+
+        // Set today's date in the title
+        document.getElementById('current-date').innerText = getCurrentDateString();
+        
+        // Function to fetch and display the PDF content
+        async function fetchAndDisplayPdf() {
+            const pdfDocument = await pdfjsLib.getDocument(pdfUrl).promise;
+            let fullText = '';
+
+            // Loop through each page
+            for (let i = 1; i <= pdfDocument.numPages; i++) {
+                const page = await pdfDocument.getPage(i);
+                const textContent = await page.getTextContent();
+                const pageText = textContent.items.map(item => item.str).join(' ');
+
+                // Append page text to full text
+                fullText += pageText + '\n\n';
+            }
+
+            // Filter text after "789"
+            const filteredText = fullText.split('789')[1] || 'No text found after 789.';
+
+            // Display the filtered text
+            document.getElementById('pdf-output').innerText = filteredText;
+        }
+
+        // Call the function to fetch and display the PDF
+        fetchAndDisplayPdf();
+    </script>
 </body>
 </html>

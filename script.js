@@ -3,6 +3,22 @@ pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://mozilla.github.io/pdf.js/build
 const loadPdfButton = document.getElementById('load-pdf');
 const pdfTextOutput = document.getElementById('pdf-text');
 
+document.getElementById('test-fetch-pdf').addEventListener('click', async () => {
+    const url = 'https://717ar.github.io/test.pdf';
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            console.error('Network response was not ok:', response.statusText);
+            return;
+        }
+        const blob = await response.blob();
+        console.log('Fetched PDF Blob:', blob);
+        alert('Fetched PDF successfully! Check console for blob object.');
+    } catch (error) {
+        console.error('Failed to fetch PDF:', error);
+    }
+});
+
 loadPdfButton.addEventListener('click', loadPdf);
 
 async function loadPdf() {
@@ -27,17 +43,4 @@ async function loadPdf() {
     }
 }
 
-document.getElementById('test-fetch-pdf').addEventListener('click', async () => {
-    const url = 'https://717ar.github.io/test.pdf';
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            console.error('Network response was not ok:', response.statusText);
-            return;
-        }
-        const blob = await response.blob();
-        console.log('Fetched PDF Blob:', blob);
-        alert('Fetched PDF successfully! Check console for blob object.');
-    } catch (error) {
-        console.error('Failed to fetch PDF:', error);
-    }
+

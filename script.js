@@ -1,38 +1,36 @@
-const pdfUrlInput = document.getElementById('pdf-url');
-const loadPdfButton = document.getElementById('load-pdf');
+const fileInput = document.getElementById('file-input');
 const canvas = document.getElementById('pdf-canvas');
 const context = canvas.getContext('2d');
 
-loadPdfButton.addEventListener('click', loadPdf);
+fileInput.addEventListener('change', handleFileSelect);
 
-async function loadPdf() {
-    const url = pdfUrlInput.value.trim();
-    if (url) {
-        try {
-            const pdf = await pdfjsLib.getDocument(url).promise;
+async function handleFileSelect(event) {
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+        const fileReader = new FileReader();
+        fileReader.onload = async function() {
+            const pdfData = new Uint8Array(this.result);
+            const pdf = await pdfjsLib.getDocument(pdfData).promise;
             const totalPages = pdf.numPages;
             console.log(`Total pages: ${totalPages}`);
 
-            if (totalPages > 0) {
-                // Render the last page
-                const lastPage = await pdf.getPage(totalPages);
-                const viewport = lastPage.getViewport({ scale: 1 });
-                canvas.width = viewport.width;
-                canvas.height = viewport.height;
+            // Render the last page
+            const lastPage = await pdf.getPage(totalPages);
+            const viewport = lastPage.getViewport({ scale: 1 });
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
 
-                const renderContext = {
-                    canvasContext: context,
-                    viewport: viewport
-                };
+            const renderContext = {
+                canvasContext: context,
+                viewport: viewport
+            };
 
-                await lastPage.render(renderContext).promise;
-                console.log('Last page rendered successfully.');
-            }
-        } catch (error) {
-            console.error('Error loading PDF:', error);
-            alert('Failed to load PDF. Please check the URL and try again.');
-        }
+            await lastPage.render(renderContext).promise;
+            console.log('Last page rendered successfully.');
+        };
+
+        fileReader.readAsArrayBuffer(file);
     } else {
-        alert('Please enter a valid PDF URL.');
+        alert('Please select a valid PDF file.');
     }
 }

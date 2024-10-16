@@ -4,7 +4,7 @@ const pdfTextOutput = document.getElementById('pdf-text');
 loadPdfButton.addEventListener('click', loadPdf);
 
 async function loadPdf() {
-    const url = 'test.pdf'; // The local PDF file to load
+    const url = 'https://717ar.github.io/test.pdf'; // The local PDF file to load
     try {
         const pdf = await pdfjsLib.getDocument(url).promise;
         let allText = '';

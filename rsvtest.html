@@ -34,11 +34,14 @@
     </div>
 
     <script>
-        // Function to get today's date and format it
+        // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate() {
             const today = new Date();
-            const options = { day: '2-digit', month: 'short', year: '2-digit' };
-            return today.toLocaleDateString('en-US', options).toUpperCase().replace(",", "").replace(/\s+/g, "");
+            const days = String(today.getDate()).padStart(2, '0');  // Get day of month
+            const month = today.toLocaleString('default', { month: 'short' }).toUpperCase(); // Get month name in uppercase
+            const year = String(today.getFullYear()).slice(-2); // Get last two digits of the year
+            
+            return `${days}${month}${year}`; // Format as DDMMMYY
         }
 
         // Function to display the PDF link

@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF to HTML - Last Page Viewer</title>
+    <title>PDF to HTML - Text Extractor</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://mozilla.github.io/pdf.js/build/pdf.js"></script>
 </head>
 <body>
-    <h1>PDF to HTML - Last Page Viewer</h1>
-
-    <input type="file" id="file-input" accept="application/pdf">
-    <canvas id="pdf-canvas"></canvas>
+    <h1>PDF to HTML - Text Extractor</h1>
+    <input type="text" id="pdf-url" placeholder="Enter PDF URL here">
+    <button id="load-pdf">Load PDF</button>
+    <pre id="pdf-text"></pre> <!-- Use <pre> to maintain formatting -->
 
     <script src="script.js"></script>
 </body>
-
-
-
 </html>

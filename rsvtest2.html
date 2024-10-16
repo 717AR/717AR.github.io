@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>787 Reserves - PDF Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #0077cc;
+        }
+        #current-date {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        iframe {
+            width: 100%;
+            height: 600px; /* Adjust height as needed */
+            border: none;
+            margin-top: 20px;
+        }
+        #url-display {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>787 Reserves</h1>
+    <div id="current-date">Loading date...</div>
+    
+    <iframe id="pdf-iframe" src="" allow="displaying;"/>Loading PDF...</iframe>
+    
+    <p id="url-display">
+        PDF URL: <span id="pdf-url">Loading URL...</span>
+    </p>
+
+    <script>
+        // Function to get today's date in the correct format (DDMMMYY)
+        function getFormattedDate() {
+            const today = new Date();
+            const days = String(today.getDate()).padStart(2, '0');
+            const month = today.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(today.getFullYear()).slice(-2);
+            
+            return `${days}${month}${year}`; 
+        }
+
+        // Construct the PDF URL based on today's date
+        const formattedDate = getFormattedDate();
+        const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-PI%20PAX%20RSV%20LIST.PDF`; 
+
+        // Set the iframe source to the constructed PDF URL
+        document.getElementById('pdf-iframe').src = pdfUrl;
+
+        // Display the constructed PDF URL
+        document.getElementById('pdf-url').innerText = pdfUrl;
+
+        // Set today's date in the current date div
+        const currentDateString = new Date().toLocaleDateString();
+        document.getElementById('current-date').innerText = currentDateString;
+    </script>
+</body>
+</html>

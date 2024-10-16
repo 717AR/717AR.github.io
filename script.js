@@ -1,36 +1,35 @@
-const fileInput = document.getElementById('file-input');
-const canvas = document.getElementById('pdf-canvas');
-const context = canvas.getContext('2d');
+const pdfUrlInput = document.getElementById('pdf-url');
+const loadPdfButton = document.getElementById('load-pdf');
+const pdfTextOutput = document.getElementById('pdf-text');
 
-fileInput.addEventListener('change', handleFileSelect);
+loadPdfButton.addEventListener('click', loadPdf);
 
-async function handleFileSelect(event) {
-    const file = event.target.files[0];
-    if (file && file.type === 'application/pdf') {
-        const fileReader = new FileReader();
-        fileReader.onload = async function() {
-            const pdfData = new Uint8Array(this.result);
-            const pdf = await pdfjsLib.getDocument(pdfData).promise;
-            const totalPages = pdf.numPages;
-            console.log(`Total pages: ${totalPages}`);
+async function loadPdf() {
+    const url = pdfUrlInput.value.trim();
+    if (url) {
+        try {
+            const pdf = await pdfjsLib.getDocument(url).promise;
+            let allText = '';
 
-            // Render the last page
-            const lastPage = await pdf.getPage(totalPages);
-            const viewport = lastPage.getViewport({ scale: 1 });
-            canvas.width = viewport.width;
-            canvas.height = viewport.height;
+            // Loop through all pages and extract text
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                const textItems = textContent.items.map(item => item.str);
+                allText += textItems.join(' ') + '\n'; // Append text from each page
+            }
 
-            const renderContext = {
-                canvasContext: context,
-                viewport: viewport
-            };
+            // Find text after "789"
+            const index = allText.indexOf("789");
+            const extractedText = index !== -1 ? allText.slice(index + 3) : "Text after '789' not found.";
 
-            await lastPage.render(renderContext).promise;
-            console.log('Last page rendered successfully.');
-        };
-
-        fileReader.readAsArrayBuffer(file);
+            // Display the extracted text
+            pdfTextOutput.textContent = extractedText;
+        } catch (error) {
+            console.error('Error loading PDF:', error);
+            alert('Failed to load PDF. Please check the URL and try again.');
+        }
     } else {
-        alert('Please select a valid PDF file.');
+        alert('Please enter a valid PDF URL.');
     }
 }

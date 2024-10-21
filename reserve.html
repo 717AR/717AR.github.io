@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserve Links</title>
+    <title>Reserve Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -48,10 +48,13 @@
             const hawaiiTime = new Intl.DateTimeFormat('en-US', {
                 timeZone: 'Pacific/Honolulu', // Hawaii time zone
                 hour: '2-digit', 
-                minute: '2-digit'
+                minute: '2-digit',
+                hour12: false // 24-hour format to make comparison easier
             }).format(new Date());
 
             const [hours, minutes] = hawaiiTime.split(':').map(Number);
+            console.log(`Current Hawaii Time: ${hours}:${String(minutes).padStart(2, '0')}`); // Debug output
+
             return (hours > 16) || (hours === 16 && minutes >= 0);
         }
 
@@ -68,11 +71,15 @@
             const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
             const pdfContainer = document.getElementById('pdf-container');
+            const tomorrowVisible = isAfterFourPMHawaii();
+
+            console.log(`Show Tomorrow Link: ${tomorrowVisible}`); // Debug output
+
             pdfContainer.innerHTML = `
                 <h2></h2>
                 <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today</a>
                 </br>
-                <div id="tomorrow-link" class="${isAfterFourPMHawaii() ? '' : 'hidden'}">
+                <div id="tomorrow-link" class="${tomorrowVisible ? '' : 'hidden'}">
                     <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow</a>
                 </div>
             `;

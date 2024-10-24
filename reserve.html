@@ -90,9 +90,8 @@
             margin-bottom: 10px; /* Space between buttons */
             transition: background-color 0.3s; /* Smooth transition for background color */
         }
-        .button.disabled {
+        .disabled {
             background-color: #ccc; /* Grey out */
-            color: #666; /* Change text color */
             cursor: not-allowed; /* Show not-allowed cursor */
         }
         .modal {
@@ -129,7 +128,7 @@
         <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button" disabled class="disabled">Tomorrow</button>
+            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow</button>
         </div>
     </div>
 
@@ -178,12 +177,6 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        function getPreviousDate(days) {
-            const date = new Date();
-            date.setDate(date.getDate() - days);
-            return date;
-        }
-
         // Function to display today's date and set buttons
         function displayDate() {
             const today = new Date();
@@ -194,11 +187,10 @@
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-            // Disable "Tomorrow" button until 4 PM Hawaii time
+            // Show "Tomorrow" button only after 4 PM Hawaii time
             const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
-                tomorrowButton.disabled = false;
-                tomorrowButton.classList.remove('disabled'); // Remove greyed out class
+                tomorrowButton.style.display = 'block';
                 tomorrowButton.onclick = function() {
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);

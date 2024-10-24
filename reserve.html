@@ -28,8 +28,13 @@
             width: 100%; /* Full width */
         }
         .current-date {
-            font-size: 16px; /* Smaller font size */
-            margin: 1px; /* Set margin to 1 pixel */
+            font-size: 24px; /* Match header font size */
+            margin: 0; /* Remove margin */
+        }
+        .header-content {
+            display: flex;
+            justify-content: center; /* Center the header content */
+            align-items: center; /* Align items in the center */
         }
         .reserve-dashboard {
             text-align: center;
@@ -41,6 +46,7 @@
             padding: 10px; /* Padding around text */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: inline-block; /* Make the container's width wrap around its content */
+            margin-top: 10px; /* Space above */
         }
         .button-container {
             display: flex;
@@ -89,20 +95,32 @@
         .pdf-link:hover {
             background-color: #005999;
         }
+        /* New vacation section styles */
+        .vacation-section {
+            margin-top: 20px; /* Space above the vacation section */
+            text-align: center; /* Center the text in the section */
+            font-size: 22px; /* Same font size as other sections */
+            border: 1px solid #0077cc; /* Outline the container */
+            border-radius: 8px;
+            background-color: white; /* Background color */
+            padding: 10px; /* Padding around text */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
     <div class="header">
-        787 Links
-        <div class="current-date" id="current-date"></div>
+        <div class="header-content">
+            <span>787 Links</span>
+            <span class="current-date" id="current-date"></span>
+        </div>
     </div>
     
     <div class="reserve-dashboard">
         Reserve Dashboard:
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
-            <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button"></button> <!-- Now this will be updated dynamically -->
+            <button class="button" id="tomorrow-button"></button> <!-- This will be updated dynamically -->
         </div>
     </div>
 
@@ -110,6 +128,14 @@
         DFS History:
         <div class="button-container">
             <button class="button" id="dfs-button">Select Date</button>
+        </div>
+    </div>
+
+    <div class="vacation-section">
+        Vacation:
+        <div class="button-container">
+            <button class="button" id="vacation-2024">2024</button>
+            <button class="button" id="vacation-2025">2025</button>
         </div>
     </div>
 
@@ -128,7 +154,7 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to display today's PDF links and set the Today button's link
+        // Function to display today's PDF links and set the Today's button's link
         function displayPDFLinks() {
             const today = new Date();
             const pdfList = document.getElementById('pdf-list');
@@ -137,11 +163,12 @@
             const formattedCurrentDate = getFormattedDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            const linkText = "Today's RSV";
             const pdfUrl = `${pdfBaseUrl}${formattedCurrentDate}-PI PAX RSV LIST.PDF`;
 
-            // Set the Today button to open today's PDF directly
-            document.getElementById('today-button').onclick = function() {
+            // Set the Tomorrow button's label and link
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            tomorrowButton.innerText = getFormattedDate(new Date(today.setDate(today.getDate() + 1)));
+            tomorrowButton.onclick = function () {
                 window.open(pdfUrl, '_blank');
             };
 
@@ -151,23 +178,10 @@
             link.href = pdfUrl;
             link.target = '_blank';
             link.className = 'pdf-link';
-            link.innerText = linkText;
+            link.innerText = "Today's RSV"; // Removed as per your request.
 
             listItem.appendChild(link);
             pdfList.appendChild(listItem);
-        }
-
-        // Update Tomorrow button label and functionality
-        function updateTomorrowButton() {
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            const tomorrowDate = new Date();
-            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-            tomorrowButton.innerText = getFormattedDate(tomorrowDate); // Set label
-            tomorrowButton.onclick = function() {
-                const formattedDate = getFormattedDate(tomorrowDate);
-                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
         }
 
         // Check if it is after 1600 Hawaii time and enable/disable the Tomorrow button
@@ -187,18 +201,16 @@
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
             const datePicker = document.getElementById('date-picker');
-            datePicker.click(); // Trigger date picker
+            datePicker.onchange = function () {
+                const selectedDate = new Date(this.value);
+                const formattedDate = getFormattedDate(selectedDate);
+                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+                this.value = ""; // Reset date picker
+            };
+            datePicker.click(); // Trigger the date picker
         };
 
-        // Handle date selection from the date picker
-        document.getElementById('date-picker').onchange = function() {
-            const selectedDate = new Date(this.value);
-            const formattedDate = getFormattedDate(selectedDate);
-            const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-            window.open(pdfUrl, '_blank');
-            this.value = ""; // Reset date picker
-        };
-        
         // Add event listener to the DFS button
         document.getElementById('dfs-button').onclick = function() {
             const datePicker = document.getElementById('date-picker');
@@ -212,10 +224,18 @@
             datePicker.click(); // Trigger the date picker
         };
 
+        // Links for vacation pages
+        document.getElementById('vacation-2024').onclick = function() {
+            window.open('https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024 Vacation Availability/787ca2024.pdf', '_blank');
+        };
+
+        document.getElementById('vacation-2025').onclick = function() {
+            window.open('https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025 Annual Vacation Bidding/787ca2025.pdf', '_blank');
+        };
+
         // Initial calls
         displayPDFLinks();
-        updateTomorrowButton();
-        checkTomorrowButtonState(); // Check state of the Tomorrow button
+        checkTomorrowButtonState(); // Check state of tomorrow button
     </script>
 </body>
 </html>

@@ -10,10 +10,10 @@
             margin: 0;
             height: 100vh;
             background-color: #f5f5f5;
-            overflow: auto;
+            overflow: auto; /* Allow scrolling */
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center children horizontally */
         }
         .header {
             background-color: #0077cc;
@@ -22,37 +22,36 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            text-transform: uppercase;
-            width: 100%;
+            text-transform: uppercase; /* Make text all caps */
+            width: 100%; /* Full width */
         }
         .current-date {
-            font-size: 16px;
-            margin: 2px 0;
+            font-size: 16px; /* Reset to original font size */
+            margin: 2px 0; /* Updated margin to 2px */
         }
         .header-content {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
+            justify-content: center; /* Center the header content */
+            align-items: center; /* Align items in the center */
+            flex-direction: column; /* Stack date below title */
         }
-        .reserve-dashboard {
+        .reserve-dashboard, .dfs-history, .recalls {
             text-align: center;
-            margin: 10px;
-            font-size: 22px;
-            border: 1px solid #0077cc;
+            margin: 10px; /* Adjusted margin */
+            font-size: 22px; /* Increased size for the title */
+            border: 1px solid #0077cc; /* Outline the container */
             border-radius: 8px;
-            background-color: white;
-            padding: 10px;
+            background-color: white; /* Background color */
+            padding: 10px; /* Padding around text */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: inline-block;
-            margin-top: 10px;
-            cursor: pointer; /* Indicate clickable */
+            display: inline-block; /* Make the container's width wrap around its content */
+            margin-top: 10px; /* Space above */
         }
         .button-container {
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 10px;
+            justify-content: center; /* Center the buttons */
+            gap: 10px; /* Space between buttons */
+            margin-top: 10px; /* Space above button area */
         }
         .button {
             padding: 10px;
@@ -61,42 +60,80 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            max-width: 150px;
+            font-size: 16px; /* Set font size for buttons */
+            flex: 1; /* Make buttons take equal space */
+            min-width: 100px; /* Minimum width for buttons */
+            text-align: center; /* Center text in buttons */
+            text-transform: uppercase; /* Make button text all caps */
+        }
+        .button:disabled {
+            background-color: #ccc; /* Grayed out button style */
+            cursor: not-allowed; /* Change cursor for disabled button */
+        }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+            padding-top: 60px; /* Place holder for the modal */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
+        .pdf-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-item {
+            background: white;
+            border: 1px solid #0077cc;
+            border-radius: 8px;
+            margin: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 10px;
         }
-        .recalls-section {
-            margin-top: 10px;
-            cursor: pointer;
-            color: #0077cc;
-            text-decoration: underline;
+        .pdf-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #0077cc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
         }
-        .date-picker {
-            display: none; /* Initially hidden */
-            margin-top: 10px;
+        .pdf-link:hover {
+            background-color: #005999;
         }
+        /* New vacation section styles */
         .vacation-section {
-            margin-top: 20px;
-            text-align: center;
-            font-size: 22px;
-            padding: 10px;
+            margin-top: 20px; /* Space above the vacation section */
+            text-align: center; /* Center the text in the section */
+            font-size: 22px; /* Same font size as other sections */
+            border: 1px solid #0077cc; /* Outline the container */
+            border-radius: 8px;
+            background-color: white; /* Background color */
+            padding: 10px; /* Padding around text */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
-        .vacation-links {
-            display: inline;
-            margin-left: 10px;
-        }
         .vacation-link {
-            margin: 0 10px;
-            color: #0077cc;
-            text-decoration: none;
-            font-weight: bold;
+            margin: 0 10px; /* Space between links */
+            color: #0077cc; /* Link color */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Make it bold */
         }
         .vacation-link:hover {
-            text-decoration: underline;
+            text-decoration: underline; /* Underline on hover */
         }
     </style>
 </head>
@@ -108,43 +145,57 @@
         </div>
     </div>
     
-    <div class="reserve-dashboard" id="reserve-dashboard-link">
-        Reserve Dashboard
-    </div>
-
-    <div class="button-container">
-        <button class="button" id="today-button">Today</button>
-        <button class="button" id="tomorrow-button">Tomorrow</button>
-    </div>
-
-    <!-- Recalls Section -->
-    <div class="recalls">
-        <span class="recalls-section" id="recalls-section">Recalls:</span>
-        <input type="date" id="recall-date-picker" class="date-picker" />
-    </div>
-
-    <!-- DFS History Section -->
-    <div class="dfs-history">
-        DFS History:
-        <div class="date-picker">
-            <input type="date" id="dfs-date-picker" />
+    <div class="reserve-dashboard">
+        Reserve Dashboard:
+        <div class="button-container">
+            <button class="button" id="older-button">Older</button>
+            <button class="button" id="today-button">Today</button>
+            <button class="button" id="tomorrow-button"></button>
         </div>
     </div>
 
-    <!-- Vacation Section -->
+    <!-- Moved Recalls Section above DFS History -->
+    <div class="recalls">
+        Recalls:
+        <div class="button-container">
+            <button class="button" id="recall-today-minus-3"></button>
+            <button class="button" id="recall-today-minus-2"></button>
+            <button class="button" id="recall-today-minus-1"></button>
+        </div>
+    </div>
+
+    <div class="dfs-history" id="dfs-history">
+        DFS History:
+        <div class="button-container">
+            <button class="button" id="two-days-ago-button"></button>
+            <button class="button" id="day-before-yesterday-button"></button>
+            <button class="button" id="yesterday-button"></button>
+        </div>
+    </div>
+
     <div class="vacation-section">
         Vacation:
-        <span class="vacation-links">
+        <div>
             <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
             <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
-        </span>
+        </div>
+    </div>
+
+    <!-- Modal for Date Picker -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content">
+            <span id="close" style="cursor:pointer; float:right;">×</span>
+            <h2>Select a Date</h2>
+            <input type="date" id="datepicker" style="width: 100%; padding: 10px;">
+            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Submit</button>
+        </div>
     </div>
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-
-        // Function to get the formatted date for the URL
-        function getFormattedDateForUrl(date) {
+        
+        // Function to get the formatted date
+        function getFormattedDate(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getFullYear()).slice(-2);
@@ -156,57 +207,125 @@
             return date.toLocaleDateString('en-US', options);
         }
 
+        function getPreviousDate(days) {
+            const date = new Date();
+            date.setDate(date.getDate() - days);
+            return date;
+        }
+
+        // Function to display today's date and set buttons
         function displayDate() {
             const today = new Date();
             const formattedCurrentDate = getFormattedHeaderDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            // Set the 'Today' button
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
             // Update tomorrow button
             const tomorrowDate = new Date();
             tomorrowDate.setDate(today.getDate() + 1);
+            document.getElementById('tomorrow-button').innerText = 'TMRW';  // Updated button text
             document.getElementById('tomorrow-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            // Set the 'Today' button
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            // Setting the buttons for the DFS History section
+            setDfsHistoryButtons();
+
+            // Set the buttons for Recalls section
+            setRecallsButtons();
+        }
+
+        // Set the buttons in the DFS History section
+        function setDfsHistoryButtons() {
+            const yesterdayButton = document.getElementById('yesterday-button');
+            const dayBeforeYesterdayButton = document.getElementById('day-before-yesterday-button');
+            const twoDaysAgoButton = document.getElementById('two-days-ago-button');
+
+            const yesterdayDate = getPreviousDate(1);
+            yesterdayButton.innerText = getFormattedDate(yesterdayDate);
+            yesterdayButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-787 DFSH.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            const dayBeforeYesterdayDate = getPreviousDate(2);
+            dayBeforeYesterdayButton.innerText = getFormattedDate(dayBeforeYesterdayDate);
+            dayBeforeYesterdayButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-787 DFSH.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            const twoDaysAgoDate = getPreviousDate(3);
+            twoDaysAgoButton.innerText = getFormattedDate(twoDaysAgoDate);
+            twoDaysAgoButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-787 DFSH.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
 
-        // Reserve Dashboard link functionality to show the date picker
-        document.getElementById('reserve-dashboard-link').onclick = function() {
-            const datePicker = document.getElementById('dfs-date-picker');
-            datePicker.style.display = datePicker.style.display === 'block' ? 'none' : 'block'; // Toggle visibility
-            datePicker.focus(); // Automatically focus on the date picker
+        // Set the buttons in the Recalls section
+        function setRecallsButtons() {
+            const todayMinus1Button = document.getElementById('recall-today-minus-1');
+            const todayMinus2Button = document.getElementById('recall-today-minus-2');
+            const todayMinus3Button = document.getElementById('recall-today-minus-3');
+
+            const today = new Date();
+
+            // Set button for today - 1
+            const todayMinus1Date = getPreviousDate(1);
+            todayMinus1Button.innerText = getFormattedDate(todayMinus1Date);
+            todayMinus1Button.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus1Date)}-PI RCL LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            // Set button for today - 2
+            const todayMinus2Date = getPreviousDate(2);
+            todayMinus2Button.innerText = getFormattedDate(todayMinus2Date);
+            todayMinus2Button.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus2Date)}-PI RCL LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            // Set button for today - 3
+            const todayMinus3Date = getPreviousDate(3);
+            todayMinus3Button.innerText = getFormattedDate(todayMinus3Date);
+            todayMinus3Button.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus3Date)}-PI RCL LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+        // Add event listener to Older button
+        document.getElementById('older-button').onclick = function() {
+            // Show the modal
+            document.getElementById('dateModal').style.display = "block";
         };
 
-        // Hide/show date picker when clicking on Recalls text
-        document.getElementById('recalls-section').onclick = function() {
-            const datePicker = document.getElementById('recall-date-picker');
-            datePicker.style.display = datePicker.style.display === 'block' ? 'none' : 'block'; // Toggle date picker
-            datePicker.focus(); // Automatically focus on the date picker
+        // Close the modal when the user clicks on <span> (x)
+        document.getElementById('close').onclick = function() {
+            document.getElementById('dateModal').style.display = "none";
         };
 
-        // Handle date change for recalls
-        document.getElementById('recall-date-picker').addEventListener('change', function() {
-            const recallDate = new Date(this.value);
-            if (!isNaN(recallDate.getTime())) {
-                const recallPdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(recallDate)}-PI RCL LIST.PDF`;
-                window.open(recallPdfUrl, '_blank');
-            }
-        });
+        // Set submission event for the date
+        document.getElementById('submit-date').onclick = function() {
+            const datePicker = document.getElementById('datepicker').value;
+            const selectedDate = new Date(datePicker);
 
-        // Set the DFS date picker to redirect when a date is picked
-        document.getElementById('dfs-date-picker').addEventListener('change', function() {
-            const selectedDate = new Date(this.value);
-            if (!isNaN(selectedDate.getTime())) { 
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-787 DFSH.PDF`;
+            if (!isNaN(selectedDate.getTime())) { // Check valid date
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             }
-        });
+
+            // Hide the modal after selection
+            document.getElementById('dateModal').style.display = "none";
+        };
 
         // Initial calls
         displayDate();

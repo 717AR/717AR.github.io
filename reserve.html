@@ -16,9 +16,25 @@
             justify-content: center;
             align-items: center;
             background-color: #f5f5f5;
+            overflow: hidden; /* Prevent scrollbars */
         }
         h1 {
             color: #0077cc;
+        }
+        .pdf-container {
+            display: flex;
+            transition: transform 0.3s ease;
+            width: 100%;
+            max-width: 500px; /* Limit max width on desktop */
+            height: auto; /* Auto height for flex items */
+            overflow: hidden; /* Hide overflow */
+        }
+        .pdf-day {
+            min-width: 100%; /* Each day takes full width */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
         .pdf-link {
             display: inline-block;
@@ -32,37 +48,11 @@
         .pdf-link:hover {
             background-color: #005999;
         }
-        .hidden {
-            display: none;
-        }
-        .navigation {
-            margin: 20px 0;
-        }
-        .swipe-button {
-            padding: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            border: 1px solid #0077cc;
-            border-radius: 5px;
-            background-color: #ffffff;
-            color: #0077cc;
-            margin: 0 10px;
-        }
-        .swipe-button:hover {
-            background-color: #f0f0f0;
-        }
-        #pdf-container {
-            overflow: hidden; /* Hide overflow for swipe */
-            width: 100%;
-            max-width: 500px; /* Limit max width on desktop */
-            position: relative;
-            transition: transform 0.3s ease; /* Smooth transition */
-        }
     </style>
 </head>
 <body>
     <h1>Reserve Links</h1>
-    <div id="pdf-container">Loading...</div>
+    <div id="pdf-container" class="pdf-container">Loading...</div>
 
     <script>
         let currentIndex = 0; // Current day index
@@ -98,35 +88,40 @@
 
             for (let i = 0; i < numDaysToShow; i++) {
                 const date = new Date(today);
-                date.setDate(today.getDate() - (currentIndex + i)); // Go back 'i' days
+                date.setDate(today.getDate() - (i)); // Go back 'i' days
 
                 const formattedDate = getFormattedDate(date);
                 const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
 
+                const dayDiv = document.createElement('div');
+                dayDiv.className = 'pdf-day';
                 const link = document.createElement('a');
                 link.href = pdfUrl;
                 link.target = '_blank';
                 link.className = 'pdf-link';
                 link.innerText = formattedDate;
 
-                pdfContainer.appendChild(link);
+                dayDiv.appendChild(link);
+                pdfContainer.appendChild(dayDiv);
             }
 
             // Show Today's link conditionally
-            const tomorrowVisible = isAfterFourPMHawaii();
-            if (tomorrowVisible) {
+            if (isAfterFourPMHawaii()) {
                 const tomorrowLinkDate = new Date(today);
                 tomorrowLinkDate.setDate(today.getDate() + 1);
                 const formattedTomorrow = getFormattedDate(tomorrowLinkDate);
                 const pdfUrlTomorrow = `${pdfBaseUrl}${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
+                const tomorrowDiv = document.createElement('div');
+                tomorrowDiv.className = 'pdf-day';
                 const tomorrowLink = document.createElement('a');
                 tomorrowLink.href = pdfUrlTomorrow;
                 tomorrowLink.target = '_blank';
                 tomorrowLink.className = 'pdf-link';
                 tomorrowLink.innerText = formattedTomorrow;
 
-                pdfContainer.appendChild(tomorrowLink);
+                tomorrowDiv.appendChild(tomorrowLink);
+                pdfContainer.appendChild(tomorrowDiv);
             }
         }
 
@@ -157,16 +152,14 @@
         function showPreviousDay() {
             if (currentIndex > 0) {
                 currentIndex--;
-                displayPDFLinks();
                 updateContainerPosition();
             }
         }
 
         // Function to go to the next day's links
         function showNextDay() {
-            if (currentIndex < numDaysToShow - 1) {
+            if (currentIndex < numDaysToShow) {
                 currentIndex++;
-                displayPDFLinks();
                 updateContainerPosition();
             }
         }

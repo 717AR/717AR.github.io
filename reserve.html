@@ -3,332 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>787 Links</title>
+    <title>Vacation Selector</title>
     <style>
+        /* Basic resetting and styling */
         body {
             font-family: Arial, sans-serif;
-            margin: 0;
-            height: 100vh;
-            background-color: #f5f5f5;
-            overflow: auto; /* Allow scrolling */
-            display: flex;
-            flex-direction: column; /* Stack children vertically */
-            align-items: center; /* Center children horizontally */
+            margin: 20px;
         }
-        .header {
-            background-color: #0077cc;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase; /* Make text all caps */
-            width: 100%; /* Full width */
+
+        /* Styles for the vacation modal */
+        #vacationModal {
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            z-index: 1000;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
         }
-        .current-date {
-            font-size: 16px; /* Reset to original font size */
-            margin: 2px 0; /* Updated margin to 2px */
+
+        #vacationModal h2 {
+            margin-top: 0;
         }
-        .header-content {
-            display: flex;
-            justify-content: center; /* Center the header content */
-            align-items: center; /* Align items in the center */
-            flex-direction: column; /* Stack date below title */
-        }
-        .reserve-dashboard, .dfs-history, .recalls {
-            text-align: center;
-            margin: 10px; /* Adjusted margin */
-            font-size: 22px; /* Increased size for the title */
-            border: 1px solid #0077cc; /* Outline the container */
-            border-radius: 8px;
-            background-color: white; /* Background color */
-            padding: 10px; /* Padding around text */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            display: inline-block; /* Make the container's width wrap around its content */
-            margin-top: 10px; /* Space above */
-        }
-        .button-container {
-            display: flex;
-            justify-content: center; /* Center the buttons */
-            gap: 10px; /* Space between buttons */
-            margin-top: 10px; /* Space above button area */
-        }
-        .button {
+
+        #vacationModal button {
+            margin: 5px;
             padding: 10px;
             background-color: #0077cc;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px; /* Set font size for buttons */
-            flex: 1; /* Make buttons take equal space */
-            min-width: 100px; /* Minimum width for buttons */
-            text-align: center; /* Center text in buttons */
-            text-transform: uppercase; /* Make button text all caps */
         }
-        .button:disabled {
-            background-color: #ccc; /* Grayed out button style */
-            cursor: not-allowed; /* Change cursor for disabled button */
+
+        #vacationModal button:hover {
+            background-color: #005fa3;
         }
-        .modal {
+
+        /* Cover for the background when modal is active */
+        #modalBackdrop {
             display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
+            position: fixed;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-            padding-top: 60px; /* Place holder for the modal */
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999; /* Behind the modal */
         }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-        }
-        .pdf-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .pdf-item {
-            background: white;
-            border: 1px solid #0077cc;
-            border-radius: 8px;
-            margin: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .pdf-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0077cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .pdf-link:hover {
-            background-color: #005999;
-        }
-        /* New vacation section styles */
-        .vacation-section {
-            margin-top: 20px; /* Space above the vacation section */
-            text-align: center; /* Center the text in the section */
-            font-size: 22px; /* Same font size as other sections */
-            border: 1px solid #0077cc; /* Outline the container */
-            border-radius: 8px;
-            background-color: white; /* Background color */
-            padding: 10px; /* Padding around text */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+        /* Styles for vacation link */
+        #vacation-link {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <span>787 Links</span>
-            <span class="current-date" id="current-date"></span>
-        </div>
-    </div>
-    
-    <div class="reserve-dashboard">
-        Reserve Dashboard:
-        <div class="button-container">
-            <button class="button" id="older-button">Older</button>
-            <button class="button" id="today-button">Today</button> <!-- Updated label to all caps -->
-            <button class="button" id="tomorrow-button"></button> <!-- Updated label will show dynamically -->
-        </div>
+
+    <!-- Vacation Link -->
+    <div>
+        <span id="vacation-link">Vacation</span>
     </div>
 
-    <!-- Moved Recalls Section above DFS History -->
-    <div class="recalls">
-        Recalls:
-        <div class="button-container">
-            <button class="button" id="recall-today-minus-3"></button>
-            <button class="button" id="recall-today-minus-2"></button>
-            <button class="button" id="recall-today-minus-1"></button>
-        </div>
-    </div>
-
-    <div class="dfs-history" id="dfs-history">
-        DFS History:
-        <div class="button-container">
-            <button class="button" id="two-days-ago-button"></button>
-            <button class="button" id="day-before-yesterday-button"></button>
-            <button class="button" id="yesterday-button"></button>
-        </div>
-    </div>
-
-    <div class="vacation-section">
-        Vacation:
-        <div class="button-container">
-            <button class="button" id="vacation-2024">2024</button>
-            <button class="button" id="vacation-2025">2025</button>
-        </div>
-    </div>
-
-    <!-- Modal for Date Picker -->
-    <div id="dateModal" class="modal">
-        <div class="modal-content">
-            <span id="close" style="cursor:pointer; float:right;">&times;</span>
-            <h2>Select a Date</h2>
-            <input type="date" id="datepicker" style="width: 100%; padding: 10px;">
-            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Submit</button>
-        </div>
+    <!-- Modal for Vacation Options -->
+    <div id="modalBackdrop"></div>
+    <div id="vacationModal" style="display:none;">
+        <h2>Select Vacation Year</h2>
+        <button id="year-2024">2024</button>
+        <button id="year-2025">2025</button>
+        <button onclick="hideVacationModal();">Cancel</button>
     </div>
 
     <script>
-        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        
-        // Function to get the formatted date
-        function getFormattedDate(date) {
-            const days = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
-            return `${days}${month}${year}`;
-        }
+        // Base URL for PDFs
+        const pdfBaseUrl = "path/to/your/pdfs/"; // Update this to the base URL of your PDF directory
 
-        function getFormattedHeaderDate(date) {
-            const options = { weekday: 'long', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        function getPreviousDate(days) {
-            const date = new Date();
-            date.setDate(date.getDate() - days);
-            return date;
-        }
-
-        // Function to display today's date and set buttons
-        function displayDate() {
-            const today = new Date();
-            const formattedCurrentDate = getFormattedHeaderDate(today);
-            document.getElementById('current-date').innerText = formattedCurrentDate;
-
-            // Update tomorrow button
-            const tomorrowDate = new Date();
-            tomorrowDate.setDate(today.getDate() + 1);
-            document.getElementById('tomorrow-button').innerText = 'TMRW';  // Updated button text
-            document.getElementById('tomorrow-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set the 'Today' button
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Setting the buttons for the DFS History section
-            setDfsHistoryButtons();
-
-            // Set the buttons for Recalls section
-            setRecallsButtons();
-        }
-
-        // Set the buttons in the DFS History section
-        function setDfsHistoryButtons() {
-            const yesterdayButton = document.getElementById('yesterday-button');
-            const dayBeforeYesterdayButton = document.getElementById('day-before-yesterday-button');
-            const twoDaysAgoButton = document.getElementById('two-days-ago-button');
-
-            const yesterdayDate = getPreviousDate(1);
-            yesterdayButton.innerText = getFormattedDate(yesterdayDate);
-            yesterdayButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            const dayBeforeYesterdayDate = getPreviousDate(2);
-            dayBeforeYesterdayButton.innerText = getFormattedDate(dayBeforeYesterdayDate);
-            dayBeforeYesterdayButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            const twoDaysAgoDate = getPreviousDate(3);
-            twoDaysAgoButton.innerText = getFormattedDate(twoDaysAgoDate);
-            twoDaysAgoButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-
-        // Set the buttons in the Recalls section
-        function setRecallsButtons() {
-            const todayMinus1Button = document.getElementById('recall-today-minus-1');
-            const todayMinus2Button = document.getElementById('recall-today-minus-2');
-            const todayMinus3Button = document.getElementById('recall-today-minus-3');
-
-            const today = new Date();
-
-            // Set button for today - 1
-            const todayMinus1Date = getPreviousDate(1);
-            todayMinus1Button.innerText = getFormattedDate(todayMinus1Date);
-            todayMinus1Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus1Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 2
-            const todayMinus2Date = getPreviousDate(2);
-            todayMinus2Button.innerText = getFormattedDate(todayMinus2Date);
-            todayMinus2Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus2Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 3
-            const todayMinus3Date = getPreviousDate(3);
-            todayMinus3Button.innerText = getFormattedDate(todayMinus3Date);
-            todayMinus3Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus3Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-
-        // Add event listener to Older button
-        document.getElementById('older-button').onclick = function() {
-            // Show the modal
-            document.getElementById('dateModal').style.display = "block";
+        // Show the modal when clicking the Vacation link
+        document.getElementById('vacation-link').onclick = function() {
+            document.getElementById('vacationModal').style.display = 'block';
+            document.getElementById('modalBackdrop').style.display = 'block'; // Show backdrop
         };
 
-        // Close the modal when the user clicks on <span> (x)
-        document.getElementById('close').onclick = function() {
-            document.getElementById('dateModal').style.display = "none";
+        // Function to hide the modal
+        function hideVacationModal() {
+            document.getElementById('vacationModal').style.display = 'none';
+            document.getElementById('modalBackdrop').style.display = 'none'; // Hide backdrop
+        }
+
+        // Link to the appropriate PDF for the year selected
+        document.getElementById('year-2024').onclick = function() {
+            const pdfUrl = `${pdfBaseUrl}Vacation2024.pdf`; // Replace with actual 2024 PDF file name
+            window.open(pdfUrl, '_blank');
+            hideVacationModal();
         };
 
-        // Set submission event for the date
-document.getElementById('submit-date').onclick = function() {
-    const datePicker = document.getElementById('datepicker').value;
-    const selectedDate = new Date(datePicker);
-
-    if (!isNaN(selectedDate.getTime())) { // Check for a valid date
-        const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
-        window.open(pdfUrl, '_blank');
-    }
-
-    // Hide the modal after selection
-    document.getElementById('dateModal').style.display = "none";
-};
-
-        // Links for vacation pages
-        document.getElementById('vacation-2024').onclick = function() {
-            window.open('https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024 Vacation Availability/787ca2024.pdf', '_blank');
+        document.getElementById('year-2025').onclick = function() {
+            const pdfUrl = `${pdfBaseUrl}Vacation2025.pdf`; // Replace with actual 2025 PDF file name
+            window.open(pdfUrl, '_blank');
+            hideVacationModal();
         };
-
-        document.getElementById('vacation-2025').onclick = function() {
-            window.open('https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025 Annual Vacation Bidding/787ca2025.pdf', '_blank');
-        };
-
-        // Initial calls
-        displayDate();
     </script>
+
 </body>
 </html>

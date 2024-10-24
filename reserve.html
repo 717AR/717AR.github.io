@@ -85,8 +85,8 @@
     <div class="reserve-dashboard">Reserve Dashboard</div>
     
     <div class="button-container">
-        <button class="button" id="past-button">Past</button>
-        <button class="button" id="today-button" onclick="displayPDFLinks()">Today</button>
+        <button class="button" id="older-button">Older</button>
+        <button class="button" id="today-button">Today</button>
         <button class="button" id="tomorrow-button">Tomorrow</button>
     </div>
 
@@ -96,7 +96,6 @@
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        const numDaysToShow = 7; // Number of days to show links for
 
         // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate(date) {
@@ -106,8 +105,8 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to display the PDF links
-        function displayPDFLinks() {
+        // Function to display today's PDF links
+        function displayTodayPDF() {
             const today = new Date();
             const pdfList = document.getElementById('pdf-list');
             pdfList.innerHTML = ''; // Clear existing content
@@ -152,12 +151,12 @@
             }
         }
 
-        // Add event listener to Past button
-        document.getElementById('past-button').onclick = function() {
+        // Add event listener to Older button
+        document.getElementById('older-button').onclick = function() {
             document.getElementById('date-picker').click(); // Trigger date picker
         };
 
-        // Handle date selection
+        // Handle date selection from the date picker
         document.getElementById('date-picker').onchange = function() {
             const selectedDate = new Date(this.value);
             const formattedDate = getFormattedDate(selectedDate);
@@ -175,13 +174,13 @@
         window.addEventListener('touchmove', (e) => {
             const currentY = e.touches[0].clientY;
             if (currentY - startY > 100) {
-                displayPDFLinks(); // Trigger refresh
+                displayTodayPDF(); // Trigger refresh for today's PDF
                 startY = currentY; // Reset startY to prevent multiple triggers
             }
         });
 
-        // Initial call to display PDF links on page load
-        displayPDFLinks();
+        // Initial call to display today's PDF links and check Tomorrow button state
+        displayTodayPDF();
         checkTomorrowButtonState(); // Check state of the Tomorrow button
     </script>
 </body>

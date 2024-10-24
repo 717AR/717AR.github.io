@@ -88,9 +88,11 @@
             text-align: center; /* Center text in buttons */
             text-transform: uppercase; /* Make button text all caps */
             margin-bottom: 10px; /* Space between buttons */
+            transition: background-color 0.3s; /* Smooth transition for background color */
         }
-        .disabled {
+        .button.disabled {
             background-color: #ccc; /* Grey out */
+            color: #666; /* Change text color */
             cursor: not-allowed; /* Show not-allowed cursor */
         }
         .modal {
@@ -127,7 +129,7 @@
         <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button" class="disabled" disabled>Tomorrow</button>
+            <button class="button" id="tomorrow-button" disabled class="disabled">Tomorrow</button>
         </div>
     </div>
 

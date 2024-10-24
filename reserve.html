@@ -47,9 +47,6 @@
             display: inline-block; /* Make the container's width wrap around its content */
             margin-top: 10px; /* Space above */
         }
-         .reserve-dashboard-link:hover {
-            text-decoration: underline; /* Underline on hover */
-        }
         .section {
             text-align: center;
             margin: 10px;
@@ -58,7 +55,9 @@
         }
         .vacation-section {
             font-size: 18px; /* Reduced font size for vacation section */
+            margin-top: 20px; /* Space above the vacation section */
             padding: 10px; /* Padding around text */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .vacation-link {
             margin: 0 10px; /* Space between links */
@@ -89,6 +88,10 @@
             text-align: center; /* Center text in buttons */
             text-transform: uppercase; /* Make button text all caps */
             margin-bottom: 10px; /* Space between buttons */
+        }
+        .disabled {
+            background-color: #ccc; /* Grey out */
+            cursor: not-allowed; /* Show not-allowed cursor */
         }
         .modal {
             display: none; /* Hidden by default */
@@ -124,16 +127,19 @@
         <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button">Tomorrow</button>
+            <button class="button" id="tomorrow-button" class="disabled" disabled>Tomorrow</button>
         </div>
     </div>
 
+    <!-- Recalls Section -->
     <div class="recalls section">
-        Recalls
+        Recalls:
+        <!-- Buttons removed -->
     </div>
 
     <div class="dfs-history section">
-        DFS History
+        DFS History:
+        <!-- Date picker removed -->
     </div>
 
     <div class="vacation-section">
@@ -182,13 +188,22 @@
             const formattedCurrentDate = getFormattedHeaderDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            // Update tomorrow button
-            const tomorrowDate = new Date();
-            tomorrowDate.setDate(today.getDate() + 1);
-            document.getElementById('tomorrow-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
+            // Check if it's after 4 PM in Hawaii
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            // Disable "Tomorrow" button until 4 PM Hawaii time
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.disabled = false;
+                tomorrowButton.classList.remove('disabled'); // Remove greyed out class
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
 
             // Set the 'Today' button
             document.getElementById('today-button').onclick = function() {

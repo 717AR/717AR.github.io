@@ -166,18 +166,12 @@
     <!-- Recalls Section -->
     <div class="recalls">
         Recalls:
-        <div class="button-container">
-            <button class="button" id="recall-today-minus-3"></button>
-            <button class="button" id="recall-today-minus-2"></button>
-            <button class="button" id="recall-today-minus-1"></button>
-        </div>
+        <!-- Buttons removed from this section -->
     </div>
 
     <div class="dfs-history">
         DFS History:
-        <div class="date-picker">
-            <input type="date" id="dfs-date-picker" />
-        </div>
+        <!-- Date picker removed from this section -->
     </div>
 
     <div class="vacation-section">
@@ -239,51 +233,6 @@
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
-
-            // Setting the buttons for the Recalls section
-            setRecallsButtons();
-        }
-
-        // Set the DFS date picker to redirect when a date is picked
-        document.getElementById('dfs-date-picker').addEventListener('change', function() {
-            const selectedDate = new Date(this.value);
-            if (!isNaN(selectedDate.getTime())) { // Check if valid date
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            }
-        });
-
-        // Set the buttons in the Recalls section
-        function setRecallsButtons() {
-            const todayMinus1Button = document.getElementById('recall-today-minus-1');
-            const todayMinus2Button = document.getElementById('recall-today-minus-2');
-            const todayMinus3Button = document.getElementById('recall-today-minus-3');
-
-            const today = new Date();
-
-            // Set button for today - 1
-            const todayMinus1Date = getPreviousDate(1);
-            todayMinus1Button.innerText = getFormattedDateForUrl(todayMinus1Date);
-            todayMinus1Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus1Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 2
-            const todayMinus2Date = getPreviousDate(2);
-            todayMinus2Button.innerText = getFormattedDateForUrl(todayMinus2Date);
-            todayMinus2Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus2Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 3
-            const todayMinus3Date = getPreviousDate(3);
-            todayMinus3Button.innerText = getFormattedDateForUrl(todayMinus3Date);
-            todayMinus3Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus3Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
         }
 
         // Add event listener to Reserve Dashboard link
@@ -302,7 +251,7 @@
             const datePicker = document.getElementById('datepicker').value;
             const selectedDate = new Date(datePicker);
 
-            if (!isNaN(selectedDate.getTime())) { // Check valid date
+            if (!isNaN(selectedDate.getTime())) { // Check if valid date
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             }

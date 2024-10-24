@@ -67,10 +67,6 @@
             text-transform: uppercase; /* Make button text all caps */
             margin-bottom: 10px; /* Space between buttons */
         }
-        .button:disabled {
-            background-color: #ccc; /* Grayed out button style */
-            cursor: not-allowed; /* Change cursor for disabled button */
-        }
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -91,32 +87,6 @@
             border: 1px solid #888;
             width: 80%; /* Could be more or less, depending on screen size */
         }
-        .pdf-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .pdf-item {
-            background: white;
-            border: 1px solid #0077cc;
-            border-radius: 8px;
-            margin: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .pdf-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0077cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .pdf-link:hover {
-            background-color: #005999;
-        }
-        /* New vacation section styles */
         .vacation-section {
             margin-top: 20px; /* Space above the vacation section */
             text-align: center; /* Center the text in the section */
@@ -137,13 +107,16 @@
         .vacation-link:hover {
             text-decoration: underline; /* Underline on hover */
         }
-        .date-picker {
-            margin-top: 10px;
+        .recalls-section {
+            margin-top: 10px; /* Space above the recalls section */
         }
-        .reserve-dashboard-link {
-            color: #0077cc; /* Link color matching the style */
+        .recalls-link {
             cursor: pointer; /* Indicate it's clickable */
-            text-decoration: underline; /* Underlined for a link effect */
+            color: #0077cc; /* Link color */
+            text-decoration: underline; /* Underline to show it's a link */
+        }
+        .date-picker {
+            margin-top: 10px; /* Margin above date picker */
         }
     </style>
 </head>
@@ -165,11 +138,10 @@
 
     <!-- Recalls Section -->
     <div class="recalls">
-        Recalls:
+        <span class="recalls-section" id="recalls-section">Recalls:</span>
         <div class="button-container">
-            <button class="button" id="recall-today-minus-3"></button>
-            <button class="button" id="recall-today-minus-2"></button>
-            <button class="button" id="recall-today-minus-1"></button>
+            <input type="date" id="recall-date-picker" class="date-picker" />
+            <button class="button" id="recall-submit">Submit</button>
         </div>
     </div>
 
@@ -200,7 +172,7 @@
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        
+
         // Function to get the formatted date for the URL
         function getFormattedDateForUrl(date) {
             const days = String(date.getDate()).padStart(2, '0');
@@ -214,17 +186,16 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        function getPreviousDate(days) {
-            const date = new Date();
-            date.setDate(date.getDate() - days);
-            return date;
-        }
-
-        // Function to display today's date and set buttons
         function displayDate() {
             const today = new Date();
             const formattedCurrentDate = getFormattedHeaderDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
+
+            // Set the 'Today' button
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
 
             // Update tomorrow button
             const tomorrowDate = new Date();
@@ -233,16 +204,16 @@
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
-
-            // Set the 'Today' button
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Setting the buttons for the Recalls section
-            setRecallsButtons();
         }
+
+        // Handle the Recalls section's submit button
+        document.getElementById('recall-submit').onclick = function() {
+            const recallDate = new Date(document.getElementById('recall-date-picker').value);
+            if (!isNaN(recallDate.getTime())) { // Check if valid date
+                const recallPdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(recallDate)}-PI RCL LIST.PDF`;
+                window.open(recallPdfUrl, '_blank');
+            }
+        };
 
         // Set the DFS date picker to redirect when a date is picked
         document.getElementById('dfs-date-picker').addEventListener('change', function() {
@@ -252,64 +223,6 @@
                 window.open(pdfUrl, '_blank');
             }
         });
-
-        // Set the buttons in the Recalls section
-        function setRecallsButtons() {
-            const todayMinus1Button = document.getElementById('recall-today-minus-1');
-            const todayMinus2Button = document.getElementById('recall-today-minus-2');
-            const todayMinus3Button = document.getElementById('recall-today-minus-3');
-
-            const today = new Date();
-
-            // Set button for today - 1
-            const todayMinus1Date = getPreviousDate(1);
-            todayMinus1Button.innerText = getFormattedDateForUrl(todayMinus1Date);
-            todayMinus1Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus1Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 2
-            const todayMinus2Date = getPreviousDate(2);
-            todayMinus2Button.innerText = getFormattedDateForUrl(todayMinus2Date);
-            todayMinus2Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus2Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set button for today - 3
-            const todayMinus3Date = getPreviousDate(3);
-            todayMinus3Button.innerText = getFormattedDateForUrl(todayMinus3Date);
-            todayMinus3Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus3Date)}-PI RCL LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-
-        // Add event listener to Reserve Dashboard link
-        document.getElementById('reserve-dashboard-link').onclick = function() {
-            // Show the modal
-            document.getElementById('dateModal').style.display = "block";
-        };
-
-        // Close the modal when the user clicks on <span> (x)
-        document.getElementById('close').onclick = function() {
-            document.getElementById('dateModal').style.display = "none";
-        };
-
-        // Set submission event for the date
-        document.getElementById('submit-date').onclick = function() {
-            const datePicker = document.getElementById('datepicker').value;
-            const selectedDate = new Date(datePicker);
-
-            if (!isNaN(selectedDate.getTime())) { // Check valid date
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            }
-
-            // Hide the modal after selection
-            document.getElementById('dateModal').style.display = "none";
-        };
 
         // Initial calls
         displayDate();

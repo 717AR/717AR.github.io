@@ -105,8 +105,8 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to display today's PDF links
-        function displayTodayPDF() {
+        // Function to display today's PDF links and set the Today button's link
+        function displayPDFLinks() {
             const today = new Date();
             const pdfList = document.getElementById('pdf-list');
             pdfList.innerHTML = ''; // Clear existing content
@@ -116,6 +116,11 @@
 
             const linkText = "Today's RSV";
             const pdfUrl = `${pdfBaseUrl}${formattedCurrentDate}-PI PAX RSV LIST.PDF`;
+
+            // Set the Today button to open today's PDF directly
+            document.getElementById('today-button').onclick = function() {
+                window.open(pdfUrl, '_blank');
+            };
 
             const listItem = document.createElement('li');
             listItem.className = 'pdf-item';
@@ -174,13 +179,13 @@
         window.addEventListener('touchmove', (e) => {
             const currentY = e.touches[0].clientY;
             if (currentY - startY > 100) {
-                displayTodayPDF(); // Trigger refresh for today's PDF
+                displayPDFLinks(); // Trigger refresh for today's PDF
                 startY = currentY; // Reset startY to prevent multiple triggers
             }
         });
 
         // Initial call to display today's PDF links and check Tomorrow button state
-        displayTodayPDF();
+        displayPDFLinks();
         checkTomorrowButtonState(); // Check state of the Tomorrow button
     </script>
 </body>

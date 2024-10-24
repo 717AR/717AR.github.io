@@ -64,6 +64,7 @@
             flex: 1; /* Make buttons take equal space */
             min-width: 120px; /* Minimum width for buttons */
             text-align: center; /* Center text in buttons */
+            text-transform: uppercase; /* Make button text all caps */
         }
         .button:disabled {
             background-color: #ccc; /* Grayed out button style */
@@ -119,8 +120,18 @@
         Reserve Dashboard:
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
-            <button class="button" id="today-button">Today</button>
+            <button class="button" id="today-button">Today</button> <!-- Updated label to all caps -->
             <button class="button" id="tomorrow-button"></button> <!-- Updated label will show dynamically -->
+        </div>
+    </div>
+
+    <!-- Moved Recalls Section above DFS History -->
+    <div class="recalls">
+        Recalls:
+        <div class="button-container">
+            <button class="button" id="recall-today-minus-3"></button>
+            <button class="button" id="recall-today-minus-2"></button>
+            <button class="button" id="recall-today-minus-1"></button>
         </div>
     </div>
 
@@ -130,16 +141,6 @@
             <button class="button" id="two-days-ago-button"></button>
             <button class="button" id="day-before-yesterday-button"></button>
             <button class="button" id="yesterday-button"></button>
-        </div>
-    </div>
-    
-    <!-- New Recalls Section -->
-    <div class="recalls">
-        Recalls:
-        <div class="button-container">
-            <button class="button" id="recall-today-minus-3"></button>
-            <button class="button" id="recall-today-minus-2"></button>
-            <button class="button" id="recall-today-minus-1"></button>
         </div>
     </div>
 
@@ -187,7 +188,13 @@
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
-            
+
+            // Set the 'Today' button
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
             // Setting the buttons for the DFS History section
             setDfsHistoryButtons();
 
@@ -258,21 +265,24 @@
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            // Create a date picker input
             const datePicker = document.createElement('input');
             datePicker.type = 'date';
             datePicker.style.marginTop = '10px';
-            document.body.appendChild(datePicker); // Append to the body
-
-            // Add an event listener to capture date selection
+            
+            // Append to the body
+            document.body.appendChild(datePicker);
             datePicker.onchange = function() {
-                const selectedDate = new Date(datePicker.value);
+                // Ensure compatibility with iPhones
+                const selectedDate = new Date(this.value);
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
 
                 // Remove the date picker after selection
                 document.body.removeChild(datePicker);
             };
+
+            // Set focus on date picker to improve user experience on mobile
+            datePicker.focus();
         };
 
         // Links for vacation pages

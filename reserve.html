@@ -7,55 +7,45 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            text-align: center;
-            padding: 0;
             margin: 0;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
             background-color: #f5f5f5;
-            overflow: hidden; /* Prevent scrollbars */
+            overflow: auto; /* Allow scrolling */
         }
-        h1 {
-            color: #0077cc;
-            margin: 20px 0;
-        }
-        #current-date {
-            margin: 10px 0;
+        .header {
+            background-color: #0077cc;
+            color: white;
+            padding: 15px;
+            text-align: center;
             font-size: 24px;
-            font-weight: bold;
+            position: sticky; /* Make it sticky at the top */
+            top: 0;
         }
-        .pdf-container {
-            display: flex;
-            transition: transform 0.3s ease;
-            width: 100%;
-            height: auto;
-            overflow: hidden; /* Hide overflow */
+        .current-date {
+            font-size: 20px;
+            margin: 10px 0;
+        }
+        .pdf-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .pdf-item {
+            background: white;
+            border: 1px solid #0077cc;
             border-radius: 8px;
-        }
-        .pdf-day {
-            min-width: 100%; /* Each day takes full width */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid #0077cc; /* Add border to day blocks */
-            border-radius: 8px;         /* Add border radius */
+            margin: 10px;
             padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a card effect */
-            background: white; /* Background color for better visibility */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
         }
         .pdf-link {
             display: inline-block;
-            margin: 10px;
-            padding: 12px 24px;
+            padding: 10px 20px;
             background-color: #0077cc;
-            color: #ffffff;
+            color: white;
             text-decoration: none;
             border-radius: 5px;
-            transition: background-color 0.3s;
         }
         .pdf-link:hover {
             background-color: #005999;
@@ -63,14 +53,13 @@
     </style>
 </head>
 <body>
-    <h1>787 Links</h1>
-    <div id="current-date"></div>
-    <div id="pdf-container" class="pdf-container">Loading...</div>
+    <div class="header">787 Links</div>
+    <div class="current-date" id="current-date"></div>
+    <ul class="pdf-list" id="pdf-list">Loading...</ul>
 
     <script>
-        let currentIndex = 0; // Current day index
-        const numDaysToShow = 7; // Number of days to show links for
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        const numDaysToShow = 7; // Number of days to show links for
 
         // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate(date) {
@@ -80,11 +69,11 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to display the PDF links for current and previous days
+        // Function to display the PDF links
         function displayPDFLinks() {
             const today = new Date();
-            const pdfContainer = document.getElementById('pdf-container');
-            pdfContainer.innerHTML = ''; // Clear existing content
+            const pdfList = document.getElementById('pdf-list');
+            pdfList.innerHTML = ''; // Clear existing content
 
             const formattedCurrentDate = getFormattedDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
@@ -93,81 +82,39 @@
                 const date = new Date(today);
                 date.setDate(today.getDate() - i); // Go back 'i' days
 
-                const dayDiv = document.createElement('div');
-                dayDiv.className = 'pdf-day';
-
-                let linkText, formattedDate = getFormattedDate(date);
-                if (i === 0) {
-                    linkText = "Today's RSV";
-                } else if (i === 1) {
-                    linkText = "Tomorrow's RSV";
-                } else {
-                    linkText = formattedDate;
-                }
-
+                const formattedDate = getFormattedDate(date);
+                const linkText = (i === 0) ? "Today's RSV" : (i === 1) ? "Tomorrow's RSV" : formattedDate;
                 const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+
+                const listItem = document.createElement('li');
+                listItem.className = 'pdf-item';
                 const link = document.createElement('a');
                 link.href = pdfUrl;
                 link.target = '_blank';
                 link.className = 'pdf-link';
                 link.innerText = linkText;
 
-                dayDiv.appendChild(link);
-                pdfContainer.appendChild(dayDiv);
+                listItem.appendChild(link);
+                pdfList.appendChild(listItem);
             }
         }
 
-        // Function to handle a swipe
-        let touchStartX = 0;
-        let touchEndX = 0;
+        // Pull to refresh
+        let startY;
+        window.addEventListener('touchstart', (e) => {
+            startY = e.touches[0].clientY;
+        });
 
-        function handleTouchStart(event) {
-            touchStartX = event.changedTouches[0].screenX;
-        }
-
-        function handleTouchEnd(event) {
-            touchEndX = event.changedTouches[0].screenX;
-            handleSwipe();
-        }
-
-        function handleSwipe() {
-            if (touchStartX - touchEndX > 50) {
-                // Swipe left
-                showNextDay();
-            } else if (touchEndX - touchStartX > 50) {
-                // Swipe right
-                showPreviousDay();
+        window.addEventListener('touchmove', (e) => {
+            const currentY = e.touches[0].clientY;
+            if (currentY - startY > 100) {
+                displayPDFLinks(); // Trigger refresh
+                startY = currentY; // Reset startY to prevent multiple triggers
             }
-        }
-
-        // Function to go to the previous day's links
-        function showPreviousDay() {
-            if (currentIndex < numDaysToShow - 1) {
-                currentIndex++;
-                updateContainerPosition();
-            }
-        }
-
-        // Function to go to the next day's links
-        function showNextDay() {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateContainerPosition();
-            }
-        }
-
-        function updateContainerPosition() {
-            const pdfContainer = document.getElementById('pdf-container');
-            pdfContainer.style.transform = `translateX(-${currentIndex * 100}%)`; // Update position
-        }
+        });
 
         // Initial call to display PDF links on page load
         displayPDFLinks();
-
-        // Attach touch event listeners
-        const pdfContainer = document.getElementById('pdf-container');
-        pdfContainer.addEventListener('touchstart', handleTouchStart);
-        pdfContainer.addEventListener('touchend', handleTouchEnd);
     </script>
 </body>
 </html>

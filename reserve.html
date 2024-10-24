@@ -35,7 +35,7 @@
             align-items: center;
             flex-direction: column;
         }
-        .reserve-dashboard {
+        .reserve-dashboard, .dfs-history, .recalls {
             text-align: center;
             margin: 10px;
             font-size: 22px;
@@ -67,6 +67,45 @@
             text-transform: uppercase;
             margin-bottom: 10px;
         }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .vacation-section {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 22px;
+            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .vacation-links {
+            display: inline;
+            margin-left: 10px;
+        }
+        .vacation-link {
+            margin: 0 10px;
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .vacation-link:hover {
+            text-decoration: underline;
+        }
         .recalls-section {
             margin-top: 10px;
             cursor: pointer;
@@ -88,7 +127,7 @@
     </div>
     
     <div class="reserve-dashboard">
-        <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>
+        <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
             <button class="button" id="today-button">Today</button>
             <button class="button" id="tomorrow-button">Tomorrow</button>
@@ -101,11 +140,21 @@
         <input type="date" id="recall-date-picker" class="date-picker" />
     </div>
 
+    <!-- DFS History Section -->
     <div class="dfs-history">
         DFS History:
         <div class="date-picker">
             <input type="date" id="dfs-date-picker" />
         </div>
+    </div>
+
+    <!-- Vacation Section -->
+    <div class="vacation-section">
+        Vacation:
+        <span class="vacation-links">
+            <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
+            <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
+        </span>
     </div>
 
     <script>
@@ -156,7 +205,7 @@
             const recallDate = new Date(this.value);
             if (!isNaN(recallDate.getTime())) {
                 const recallPdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(recallDate)}-PI RCL LIST.PDF`;
-                window.open(recallPdfUrl, '_blank');
+                window.open(recallPdfUrl, '_blank')
             }
         });
 

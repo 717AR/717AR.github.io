@@ -70,6 +70,26 @@
             background-color: #ccc; /* Grayed out button style */
             cursor: not-allowed; /* Change cursor for disabled button */
         }
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0, 0, 0); /* Fallback color */
+            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
+            padding-top: 60px; /* Place holder for the modal */
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto; /* 15% from the top and centered */
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%; /* Could be more or less, depending on screen size */
+        }
         .pdf-list {
             list-style: none;
             padding: 0;
@@ -149,6 +169,16 @@
         <div class="button-container">
             <button class="button" id="vacation-2024">2024</button>
             <button class="button" id="vacation-2025">2025</button>
+        </div>
+    </div>
+
+    <!-- Modal for Date Picker -->
+    <div id="dateModal" class="modal">
+        <div class="modal-content">
+            <span id="close" style="cursor:pointer; float:right;">&times;</span>
+            <h2>Select a Date</h2>
+            <input type="date" id="datepicker" style="width: 100%; padding: 10px;">
+            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Submit</button>
         </div>
     </div>
 
@@ -265,24 +295,27 @@
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            const datePicker = document.createElement('input');
-            datePicker.type = 'date';
-            datePicker.style.marginTop = '10px';
-            
-            // Append to the body
-            document.body.appendChild(datePicker);
-            datePicker.onchange = function() {
-                // Ensure compatibility with iPhones
-                const selectedDate = new Date(this.value);
+            // Show the modal
+            document.getElementById('dateModal').style.display = "block";
+        };
+
+        // Close the modal when the user clicks on <span> (x)
+        document.getElementById('close').onclick = function() {
+            document.getElementById('dateModal').style.display = "none";
+        };
+
+        // Set submission event for the date
+        document.getElementById('submit-date').onclick = function() {
+            const datePicker = document.getElementById('datepicker').value;
+            const selectedDate = new Date(datePicker);
+
+            if (!isNaN(selectedDate.getTime())) { // Check valid date
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
+            }
 
-                // Remove the date picker after selection
-                document.body.removeChild(datePicker);
-            };
-
-            // Set focus on date picker to improve user experience on mobile
-            datePicker.focus();
+            // Hide the modal after selection
+            document.getElementById('dateModal').style.display = "none";
         };
 
         // Links for vacation pages

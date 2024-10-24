@@ -8,7 +8,7 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            padding: 20px;
+            padding: 0;
             margin: 0;
             height: 100vh;
             display: flex;
@@ -20,19 +20,20 @@
         }
         h1 {
             color: #0077cc;
+            margin: 20px 0;
         }
         #current-date {
             margin: 10px 0;
-            font-size: 18px;
+            font-size: 24px;
             font-weight: bold;
         }
         .pdf-container {
             display: flex;
             transition: transform 0.3s ease;
             width: 100%;
-            max-width: 500px; /* Limit max width on desktop */
-            height: auto; /* Auto height for flex items */
+            height: auto;
             overflow: hidden; /* Hide overflow */
+            border-radius: 8px;
         }
         .pdf-day {
             min-width: 100%; /* Each day takes full width */
@@ -40,15 +41,21 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            border: 1px solid #0077cc; /* Add border to day blocks */
+            border-radius: 8px;         /* Add border radius */
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for a card effect */
+            background: white; /* Background color for better visibility */
         }
         .pdf-link {
             display: inline-block;
             margin: 10px;
-            padding: 10px 20px;
+            padding: 12px 24px;
             background-color: #0077cc;
             color: #ffffff;
             text-decoration: none;
             border-radius: 5px;
+            transition: background-color 0.3s;
         }
         .pdf-link:hover {
             background-color: #005999;
@@ -64,7 +71,7 @@
         let currentIndex = 0; // Current day index
         const numDaysToShow = 7; // Number of days to show links for
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        
+
         // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate(date) {
             const days = String(date.getDate()).padStart(2, '0');
@@ -73,46 +80,32 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to check if the current time is past 4:00 PM Hawaii time
-        function isAfterFourPMHawaii() {
-            const hawaiiTime = new Intl.DateTimeFormat('en-US', {
-                timeZone: 'Pacific/Honolulu',
-                hour: '2-digit',
-                minute: '2-digit',
-                hour12: false
-            }).format(new Date());
-
-            const [hours, minutes] = hawaiiTime.split(':').map(Number);
-            return (hours > 16) || (hours === 16 && minutes >= 0);
-        }
-
         // Function to display the PDF links for current and previous days
         function displayPDFLinks() {
             const today = new Date();
             const pdfContainer = document.getElementById('pdf-container');
             pdfContainer.innerHTML = ''; // Clear existing content
 
-            const currentDateText = document.getElementById('current-date');
-            currentDateText.innerText = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedCurrentDate = getFormattedDate(today);
+            document.getElementById('current-date').innerText = formattedCurrentDate;
 
             for (let i = 0; i < numDaysToShow; i++) {
                 const date = new Date(today);
-                date.setDate(today.getDate() - (i)); // Go back 'i' days
+                date.setDate(today.getDate() - i); // Go back 'i' days
 
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'pdf-day';
 
-                let formattedDate, linkText;
-                if (i === 0) { // For today
-                    linkText = "Today";
-                } else if (i === 1) { // For tomorrow
-                    linkText = "Tomorrow";
-                } else { // For previous days
-                    formattedDate = getFormattedDate(date);
+                let linkText, formattedDate = getFormattedDate(date);
+                if (i === 0) {
+                    linkText = "Today's RSV";
+                } else if (i === 1) {
+                    linkText = "Tomorrow's RSV";
+                } else {
                     linkText = formattedDate;
                 }
 
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(date)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
                 const link = document.createElement('a');
                 link.href = pdfUrl;
                 link.target = '_blank';

@@ -305,18 +305,18 @@
         };
 
         // Set submission event for the date
-        document.getElementById('submit-date').onclick = function() {
-            const datePicker = document.getElementById('datepicker').value;
-            const selectedDate = new Date(datePicker);
+document.getElementById('submit-date').onclick = function() {
+    const datePicker = document.getElementById('datepicker').value;
+    const selectedDate = new Date(datePicker);
 
-            if (!isNaN(selectedDate.getTime())) { // Check valid date
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            }
+    if (!isNaN(selectedDate.getTime())) { // Check for a valid date
+        const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
+        window.open(pdfUrl, '_blank');
+    }
 
-            // Hide the modal after selection
-            document.getElementById('dateModal').style.display = "none";
-        };
+    // Hide the modal after selection
+    document.getElementById('dateModal').style.display = "none";
+};
 
         // Links for vacation pages
         document.getElementById('vacation-2024').onclick = function() {

@@ -49,8 +49,8 @@
         }
         .button-container {
             display: flex;
-            justify-content: center; /* Center the buttons */
-            gap: 10px; /* Space between buttons */
+            flex-direction: column; /* Stack buttons vertically */
+            align-items: center; /* Center buttons */
             margin-top: 10px; /* Space above button area */
         }
         .button {
@@ -61,10 +61,11 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px; /* Set font size for buttons */
-            flex: 1; /* Make buttons take equal space */
-            min-width: 100px; /* Minimum width for buttons */
+            width: 100%; /* Full width for buttons */
+            max-width: 150px; /* Optional: Limit button width */
             text-align: center; /* Center text in buttons */
             text-transform: uppercase; /* Make button text all caps */
+            margin-bottom: 10px; /* Space between buttons */
         }
         .button:disabled {
             background-color: #ccc; /* Grayed out button style */
@@ -157,9 +158,8 @@
     <div class="reserve-dashboard">
         <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
-            <button class="button" id="older-button">Older</button>
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button"></button>
+            <button class="button" id="tomorrow-button">Tomorrow</button>
         </div>
     </div>
 
@@ -229,7 +229,6 @@
             // Update tomorrow button
             const tomorrowDate = new Date();
             tomorrowDate.setDate(today.getDate() + 1);
-            document.getElementById('tomorrow-button').innerText = 'TMRW';
             document.getElementById('tomorrow-button').onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
@@ -289,12 +288,6 @@
 
         // Add event listener to Reserve Dashboard link
         document.getElementById('reserve-dashboard-link').onclick = function() {
-            // Show the modal
-            document.getElementById('dateModal').style.display = "block";
-        };
-
-        // Add event listener to Older button
-        document.getElementById('older-button').onclick = function() {
             // Show the modal
             document.getElementById('dateModal').style.display = "block";
         };

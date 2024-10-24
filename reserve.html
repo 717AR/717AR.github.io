@@ -23,20 +23,19 @@
             font-size: 24px;
             font-weight: bold;
             text-transform: uppercase; /* Make text all caps */
-            position: sticky; /* Make it sticky at the top */
-            top: 0;
             width: 100%; /* Full width */
         }
         .current-date {
             font-size: 16px; /* Reset to original font size */
-            margin: 0; /* Remove margin */
+            margin: 5px 0; /* Add some spacing above and below */
         }
         .header-content {
             display: flex;
             justify-content: center; /* Center the header content */
             align-items: center; /* Align items in the center */
+            flex-direction: column; /* Stack date below title */
         }
-        .reserve-dashboard {
+        .reserve-dashboard, .dfs-history {
             text-align: center;
             margin: 10px; /* Adjusted margin */
             font-size: 22px; /* Increased size for the title */
@@ -63,7 +62,7 @@
             cursor: pointer;
             font-size: 16px; /* Set font size for buttons */
             flex: 1; /* Make buttons take equal space */
-            min-width: 100px; /* Minimum width for buttons */
+            min-width: 120px; /* Minimum width for buttons */
             text-align: center; /* Center text in buttons */
         }
         .button:disabled {
@@ -125,12 +124,12 @@
         </div>
     </div>
 
-    <div class="reserve-dashboard" id="dfs-history">
+    <div class="dfs-history" id="dfs-history">
         DFS History:
         <div class="button-container">
-            <button class="button" id="yesterday-button">Yesterday</button>
-            <button class="button" id="day-before-yesterday-button">Day Before Yesterday</button>
-            <button class="button" id="two-days-ago-button">Two Days Ago</button>
+            <button class="button" id="two-days-ago-button"></button>
+            <button class="button" id="day-before-yesterday-button"></button>
+            <button class="button" id="yesterday-button"></button>
         </div>
     </div>
 
@@ -167,7 +166,10 @@
             const formattedCurrentDate = getFormattedDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            // Tomorrow button
+            // Setting the buttons for the DFS History section
+            setDfsHistoryButtons();
+
+            // Initialize the Today and Tomorrow button
             const tomorrowButton = document.getElementById('tomorrow-button');
             const tomorrowDate = new Date();
             tomorrowDate.setDate(today.getDate() + 1);
@@ -177,15 +179,12 @@
                 window.open(pdfUrl, '_blank');
             };
 
-            // Today button
+            // Today button functionality
             const todayButton = document.getElementById('today-button');
             todayButton.onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
-
-            // Set the buttons in DFS History section
-            setDfsHistoryButtons();
         }
 
         // Set the buttons in the DFS History section
@@ -194,20 +193,23 @@
             const dayBeforeYesterdayButton = document.getElementById('day-before-yesterday-button');
             const twoDaysAgoButton = document.getElementById('two-days-ago-button');
 
+            const yesterdayDate = getPreviousDate(1);
+            yesterdayButton.innerText = getFormattedDate(yesterdayDate);
             yesterdayButton.onclick = function() {
-                const yesterdayDate = getPreviousDate(1);
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
+            const dayBeforeYesterdayDate = getPreviousDate(2);
+            dayBeforeYesterdayButton.innerText = getFormattedDate(dayBeforeYesterdayDate);
             dayBeforeYesterdayButton.onclick = function() {
-                const dayBeforeYesterdayDate = getPreviousDate(2);
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
+            const twoDaysAgoDate = getPreviousDate(3);
+            twoDaysAgoButton.innerText = getFormattedDate(twoDaysAgoDate);
             twoDaysAgoButton.onclick = function() {
-                const twoDaysAgoDate = getPreviousDate(3);
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
@@ -215,8 +217,9 @@
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            console.log("Older button clicked");
-            // Logic for Older button can be added here if necessary
+            const olderDate = getPreviousDate(4); // Get the date for four days ago
+            const pdfUrl = `${pdfBaseUrl}${getFormattedDate(olderDate)}-PI PAX RSV LIST.PDF`;
+            window.open(pdfUrl, '_blank'); // Open the link
         };
 
         // Links for vacation pages

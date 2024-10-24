@@ -135,6 +135,9 @@
         .vacation-link:hover {
             text-decoration: underline; /* Underline on hover */
         }
+        .date-picker {
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
@@ -164,12 +167,10 @@
         </div>
     </div>
 
-    <div class="dfs-history" id="dfs-history">
+    <div class="dfs-history">
         DFS History:
-        <div class="button-container">
-            <button class="button" id="two-days-ago-button"></button>
-            <button class="button" id="day-before-yesterday-button"></button>
-            <button class="button" id="yesterday-button"></button>
+        <div class="date-picker">
+            <input type="date" id="dfs-date-picker" />
         </div>
     </div>
 
@@ -194,8 +195,8 @@
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-        // Function to get the formatted date
-        function getFormattedDate(date) {
+        // Function to get the formatted date for the URL
+        function getFormattedDateForUrl(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getFullYear()).slice(-2);
@@ -222,15 +223,15 @@
             // Update tomorrow button
             const tomorrowDate = new Date();
             tomorrowDate.setDate(today.getDate() + 1);
-            document.getElementById('tomorrow-button').innerText = 'TMRW';  // Updated button text
+            document.getElementById('tomorrow-button').innerText = 'TMRW';
             document.getElementById('tomorrow-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             // Set the 'Today' button
             document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
@@ -241,33 +242,14 @@
             setRecallsButtons();
         }
 
-        // Set the buttons in the DFS History section
-        function setDfsHistoryButtons() {
-            const yesterdayButton = document.getElementById('yesterday-button');
-            const dayBeforeYesterdayButton = document.getElementById('day-before-yesterday-button');
-            const twoDaysAgoButton = document.getElementById('two-days-ago-button');
-
-            const yesterdayDate = getPreviousDate(1);
-            yesterdayButton.innerText = getFormattedDate(yesterdayDate);
-            yesterdayButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-787 DFSH.PDF`;
+        // Set the DFS date picker to redirect when a date is picked
+        document.getElementById('dfs-date-picker').addEventListener('change', function() {
+            const selectedDate = new Date(this.value);
+            if (!isNaN(selectedDate.getTime())) { // Check if valid date
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-787 DFSH.PDF`;
                 window.open(pdfUrl, '_blank');
-            };
-
-            const dayBeforeYesterdayDate = getPreviousDate(2);
-            dayBeforeYesterdayButton.innerText = getFormattedDate(dayBeforeYesterdayDate);
-            dayBeforeYesterdayButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            const twoDaysAgoDate = getPreviousDate(3);
-            twoDaysAgoButton.innerText = getFormattedDate(twoDaysAgoDate);
-            twoDaysAgoButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-787 DFSH.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
+            }
+        });
 
         // Set the buttons in the Recalls section
         function setRecallsButtons() {
@@ -279,25 +261,25 @@
 
             // Set button for today - 1
             const todayMinus1Date = getPreviousDate(1);
-            todayMinus1Button.innerText = getFormattedDate(todayMinus1Date);
+            todayMinus1Button.innerText = getFormattedDateForUrl(todayMinus1Date);
             todayMinus1Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus1Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus1Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             // Set button for today - 2
             const todayMinus2Date = getPreviousDate(2);
-            todayMinus2Button.innerText = getFormattedDate(todayMinus2Date);
+            todayMinus2Button.innerText = getFormattedDateForUrl(todayMinus2Date);
             todayMinus2Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus2Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus2Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             // Set button for today - 3
             const todayMinus3Date = getPreviousDate(3);
-            todayMinus3Button.innerText = getFormattedDate(todayMinus3Date);
+            todayMinus3Button.innerText = getFormattedDateForUrl(todayMinus3Date);
             todayMinus3Button.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus3Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayMinus3Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
@@ -319,7 +301,7 @@
             const selectedDate = new Date(datePicker);
 
             if (!isNaN(selectedDate.getTime())) { // Check valid date
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             }
 

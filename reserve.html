@@ -25,18 +25,18 @@
         }
         .current-date {
             font-size: 16px; /* Smaller font size */
-            text-align: center; /* Center the date */
-            margin-top: 10px; /* Space below the header */
+            margin: 10px 0; /* Space below the current date */
         }
         .reserve-dashboard {
             text-align: center;
-            margin: 10px 0;
-            font-size: 22px; /* Increase size for the title */
+            margin: 10px 10px; /* Adjusted margin */
+            font-size: 22px; /* Increased size for the title */
             border: 1px solid #0077cc; /* Outline the container */
             border-radius: 8px;
             background-color: white; /* Background color */
             padding: 10px; /* Padding around text */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            display: inline-block; /* Make the container's width wrap around its content */
         }
         .button-container {
             display: flex;
@@ -85,8 +85,10 @@
     </style>
 </head>
 <body>
-    <div class="header">787 Links</div>
-    <div class="current-date" id="current-date"></div>
+    <div class="header">
+        787 Links
+        <div class="current-date" id="current-date"></div>
+    </div>
     
     <div class="reserve-dashboard">
         Reserve Dashboard:

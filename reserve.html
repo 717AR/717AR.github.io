@@ -120,7 +120,7 @@
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button"></button> <!-- This will be updated dynamically -->
+            <button class="button" id="tomorrow-button"></button> <!-- Updated label will show dynamically -->
         </div>
     </div>
 
@@ -162,6 +162,11 @@
             return `${days}${month}${year}`;
         }
 
+        function getFormattedHeaderDate(date) {
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
         function getPreviousDate(days) {
             const date = new Date();
             date.setDate(date.getDate() - days);
@@ -171,30 +176,22 @@
         // Function to display today's date and set buttons
         function displayDate() {
             const today = new Date();
-            const formattedCurrentDate = getFormattedDate(today);
+            const formattedCurrentDate = getFormattedHeaderDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            // Setting the buttons for the DFS History section
-            setDfsHistoryButtons();
-
-            // Initialize the Today and Tomorrow button
-            const tomorrowButton = document.getElementById('tomorrow-button');
+            // Update tomorrow button
             const tomorrowDate = new Date();
             tomorrowDate.setDate(today.getDate() + 1);
-            tomorrowButton.innerText = getFormattedDate(tomorrowDate);
-            tomorrowButton.onclick = function() {
+            document.getElementById('tomorrow-button').innerText = 'TMRW';  // Updated button text
+            document.getElementById('tomorrow-button').onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
+            
+            // Setting the buttons for the DFS History section
+            setDfsHistoryButtons();
 
-            // Today button functionality
-            const todayButton = document.getElementById('today-button');
-            todayButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-
-            // Set the buttons for the Recalls section
+            // Set the buttons for Recalls section
             setRecallsButtons();
         }
 
@@ -207,21 +204,21 @@
             const yesterdayDate = getPreviousDate(1);
             yesterdayButton.innerText = getFormattedDate(yesterdayDate);
             yesterdayButton.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(yesterdayDate)}-787 DFSH.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-787 DFSH.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             const dayBeforeYesterdayDate = getPreviousDate(2);
             dayBeforeYesterdayButton.innerText = getFormattedDate(dayBeforeYesterdayDate);
             dayBeforeYesterdayButton.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(dayBeforeYesterdayDate)}-787 DFSH.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-787 DFSH.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             const twoDaysAgoDate = getPreviousDate(3);
             twoDaysAgoButton.innerText = getFormattedDate(twoDaysAgoDate);
             twoDaysAgoButton.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(twoDaysAgoDate)}-787 DFSH.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-787 DFSH.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
@@ -238,7 +235,7 @@
             const todayMinus1Date = getPreviousDate(1);
             todayMinus1Button.innerText = getFormattedDate(todayMinus1Date);
             todayMinus1Button.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(todayMinus1Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus1Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
@@ -246,7 +243,7 @@
             const todayMinus2Date = getPreviousDate(2);
             todayMinus2Button.innerText = getFormattedDate(todayMinus2Date);
             todayMinus2Button.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(todayMinus2Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus2Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
@@ -254,16 +251,28 @@
             const todayMinus3Date = getPreviousDate(3);
             todayMinus3Button.innerText = getFormattedDate(todayMinus3Date);
             todayMinus3Button.onclick = function() {
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(todayMinus3Date)}-PI RCL LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayMinus3Date)}-PI RCL LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            const olderDate = getPreviousDate(4); // Get the date for four days ago
-            const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${getFormattedDate(olderDate)}-787 DFSH.PDF`;
-            window.open(pdfUrl, '_blank'); // Open the link
+            // Create a date picker input
+            const datePicker = document.createElement('input');
+            datePicker.type = 'date';
+            datePicker.style.marginTop = '10px';
+            document.body.appendChild(datePicker); // Append to the body
+
+            // Add an event listener to capture date selection
+            datePicker.onchange = function() {
+                const selectedDate = new Date(datePicker.value);
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(selectedDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+
+                // Remove the date picker after selection
+                document.body.removeChild(datePicker);
+            };
         };
 
         // Links for vacation pages

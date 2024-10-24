@@ -139,6 +139,11 @@
         .date-picker {
             margin-top: 10px;
         }
+        .reserve-dashboard-link {
+            color: #0077cc; /* Link color matching the style */
+            cursor: pointer; /* Indicate it's clickable */
+            text-decoration: underline; /* Underlined for a link effect */
+        }
     </style>
 </head>
 <body>
@@ -150,7 +155,7 @@
     </div>
     
     <div class="reserve-dashboard">
-        Reserve Dashboard:
+        <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
             <button class="button" id="today-button">Today</button>
@@ -281,6 +286,12 @@
                 window.open(pdfUrl, '_blank');
             };
         }
+
+        // Add event listener to Reserve Dashboard link
+        document.getElementById('reserve-dashboard-link').onclick = function() {
+            // Show the modal
+            document.getElementById('dateModal').style.display = "block";
+        };
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {

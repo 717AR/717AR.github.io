@@ -28,7 +28,7 @@
             width: 100%; /* Full width */
         }
         .current-date {
-            font-size: 24px; /* Match header font size */
+            font-size: 16px; /* Reset to original font size */
             margin: 0; /* Remove margin */
         }
         .header-content {
@@ -120,6 +120,7 @@
         Reserve Dashboard:
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
+            <button class="button" id="today-button">Today</button>
             <button class="button" id="tomorrow-button"></button> <!-- This will be updated dynamically -->
         </div>
     </div>
@@ -127,7 +128,9 @@
     <div class="reserve-dashboard" id="dfs-history">
         DFS History:
         <div class="button-container">
-            <button class="button" id="dfs-button">Select Date</button>
+            <button class="button" id="yesterday-button">Yesterday</button>
+            <button class="button" id="day-before-yesterday-button">Day Before Yesterday</button>
+            <button class="button" id="two-days-ago-button">Two Days Ago</button>
         </div>
     </div>
 
@@ -141,12 +144,10 @@
 
     <ul class="pdf-list" id="pdf-list">Loading...</ul>
 
-    <input type="date" id="date-picker" style="display:none;"/>
-
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-        // Function to get today's date in the correct format DDMMMYY
+        // Function to get the formatted date
         function getFormattedDate(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
@@ -154,74 +155,68 @@
             return `${days}${month}${year}`;
         }
 
-        // Function to display today's PDF links and set the Today's button's link
-        function displayPDFLinks() {
-            const today = new Date();
-            const pdfList = document.getElementById('pdf-list');
-            pdfList.innerHTML = ''; // Clear existing content
+        function getPreviousDate(days) {
+            const date = new Date();
+            date.setDate(date.getDate() - days);
+            return date;
+        }
 
+        // Function to display today's date and set buttons
+        function displayDate() {
+            const today = new Date();
             const formattedCurrentDate = getFormattedDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            const pdfUrl = `${pdfBaseUrl}${formattedCurrentDate}-PI PAX RSV LIST.PDF`;
-
-            // Set the Tomorrow button's label and link
+            // Tomorrow button
             const tomorrowButton = document.getElementById('tomorrow-button');
-            tomorrowButton.innerText = getFormattedDate(new Date(today.setDate(today.getDate() + 1)));
-            tomorrowButton.onclick = function () {
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(today.getDate() + 1);
+            tomorrowButton.innerText = getFormattedDate(tomorrowDate);
+            tomorrowButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
-            const listItem = document.createElement('li');
-            listItem.className = 'pdf-item';
-            const link = document.createElement('a');
-            link.href = pdfUrl;
-            link.target = '_blank';
-            link.className = 'pdf-link';
-            link.innerText = "Today's RSV"; // Removed as per your request.
+            // Today button
+            const todayButton = document.getElementById('today-button');
+            todayButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
 
-            listItem.appendChild(link);
-            pdfList.appendChild(listItem);
+            // Set the buttons in DFS History section
+            setDfsHistoryButtons();
         }
 
-        // Check if it is after 1600 Hawaii time and enable/disable the Tomorrow button
-        function checkTomorrowButtonState() {
-            const hawaiiOffset = -10; // Hawaii time offset
-            const now = new Date();
-            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-            const hawaiiTime = new Date(utc + (3600000 * hawaiiOffset));
+        // Set the buttons in the DFS History section
+        function setDfsHistoryButtons() {
+            const yesterdayButton = document.getElementById('yesterday-button');
+            const dayBeforeYesterdayButton = document.getElementById('day-before-yesterday-button');
+            const twoDaysAgoButton = document.getElementById('two-days-ago-button');
 
-            if (hawaiiTime.getHours() >= 16) {
-                document.getElementById('tomorrow-button').disabled = false;
-            } else {
-                document.getElementById('tomorrow-button').disabled = true; // Disable the button if it's before 1600
-            }
+            yesterdayButton.onclick = function() {
+                const yesterdayDate = getPreviousDate(1);
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(yesterdayDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            dayBeforeYesterdayButton.onclick = function() {
+                const dayBeforeYesterdayDate = getPreviousDate(2);
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(dayBeforeYesterdayDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            twoDaysAgoButton.onclick = function() {
+                const twoDaysAgoDate = getPreviousDate(3);
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(twoDaysAgoDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
         }
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            const datePicker = document.getElementById('date-picker');
-            datePicker.onchange = function () {
-                const selectedDate = new Date(this.value);
-                const formattedDate = getFormattedDate(selectedDate);
-                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-                this.value = ""; // Reset date picker
-            };
-            datePicker.click(); // Trigger the date picker
-        };
-
-        // Add event listener to the DFS button
-        document.getElementById('dfs-button').onclick = function() {
-            const datePicker = document.getElementById('date-picker');
-            datePicker.onchange = function () {
-                const selectedDate = new Date(this.value);
-                const formattedDate = getFormattedDate(selectedDate);
-                const dfsUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-787 DFSH.PDF`;
-                window.open(dfsUrl, '_blank');
-                this.value = ""; // Reset date picker
-            };
-            datePicker.click(); // Trigger the date picker
+            console.log("Older button clicked");
+            // Logic for Older button can be added here if necessary
         };
 
         // Links for vacation pages
@@ -234,8 +229,7 @@
         };
 
         // Initial calls
-        displayPDFLinks();
-        checkTomorrowButtonState(); // Check state of tomorrow button
+        displayDate();
     </script>
 </body>
 </html>

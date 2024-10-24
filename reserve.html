@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>787 Links</title>
+    <title>Reserve Dashboard</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             padding: 20px;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
         }
         h1 {
             color: #0077cc;
         }
         .pdf-link {
             display: inline-block;
-            margin-top: 20px;
+            margin: 10px;
             padding: 10px 20px;
             background-color: #0077cc;
             color: #ffffff;
@@ -28,65 +35,154 @@
         .hidden {
             display: none;
         }
+        .navigation {
+            margin: 20px 0;
+        }
+        .swipe-button {
+            padding: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #0077cc;
+            border-radius: 5px;
+            background-color: #ffffff;
+            color: #0077cc;
+            margin: 0 10px;
+        }
+        .swipe-button:hover {
+            background-color: #f0f0f0;
+        }
+        #pdf-container {
+            overflow: hidden; /* Hide overflow for swipe */
+            width: 100%;
+            max-width: 500px; /* Limit max width on desktop */
+            position: relative;
+            transition: transform 0.3s ease; /* Smooth transition */
+        }
     </style>
 </head>
 <body>
-    <h1>787 Links</h1>
+    <h1>Reserve Links</h1>
     <div id="pdf-container">Loading...</div>
 
     <script>
+        let currentIndex = 0; // Current day index
+        const numDaysToShow = 7; // Number of days to show links for
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        
         // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate(date) {
-            const days = String(date.getDate()).padStart(2, '0');  // Get day of month
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase(); // Get month name in uppercase
-            const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year          
-            return `${days}${month}${year}`; // Format as DDMMMYY
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
         }
 
         // Function to check if the current time is past 4:00 PM Hawaii time
         function isAfterFourPMHawaii() {
             const hawaiiTime = new Intl.DateTimeFormat('en-US', {
-                timeZone: 'Pacific/Honolulu', // Hawaii time zone
-                hour: '2-digit', 
+                timeZone: 'Pacific/Honolulu',
+                hour: '2-digit',
                 minute: '2-digit',
-                hour12: false // 24-hour format to make comparison easier
+                hour12: false
             }).format(new Date());
 
             const [hours, minutes] = hawaiiTime.split(':').map(Number);
-            console.log(`Current Hawaii Time: ${hours}:${String(minutes).padStart(2, '0')}`); // Debug output
-
             return (hours > 16) || (hours === 16 && minutes >= 0);
         }
 
-        // Function to display the PDF link
-        function displayPDFLink() {
+        // Function to display the PDF links for current and previous days
+        function displayPDFLinks() {
             const today = new Date();
-            const tomorrow = new Date();
-            tomorrow.setDate(today.getDate() + 1); // Increment date by 1 for tomorrow
-
-            const formattedToday = getFormattedDate(today); // For today
-            const formattedTomorrow = getFormattedDate(tomorrow); // For tomorrow
-
-            const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
-            const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
-
             const pdfContainer = document.getElementById('pdf-container');
+            pdfContainer.innerHTML = ''; // Clear existing content
+
+            for (let i = 0; i < numDaysToShow; i++) {
+                const date = new Date(today);
+                date.setDate(today.getDate() - (currentIndex + i)); // Go back 'i' days
+
+                const formattedDate = getFormattedDate(date);
+                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.target = '_blank';
+                link.className = 'pdf-link';
+                link.innerText = formattedDate;
+
+                pdfContainer.appendChild(link);
+            }
+
+            // Show Today's link conditionally
             const tomorrowVisible = isAfterFourPMHawaii();
+            if (tomorrowVisible) {
+                const tomorrowLinkDate = new Date(today);
+                tomorrowLinkDate.setDate(today.getDate() + 1);
+                const formattedTomorrow = getFormattedDate(tomorrowLinkDate);
+                const pdfUrlTomorrow = `${pdfBaseUrl}${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
-            console.log(`Show Tomorrow Link: ${tomorrowVisible}`); // Debug output
+                const tomorrowLink = document.createElement('a');
+                tomorrowLink.href = pdfUrlTomorrow;
+                tomorrowLink.target = '_blank';
+                tomorrowLink.className = 'pdf-link';
+                tomorrowLink.innerText = formattedTomorrow;
 
-            pdfContainer.innerHTML = `
-                <h2></h2>
-                <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today's RSV</a>
-                </br>
-                <div id="tomorrow-link" class="${tomorrowVisible ? '' : 'hidden'}">
-                    <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow's RSV</a>
-                </div>
-            `;
+                pdfContainer.appendChild(tomorrowLink);
+            }
         }
 
-        // Call the function to display the PDF link on page load
-        displayPDFLink();
+        // Function to handle a swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        function handleTouchStart(event) {
+            touchStartX = event.changedTouches[0].screenX;
+        }
+
+        function handleTouchEnd(event) {
+            touchEndX = event.changedTouches[0].screenX;
+            handleSwipe();
+        }
+
+        function handleSwipe() {
+            if (touchStartX - touchEndX > 50) {
+                // Swipe left
+                showNextDay();
+            } else if (touchEndX - touchStartX > 50) {
+                // Swipe right
+                showPreviousDay();
+            }
+        }
+
+        // Function to go to the previous day's links
+        function showPreviousDay() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                displayPDFLinks();
+                updateContainerPosition();
+            }
+        }
+
+        // Function to go to the next day's links
+        function showNextDay() {
+            if (currentIndex < numDaysToShow - 1) {
+                currentIndex++;
+                displayPDFLinks();
+                updateContainerPosition();
+            }
+        }
+
+        function updateContainerPosition() {
+            const pdfContainer = document.getElementById('pdf-container');
+            pdfContainer.style.transform = `translateX(-${currentIndex * 100}%)`; // Update position
+        }
+
+        // Initial call to display PDF links on page load
+        displayPDFLinks();
+
+        // Attach touch event listeners
+        const pdfContainer = document.getElementById('pdf-container');
+        pdfContainer.addEventListener('touchstart', handleTouchStart);
+        pdfContainer.addEventListener('touchend', handleTouchEnd);
     </script>
 </body>
 </html>

@@ -28,6 +28,30 @@
             margin: 10px 0;
             text-align: center; /* Center the date */
         }
+        .reserve-dashboard {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 22px; /* Increase size for the title */
+        }
+        .button-container {
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            gap: 10px; /* Space between buttons */
+            margin: 10px 0;
+        }
+        .button {
+            padding: 10px 15px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px; /* Set font size for buttons */
+        }
+        .button:disabled {
+            background-color: #ccc; /* Grayed out button style */
+            cursor: not-allowed; /* Change cursor for disabled button */
+        }
         .pdf-list {
             list-style: none;
             padding: 0;
@@ -58,7 +82,17 @@
 <body>
     <div class="header">787 Links</div>
     <div class="current-date" id="current-date"></div>
+    <div class="reserve-dashboard">Reserve Dashboard</div>
+    
+    <div class="button-container">
+        <button class="button" id="past-button">Past</button>
+        <button class="button" id="today-button" onclick="displayPDFLinks()">Today</button>
+        <button class="button" id="tomorrow-button">Tomorrow</button>
+    </div>
+
     <ul class="pdf-list" id="pdf-list">Loading...</ul>
+
+    <input type="date" id="date-picker" style="display:none;"/>
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
@@ -81,26 +115,56 @@
             const formattedCurrentDate = getFormattedDate(today);
             document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            for (let i = 0; i < numDaysToShow; i++) {
-                const date = new Date(today);
-                date.setDate(today.getDate() - i); // Go back 'i' days
+            const linkText = "Today's RSV";
+            const pdfUrl = `${pdfBaseUrl}${formattedCurrentDate}-PI PAX RSV LIST.PDF`;
 
-                const formattedDate = getFormattedDate(date);
-                const linkText = (i === 0) ? "Today's RSV" : (i === 1) ? "Tomorrow's RSV" : formattedDate;
-                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+            const listItem = document.createElement('li');
+            listItem.className = 'pdf-item';
+            const link = document.createElement('a');
+            link.href = pdfUrl;
+            link.target = '_blank';
+            link.className = 'pdf-link';
+            link.innerText = linkText;
 
-                const listItem = document.createElement('li');
-                listItem.className = 'pdf-item';
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.target = '_blank';
-                link.className = 'pdf-link';
-                link.innerText = linkText;
+            listItem.appendChild(link);
+            pdfList.appendChild(listItem);
+        }
 
-                listItem.appendChild(link);
-                pdfList.appendChild(listItem);
+        // Check if it is after 1600 Hawaii time and enable/disable the Tomorrow button
+        function checkTomorrowButtonState() {
+            const hawaiiOffset = -10; // Hawaii time offset
+            const now = new Date();
+            const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+            const hawaiiTime = new Date(utc + (3600000 * hawaiiOffset));
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (hawaiiTime.getHours() >= 16) {
+                tomorrowButton.disabled = false;
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+                    const formattedDate = getFormattedDate(tomorrowDate);
+                    const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            } else {
+                tomorrowButton.disabled = true; // Disable the button if it's before 1600
             }
         }
+
+        // Add event listener to Past button
+        document.getElementById('past-button').onclick = function() {
+            document.getElementById('date-picker').click(); // Trigger date picker
+        };
+
+        // Handle date selection
+        document.getElementById('date-picker').onchange = function() {
+            const selectedDate = new Date(this.value);
+            const formattedDate = getFormattedDate(selectedDate);
+            const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+            window.open(pdfUrl, '_blank');
+            this.value = ""; // Reset date picker
+        };
 
         // Pull to refresh
         let startY;
@@ -118,6 +182,7 @@
 
         // Initial call to display PDF links on page load
         displayPDFLinks();
+        checkTomorrowButtonState(); // Check state of the Tomorrow button
     </script>
 </body>
 </html>

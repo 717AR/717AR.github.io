@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Reserve Dashboard</title>
+    <title>787 Links</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -20,6 +20,11 @@
         }
         h1 {
             color: #0077cc;
+        }
+        #current-date {
+            margin: 10px 0;
+            font-size: 18px;
+            font-weight: bold;
         }
         .pdf-container {
             display: flex;
@@ -51,7 +56,8 @@
     </style>
 </head>
 <body>
-    <h1>Reserve Links</h1>
+    <h1>787 Links</h1>
+    <div id="current-date"></div>
     <div id="pdf-container" class="pdf-container">Loading...</div>
 
     <script>
@@ -86,42 +92,35 @@
             const pdfContainer = document.getElementById('pdf-container');
             pdfContainer.innerHTML = ''; // Clear existing content
 
+            const currentDateText = document.getElementById('current-date');
+            currentDateText.innerText = today.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+
             for (let i = 0; i < numDaysToShow; i++) {
                 const date = new Date(today);
                 date.setDate(today.getDate() - (i)); // Go back 'i' days
 
-                const formattedDate = getFormattedDate(date);
-                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-
                 const dayDiv = document.createElement('div');
                 dayDiv.className = 'pdf-day';
+
+                let formattedDate, linkText;
+                if (i === 0) { // For today
+                    linkText = "Today";
+                } else if (i === 1) { // For tomorrow
+                    linkText = "Tomorrow";
+                } else { // For previous days
+                    formattedDate = getFormattedDate(date);
+                    linkText = formattedDate;
+                }
+
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(date)}-PI PAX RSV LIST.PDF`;
                 const link = document.createElement('a');
                 link.href = pdfUrl;
                 link.target = '_blank';
                 link.className = 'pdf-link';
-                link.innerText = formattedDate;
+                link.innerText = linkText;
 
                 dayDiv.appendChild(link);
                 pdfContainer.appendChild(dayDiv);
-            }
-
-            // Show Today's link conditionally
-            if (isAfterFourPMHawaii()) {
-                const tomorrowLinkDate = new Date(today);
-                tomorrowLinkDate.setDate(today.getDate() + 1);
-                const formattedTomorrow = getFormattedDate(tomorrowLinkDate);
-                const pdfUrlTomorrow = `${pdfBaseUrl}${formattedTomorrow}-PI PAX RSV LIST.PDF`;
-
-                const tomorrowDiv = document.createElement('div');
-                tomorrowDiv.className = 'pdf-day';
-                const tomorrowLink = document.createElement('a');
-                tomorrowLink.href = pdfUrlTomorrow;
-                tomorrowLink.target = '_blank';
-                tomorrowLink.className = 'pdf-link';
-                tomorrowLink.innerText = formattedTomorrow;
-
-                tomorrowDiv.appendChild(tomorrowLink);
-                pdfContainer.appendChild(tomorrowDiv);
             }
         }
 
@@ -150,16 +149,16 @@
 
         // Function to go to the previous day's links
         function showPreviousDay() {
-            if (currentIndex > 0) {
-                currentIndex--;
+            if (currentIndex < numDaysToShow - 1) {
+                currentIndex++;
                 updateContainerPosition();
             }
         }
 
         // Function to go to the next day's links
         function showNextDay() {
-            if (currentIndex < numDaysToShow) {
-                currentIndex++;
+            if (currentIndex > 0) {
+                currentIndex--;
                 updateContainerPosition();
             }
         }

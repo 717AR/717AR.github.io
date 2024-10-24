@@ -35,10 +35,10 @@
             align-items: center; /* Align items in the center */
             flex-direction: column; /* Stack date below title */
         }
-        .reserve-dashboard, .dfs-history, .recalls {
+        .reserve-dashboard {
             text-align: center;
             margin: 10px; /* Adjusted margin */
-            font-size: 22px; /* Increased size for the title */
+            font-size: 22px; /* Reserve dashboard font size remains at 22px */
             border: 1px solid #0077cc; /* Outline the container */
             border-radius: 8px;
             background-color: white; /* Background color */
@@ -46,6 +46,28 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             display: inline-block; /* Make the container's width wrap around its content */
             margin-top: 10px; /* Space above */
+        }
+        .section {
+            text-align: center;
+            margin: 10px;
+            font-size: 18px; /* Reduced font size for sections */
+            margin-top: 10px; /* Space above */
+        }
+        .vacation-section {
+            font-size: 18px; /* Reduced font size for vacation section */
+            margin-top: 20px; /* Space above the vacation section */
+            padding: 10px; /* Padding around text */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .vacation-link {
+            margin: 0 10px; /* Space between links */
+            color: #0077cc; /* Link color */
+            text-decoration: none; /* Remove underline */
+            font-weight: bold; /* Make it bold */
+            font-size: 16px; /* Reduced font size for year links */
+        }
+        .vacation-link:hover {
+            text-decoration: underline; /* Underline on hover */
         }
         .button-container {
             display: flex;
@@ -67,10 +89,6 @@
             text-transform: uppercase; /* Make button text all caps */
             margin-bottom: 10px; /* Space between buttons */
         }
-        .button:disabled {
-            background-color: #ccc; /* Grayed out button style */
-            cursor: not-allowed; /* Change cursor for disabled button */
-        }
         .modal {
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
@@ -91,60 +109,6 @@
             border: 1px solid #888;
             width: 80%; /* Could be more or less, depending on screen size */
         }
-        .pdf-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        .pdf-item {
-            background: white;
-            border: 1px solid #0077cc;
-            border-radius: 8px;
-            margin: 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            text-align: center;
-        }
-        .pdf-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #0077cc;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .pdf-link:hover {
-            background-color: #005999;
-        }
-        /* New vacation section styles */
-        .vacation-section {
-            margin-top: 20px; /* Space above the vacation section */
-            text-align: center; /* Center the text in the section */
-            font-size: 22px; /* Same font size as other sections */
-            padding: 10px; /* Padding around text */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .vacation-links {
-            display: inline; /* Display links inline */
-            margin-left: 10px; /* Space between "Vacation" and links */
-        }
-        .vacation-link {
-            margin: 0 10px; /* Space between links */
-            color: #0077cc; /* Link color */
-            text-decoration: none; /* Remove underline */
-            font-weight: bold; /* Make it bold */
-        }
-        .vacation-link:hover {
-            text-decoration: underline; /* Underline on hover */
-        }
-        .date-picker {
-            margin-top: 10px;
-        }
-        .reserve-dashboard-link {
-            color: #0077cc; /* Link color matching the style */
-            cursor: pointer; /* Indicate it's clickable */
-            text-decoration: underline; /* Underlined for a link effect */
-        }
     </style>
 </head>
 <body>
@@ -164,14 +128,14 @@
     </div>
 
     <!-- Recalls Section -->
-    <div class="recalls">
+    <div class="recalls section">
         Recalls:
-        <!-- Buttons removed from this section -->
+        <!-- Buttons removed -->
     </div>
 
-    <div class="dfs-history">
+    <div class="dfs-history section">
         DFS History:
-        <!-- Date picker removed from this section -->
+        <!-- Date picker removed -->
     </div>
 
     <div class="vacation-section">

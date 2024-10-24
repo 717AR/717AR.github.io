@@ -25,19 +25,24 @@
         }
         .current-date {
             font-size: 16px; /* Smaller font size */
-            margin: 10px 0;
             text-align: center; /* Center the date */
+            margin-top: 10px; /* Space below the header */
         }
         .reserve-dashboard {
             text-align: center;
-            margin: 20px 0;
+            margin: 10px 0;
             font-size: 22px; /* Increase size for the title */
+            border: 1px solid #0077cc; /* Outline the container */
+            border-radius: 8px;
+            background-color: white; /* Background color */
+            padding: 10px; /* Padding around text */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .button-container {
             display: flex;
             justify-content: center; /* Center the buttons */
             gap: 10px; /* Space between buttons */
-            margin: 10px 0;
+            margin-top: 10px; /* Space above button area */
         }
         .button {
             padding: 10px 15px;
@@ -82,12 +87,14 @@
 <body>
     <div class="header">787 Links</div>
     <div class="current-date" id="current-date"></div>
-    <div class="reserve-dashboard">Reserve Dashboard</div>
     
-    <div class="button-container">
-        <button class="button" id="older-button">Older</button>
-        <button class="button" id="today-button">Today</button>
-        <button class="button" id="tomorrow-button">Tomorrow</button>
+    <div class="reserve-dashboard">
+        Reserve Dashboard:
+        <div class="button-container">
+            <button class="button" id="older-button">Older</button>
+            <button class="button" id="today-button">Today</button>
+            <button class="button" id="tomorrow-button">Tomorrow</button>
+        </div>
     </div>
 
     <ul class="pdf-list" id="pdf-list">Loading...</ul>

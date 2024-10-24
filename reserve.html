@@ -11,6 +11,9 @@
             height: 100vh;
             background-color: #f5f5f5;
             overflow: auto; /* Allow scrolling */
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center children horizontally */
         }
         .header {
             background-color: #0077cc;
@@ -22,14 +25,15 @@
             text-transform: uppercase; /* Make text all caps */
             position: sticky; /* Make it sticky at the top */
             top: 0;
+            width: 100%; /* Full width */
         }
         .current-date {
             font-size: 16px; /* Smaller font size */
-            margin: 10px 0; /* Space below the current date */
+            margin: 1px; /* Set margin to 1 pixel */
         }
         .reserve-dashboard {
             text-align: center;
-            margin: 10px 10px; /* Adjusted margin */
+            margin: 10px; /* Adjusted margin */
             font-size: 22px; /* Increased size for the title */
             border: 1px solid #0077cc; /* Outline the container */
             border-radius: 8px;
@@ -45,13 +49,16 @@
             margin-top: 10px; /* Space above button area */
         }
         .button {
-            padding: 10px 15px;
+            padding: 10px;
             background-color: #0077cc;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px; /* Set font size for buttons */
+            flex: 1; /* Make buttons take equal space */
+            min-width: 100px; /* Minimum width for buttons */
+            text-align: center; /* Center text in buttons */
         }
         .button:disabled {
             background-color: #ccc; /* Grayed out button style */
@@ -95,7 +102,14 @@
         <div class="button-container">
             <button class="button" id="older-button">Older</button>
             <button class="button" id="today-button">Today</button>
-            <button class="button" id="tomorrow-button">Tomorrow</button>
+            <button class="button" id="tomorrow-button"></button> <!-- Now this will be updated dynamically -->
+        </div>
+    </div>
+
+    <div class="reserve-dashboard" id="dfs-history">
+        DFS History:
+        <div class="button-container">
+            <button class="button" id="dfs-button">Select Date</button>
         </div>
     </div>
 
@@ -105,7 +119,7 @@
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-
+        
         // Function to get today's date in the correct format DDMMMYY
         function getFormattedDate(date) {
             const days = String(date.getDate()).padStart(2, '0');
@@ -143,6 +157,19 @@
             pdfList.appendChild(listItem);
         }
 
+        // Update Tomorrow button label and functionality
+        function updateTomorrowButton() {
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(tomorrowDate.getDate() + 1);
+            tomorrowButton.innerText = getFormattedDate(tomorrowDate); // Set label
+            tomorrowButton.onclick = function() {
+                const formattedDate = getFormattedDate(tomorrowDate);
+                const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
         // Check if it is after 1600 Hawaii time and enable/disable the Tomorrow button
         function checkTomorrowButtonState() {
             const hawaiiOffset = -10; // Hawaii time offset
@@ -150,24 +177,17 @@
             const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
             const hawaiiTime = new Date(utc + (3600000 * hawaiiOffset));
 
-            const tomorrowButton = document.getElementById('tomorrow-button');
             if (hawaiiTime.getHours() >= 16) {
-                tomorrowButton.disabled = false;
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(tomorrowDate.getDate() + 1);
-                    const formattedDate = getFormattedDate(tomorrowDate);
-                    const pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
+                document.getElementById('tomorrow-button').disabled = false;
             } else {
-                tomorrowButton.disabled = true; // Disable the button if it's before 1600
+                document.getElementById('tomorrow-button').disabled = true; // Disable the button if it's before 1600
             }
         }
 
         // Add event listener to Older button
         document.getElementById('older-button').onclick = function() {
-            document.getElementById('date-picker').click(); // Trigger date picker
+            const datePicker = document.getElementById('date-picker');
+            datePicker.click(); // Trigger date picker
         };
 
         // Handle date selection from the date picker
@@ -178,23 +198,23 @@
             window.open(pdfUrl, '_blank');
             this.value = ""; // Reset date picker
         };
+        
+        // Add event listener to the DFS button
+        document.getElementById('dfs-button').onclick = function() {
+            const datePicker = document.getElementById('date-picker');
+            datePicker.onchange = function () {
+                const selectedDate = new Date(this.value);
+                const formattedDate = getFormattedDate(selectedDate);
+                const dfsUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedDate}-787 DFSH.PDF`;
+                window.open(dfsUrl, '_blank');
+                this.value = ""; // Reset date picker
+            };
+            datePicker.click(); // Trigger the date picker
+        };
 
-        // Pull to refresh
-        let startY;
-        window.addEventListener('touchstart', (e) => {
-            startY = e.touches[0].clientY;
-        });
-
-        window.addEventListener('touchmove', (e) => {
-            const currentY = e.touches[0].clientY;
-            if (currentY - startY > 100) {
-                displayPDFLinks(); // Trigger refresh for today's PDF
-                startY = currentY; // Reset startY to prevent multiple triggers
-            }
-        });
-
-        // Initial call to display today's PDF links and check Tomorrow button state
+        // Initial calls
         displayPDFLinks();
+        updateTomorrowButton();
         checkTomorrowButtonState(); // Check state of the Tomorrow button
     </script>
 </body>

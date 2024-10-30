@@ -153,17 +153,16 @@
         }
 
         document.getElementById('submit-date').onclick = function() {
+            const selectedDoc = document.getElementById('doc').value;
             const datePicker = document.getElementById('datepicker').value;
             const selectedDate = new Date(datePicker);
 
-            if (!isNaN(selectedDate.getTime())) {
-                const selectedDoc = document.getElementById('doc').value;
+            if (selectedDoc === "VAC2024") {
+                // Open the specific link for Vacation - 2024
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+            } else if (!isNaN(selectedDate.getTime())) {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
-                
-                if (selectedDoc) {
-                    console.log(pdfUrl); // Use selectedDoc to adjust URL for different documents if necessary
-                    window.open(pdfUrl, '_blank');
-                }
+                window.open(pdfUrl, '_blank');
             }
         };
 

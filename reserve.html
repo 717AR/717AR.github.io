@@ -10,10 +10,10 @@
             margin: 0;
             height: 100vh;
             background-color: #f5f5f5;
-            overflow: auto; /* Allow scrolling */
+            overflow: auto;
             display: flex;
-            flex-direction: column; /* Stack children vertically */
-            align-items: center; /* Center children horizontally */
+            flex-direction: column;
+            align-items: center;
         }
         .header {
             background-color: #0077cc;
@@ -22,38 +22,35 @@
             text-align: center;
             font-size: 24px;
             font-weight: bold;
-            text-transform: uppercase; /* Make text all caps */
-            width: 100%; /* Full width */
+            text-transform: uppercase;
+            width: 100%;
         }
         .header-content {
             display: flex;
-            justify-content: center; /* Center the header content */
-            align-items: center; /* Align items in the center */
-            flex-direction: column; /* Stack date below title */
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
         .reserve-dashboard {
             text-align: center;
-            margin: 10px; /* Adjusted margin */
-            font-size: 18px; /* Reserve dashboard font size remains at 22px */
-            display: inline-block; /* Make the container's width wrap around its content */
-            margin-top: 10px; /* Space above */
+            margin: 10px;
+            font-size: 18px;
+            display: inline-block;
         }
         .section {
             text-align: center;
             margin: 10px;
-            font-size: 18px; /* Reduced font size for sections */
-            margin-top: 10px; /* Space above */
+            font-size: 18px;
         }
-
         .vacation-link {
-            margin: 0 10px; /* Space between links */
-            color: #0077cc; /* Link color */
-            text-decoration: none; /* Remove underline */
-            font-weight: bold; /* Make it bold */
-            font-size: 16px; /* Reduced font size for year links */
+            margin: 0 10px;
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
         }
         .vacation-link:hover {
-            text-decoration: underline; /* Underline on hover */
+            text-decoration: underline;
         }
         .button {
             padding: 10px;
@@ -62,42 +59,24 @@
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 16px; /* Set font size for buttons */
-            width: 100%; /* Full width for buttons */
-            max-width: 150px; /* Optional: Limit button width */
-            text-align: center; /* Center text in buttons */
-            text-transform: uppercase; /* Make button text all caps */
-            margin-bottom: 10px; /* Space between buttons */
-            transition: background-color 0.3s; /* Smooth transition for background color */
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
         }
         .disabled {
-            background-color: #ccc; /* Grey out */
-            cursor: not-allowed; /* Show not-allowed cursor */
+            background-color: #ccc;
+            cursor: not-allowed;
         }
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1; /* Sit on top */
-            left: 0;
-            top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgb(0, 0, 0); /* Fallback color */
-            background-color: rgba(0, 0, 0, 0.4); /* Black with opacity */
-            padding-top: 60px; /* Place holder for the modal */
+        .selector-container {
+            margin-top: 20px;
+            text-align: center;
         }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto; /* 15% from the top and centered */
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%; /* Could be more or less, depending on screen size */
-        }
-        .reserve-dashboard-link {
-            color: #0077cc; /* Link color matching the style */
-            cursor: pointer; /* Indicate it's clickable */
-            text-decoration: underline; /* Underlined for a link effect */
+        .selector-container label {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -114,33 +93,29 @@
             <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
         </div>
     </div>
-<a href="#" id="reserve-dashboard-link">More crap</a>
-    <div>
-            <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
-            <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
+
+    <div class="selector-container">
+        <label for="doc">Select a PDF:</label>
+        <select name="doc" id="doc">
+            <option value="RSV">Reserve Dashboard</option>
+            <option value="REC">Recalls</option>
+            <option value="DFS">DFS History</option>
+            <option value="VAC2024">Vacation - 2024</option>
+            <option value="VAC2025">Vacation - 2025</option>
+        </select>
+        <br>
+        Select date: <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px;">
+        <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Go</button>
     </div>
-    
-    <!-- Modal for Date Picker -->
-    <div id="dateModal" class="modal">
-        <div class="modal-content">
-            <span id="close" style="cursor:pointer; float:right;">×</span>
-            <label for="cars">Select a PDF:</label>
-<select name="doc" id="doc">
-    <option value="RSV">Reserve Dashboard</option>
-  <option value="REC">Recalls</option>
-  <option value="DFS">DFS History</option>
-  <option value="VAC">Vacation - 2024</option>
-  <option value="VAC">Vacation - 2025</option>
-</select> 
- Select date: <input type="date" id="datepicker" style="width: 100%; padding: 10px;">
-            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Go</button>
-        </div>
+
+    <div>
+        <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
+        <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
     </div>
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-        // Function to get the formatted date for the URL
         function getFormattedDateForUrl(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
@@ -153,16 +128,13 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        // Function to display today's date and set buttons
         function displayDate() {
             const today = new Date();
             const formattedCurrentDate = getFormattedHeaderDate(today);
-
-            // Check if it's after 4 PM in Hawaii
+            
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-            // Show "Tomorrow" button only after 4 PM Hawaii time
             const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
                 tomorrowButton.style.display = 'block';
@@ -174,39 +146,27 @@
                 };
             }
 
-            // Set the 'Today' button
             document.getElementById('today-button').onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
 
-        // Add event listener to Reserve Dashboard link
-        document.getElementById('reserve-dashboard-link').onclick = function() {
-            // Show the modal
-            document.getElementById('dateModal').style.display = "block";
-        };
-
-        // Close the modal when the user clicks on <span> (x)
-        document.getElementById('close').onclick = function() {
-            document.getElementById('dateModal').style.display = "none";
-        };
-
-        // Set submission event for the date
         document.getElementById('submit-date').onclick = function() {
             const datePicker = document.getElementById('datepicker').value;
             const selectedDate = new Date(datePicker);
 
-            if (!isNaN(selectedDate.getTime())) { // Check if valid date
+            if (!isNaN(selectedDate.getTime())) {
+                const selectedDoc = document.getElementById('doc').value;
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
+                
+                if (selectedDoc) {
+                    console.log(pdfUrl); // Use selectedDoc to adjust URL for different documents if necessary
+                    window.open(pdfUrl, '_blank');
+                }
             }
-
-            // Hide the modal after selection
-            document.getElementById('dateModal').style.display = "none";
         };
 
-        // Initial calls
         displayDate();
     </script>
 </body>

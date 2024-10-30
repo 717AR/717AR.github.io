@@ -142,30 +142,32 @@
             };
         }
 
-        const docSelect = document.getElementById('doc');
-        const datePicker = document.getElementById('datepicker');
+docSelect.addEventListener('change', function() {
+    const selectedDoc = this.value;
 
-        docSelect.addEventListener('change', function() {
-            const selectedDoc = this.value;
+    // Hide the date picker by default
+    datePicker.style.display = 'none';
 
-            // Hide the date picker by default
-            datePicker.style.display = 'none';
+    if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+        // Show the date picker
+        datePicker.style.display = 'block';
+        // Clear previous date selection
+        datePicker.value = '';
 
-            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
-                // Show the date picker
-                datePicker.style.display = 'block';
-                // Clear previous date selection
-                datePicker.value = '';
-            } else if (selectedDoc === "VAC2024") {
-                // Open the specific link for Vacation - 2024 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
-            } else if (selectedDoc === "VAC2025") {
-                // Open the specific link for Vacation - 2025 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
-            }
-        });
+        // Use a small timeout to make sure the date picker has time to appear
+        setTimeout(() => {
+            datePicker.focus(); // Focus on date picker
+        }, 0);
+    } else if (selectedDoc === "VAC2024") {
+        // Open the specific link for Vacation - 2024 immediately
+        window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+        this.selectedIndex = 0; // Reset to the first option
+    } else if (selectedDoc === "VAC2025") {
+        // Open the specific link for Vacation - 2025 immediately
+        window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
+        this.selectedIndex = 0; // Reset to the first option
+    }
+});
 
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;

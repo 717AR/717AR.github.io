@@ -13,105 +13,83 @@
 <body>
     
 <header class="w3-container w3-card-4 w3-theme">
-  <h1>Airport Reserve Pay/Credit Calculator</h1>
+  <h1>787 Links</h1>
 </header>
-    
-    <div>
-        <br>
-<label for="start">Reserve START time:</label>
-<input type="time" id="start" name="start"
-       min="03:00" max="18:00" value="10:00" step="3600">
-    </div>  
-    
-<div>
-<label for="time">Final BLOCK IN time:</label>
-<input id="time" type="time"><br>
-<br>
-<button id="calc">Calculate</button><br>
-</div>    
-    
-<br>
-    <div id="intro" style='font-weight:bold';></div>
-    <div id="pay"></div><br><br>
-    <div id="results"></div>
-    <div id="results2"></div>
-    <div id="results3"></div><br>
-    <div id="quote"></div>
-    
-<script>
 
- var calc = document.getElementById("calc")
- 
-calc.addEventListener("click", function() {
-    
-    document.getElementById("intro").innerHTML = "Total Pay and Credit:";
-    
-    //get start time, convert to js date
-    var start = document.getElementById("start").value;
-    var st_time = new Date("2023-01-01" +" "+ start);
-    
-    //get user input in-time, convert to js date
-    var time = document.getElementById("time").value;
-    var in_time = new Date("2023-01-01" +" "+ time);
-      
-    //add 15 min to in-time to get off duty time
-    var plus15 = new Date(in_time.getTime() + 15*60000); //js uses milliseconds so 15*60000 = 15 min   
-       
-      if (plus15 < st_time)  { 
-           document.getElementById("intro").innerHTML = "ERROR: Block-in must be after start time";                             
-           }  else {
-            var duty = Math.abs(plus15 - st_time) / 60000; //compute duty day in milliseconds, convert to minutes
-    
-    function padTo2Digits(num) {return num.toString().padStart(2, '0');}   //this function makes hours and minutes look like HH:MM
-    
-    //convert duty day to minutes, 
-    //var duty2 = (hour * 60 + min);
-    let h = Math.floor(duty / 60); 
-    let m = duty % 60;
-    var duty_day = `${padTo2Digits(h)}:${padTo2Digits(m)}`;
-    
-    //compute 60% duty rig 
-    var rig = Math.max(300, (duty * .6)); //60% duty rig or 5:00, whichever higher
-    const h2= Math.floor(rig / 60); 
-    const m2 = Math.round(rig % 60);
-    var rig_pay = `${padTo2Digits(h2)}:${padTo2Digits(m2)}`;
-    
-    //Calculate minutes on duty beyond 8 hours
-    var m4m = Math.max(0, (duty - 480));
-    let h3 = Math.floor(m4m / 60); 
-    let m3 = Math.round(m4m % 60);
-    var m4m_pay = `${padTo2Digits(h3)}:${padTo2Digits(m3)}`;
-    
-    //show me the money
-    var pay = m4m + rig;
-    let h4= Math.floor(pay / 60); 
-    let m4 = Math.round(pay % 60);
-    var pay_all = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
-         if (pay <= 300) {                                       //5 hours (in minutes)
-             document.getElementById("pay").innerHTML = "5:00";
-             document.getElementById("results").innerHTML = "You are getting the Airport Reserve Minimum daily guarantee."; 
-             document.getElementById("results2").innerHTML = "";          
-             document.getElementById("results3").innerHTML = "";
-             document.getElementById("quote").innerHTML = "'I left the library for THIS?' -R.C.";
-             
-    }  else {
+    <div class="reserve-dashboard">
+        <div>
+            <button class="button" id="today-button">Today RSV</button>
+            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
+        </div>
+    </div>
+
+<a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024 Vacation</a>
+ <br>
+<a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025 Vacation</a>
+
+ <script>
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-            document.getElementById("pay").innerHTML = `${padTo2Digits(h4)}:${padTo2Digits(m4)}`;
- //           document.getElementById("results").innerHTML = Duty Day (" + `${padTo2Digits(h)}:${padTo2Digits(m)}` + ") x 60% Duty Rig: "+ rig_pay; 
-            document.getElementById("results").innerHTML = "    " +m4m_pay+ " (DEXT/ Minute for Minute)"; 
-            document.getElementById("results2").innerHTML = "+ " +rig_pay + " (Total Duty Day x 60%)";
-     //       document.getElementById("results3").innerHTML = ; 
+        // Function to get the formatted date for the URL
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
 
+        function getFormattedHeaderDate(date) {
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
 
-        //    document.getElementById("quote").innerHTML = "'Cha-CHINGY!' -Marc DeRego";
-    ;
-    }
- 
-} 
-})
-    
-    
-</script>
+        // Function to display today's date and set buttons
+        function displayDate() {
+            const today = new Date();
+            const formattedCurrentDate = getFormattedHeaderDate(today);
+            document.getElementById('current-date').innerText = formattedCurrentDate;
+
+            // Check if it's after 4 PM in Hawaii
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            // Show "Tomorrow" button only after 4 PM Hawaii time
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            // Set the 'Today' button
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+        // Set submission event for the date
+        document.getElementById('submit-date').onclick = function() {
+            const datePicker = document.getElementById('datepicker').value;
+            const selectedDate = new Date(datePicker);
+
+            if (!isNaN(selectedDate.getTime())) { // Check if valid date
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            }
+
+            // Hide the modal after selection
+            document.getElementById('dateModal').style.display = "none";
+        };
+
+        // Initial calls
+        displayDate();
+    </script>
+
     
 </body> 
 </html>

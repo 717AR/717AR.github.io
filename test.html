@@ -14,11 +14,14 @@
     
 <header class="w3-container w3-card-4 w3-theme">
   <h1>787 Links</h1>
-</header>
-
- <a href="https://hawaiianair.sharepoint.com/recalls.pdf" id="today-link" target="_blank">Today RSV</a> <br>
  
-<button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
+</header>
+<div class="reserve-dashboard">
+    <div>
+        <a href="#" id="today-link">Today RSV</a>
+        <a href="#" id="tomorrow-link" style="display: none;">Tomorrow RSV</a> 
+    </div>
+</div>
 
  <a href="https://hawaiianair.sharepoint.com/recalls.pdf" target="_blank">Older RSV</a> <br>
  
@@ -31,53 +34,54 @@
 <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025 Vacation</a>
 
  <script>
-        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        
-        // Function to get the formatted date for the URL
-        function getFormattedDateForUrl(date) {
-            const days = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
-            return `${days}${month}${year}`;
-        }
+          const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
 
-            // Check if it's after 4 PM in Hawaii
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+    // Function to get the formatted date for the URL
+    function getFormattedDateForUrl(date) {
+        const days = String(date.getDate()).padStart(2, '0');
+        const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+        const year = String(date.getFullYear()).slice(-2);
+        return `${days}${month}${year}`;
+    }
 
-            // Show "Tomorrow" button only after 4 PM Hawaii time
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'block';
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
+    function getFormattedHeaderDate(date) {
+        const options = { weekday: 'long', month: 'short', day: 'numeric' };
+        return date.toLocaleDateString('en-US', options);
+    }
 
-            // Set the 'Today' link
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-              document.getElementById('today-link').setAttribute("href",strLink);
+    // Function to display today's date and set links
+    function displayDate() {
+        const today = new Date();
+        const formattedCurrentDate = getFormattedHeaderDate(today);
+        document.getElementById('current-date').innerText = formattedCurrentDate;
 
-            };
+        // Check if it's after 4 PM in Hawaii
+        const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+        const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-        }
-
-        // Set submission event for the date
-        document.getElementById('submit-date').onclick = function() {
-            const datePicker = document.getElementById('datepicker').value;
-            const selectedDate = new Date(datePicker);
-
-            if (!isNaN(selectedDate.getTime())) { // Check if valid date
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
+        // Show "Tomorrow" link only after 4 PM Hawaii time
+        const tomorrowLink = document.getElementById('tomorrow-link');
+        if (isAfter1600HST) {
+            tomorrowLink.style.display = 'inline'; // Show the link
+            tomorrowLink.onclick = function(event) {
+                event.preventDefault(); // Prevent default anchor behavior
+                const tomorrowDate = new Date();
+                tomorrowDate.setDate(today.getDate() + 1);
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
-            }
+            };
+        }
 
-            // Hide the modal after selection
-            document.getElementById('dateModal').style.display = "none";
+        // Set the 'Today' link
+        document.getElementById('today-link').onclick = function(event) {
+            event.preventDefault(); // Prevent default anchor behavior
+            const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+            window.open(pdfUrl, '_blank');
         };
+    }
+
+    // Initial calls
+    displayDate();
     </script>
 
     

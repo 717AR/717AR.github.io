@@ -1,89 +1,102 @@
 <!DOCTYPE html>
-<html>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<!--  
-<meta name="apple-mobile-web-app-capable" content="yes"/>
- -->   
-<link rel="apple-touch-icon" href="icon.png">
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-indigo.css">
-    
-<head><title>Airport Reserve</title></head>
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>787 Links</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #0077cc;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 100%;
+        }
+        .current-date {
+            font-size: 16px; 
+            margin: 5px 0; 
+        }
+        .reserve-dashboard {
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+        }
+        .vacation-link {
+            margin: 0 10px;
+            color: #0077cc; 
+            text-decoration: none; 
+            font-weight: bold; 
+        }
+        .vacation-link:hover {
+            text-decoration: underline; 
+        }
+    </style>
+</head>
 <body>
-    
-<header class="w3-container w3-card-4 w3-theme">
-  <h1>787 Links</h1>
- 
-</header>
-<div class="reserve-dashboard">
-    <div>
-        <a href="#" id="today-link">Today RSV</a>
-        <a href="#" id="tomorrow-link" style="display: none;">Tomorrow RSV</a> 
+    <div class="header">
+        787 Links
     </div>
-</div>
+    <span class="current-date" id="current-date"></span>  
+    
+    <div class="reserve-dashboard">
+        <a href="#" id="today-link" class="vacation-link">Today RSV</a>
+        <a href="#" id="tomorrow-link" class="vacation-link" style="display: none;">Tomorrow RSV</a> 
+    </div>
 
- <a href="https://hawaiianair.sharepoint.com/recalls.pdf" target="_blank">Older RSV</a> <br>
- 
- <a href="https://hawaiianair.sharepoint.com/recalls.pdf" target="_blank">Recalls</a> <br>
- 
- <a href="https://hawaiianair.sharepoint.com/recalls.pdf" target="_blank">DFS History</a> <br>
+    <script>
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
 
-<a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024 Vacation</a>
- <br>
-<a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025 Vacation</a>
+        function getFormattedHeaderDate(date) {
+            const options = { weekday: 'long', month: 'short', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
 
- <script>
-          const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        function displayDate() {
+            const today = new Date();
+            const formattedCurrentDate = getFormattedHeaderDate(today);
+            document.getElementById('current-date').innerText = formattedCurrentDate;
 
-    // Function to get the formatted date for the URL
-    function getFormattedDateForUrl(date) {
-        const days = String(date.getDate()).padStart(2, '0');
-        const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const year = String(date.getFullYear()).slice(-2);
-        return `${days}${month}${year}`;
-    }
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-    function getFormattedHeaderDate(date) {
-        const options = { weekday: 'long', month: 'short', day: 'numeric' };
-        return date.toLocaleDateString('en-US', options);
-    }
+            const tomorrowLink = document.getElementById('tomorrow-link');
+            if (isAfter1600HST) {
+                tomorrowLink.style.display = 'inline';
+                tomorrowLink.onclick = function(event) {
+                    event.preventDefault();
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
 
-    // Function to display today's date and set links
-    function displayDate() {
-        const today = new Date();
-        const formattedCurrentDate = getFormattedHeaderDate(today);
-        document.getElementById('current-date').innerText = formattedCurrentDate;
-
-        // Check if it's after 4 PM in Hawaii
-        const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-        const isAfter1600HST = hawaiiTime.getHours() >= 16;
-
-        // Show "Tomorrow" link only after 4 PM Hawaii time
-        const tomorrowLink = document.getElementById('tomorrow-link');
-        if (isAfter1600HST) {
-            tomorrowLink.style.display = 'inline'; // Show the link
-            tomorrowLink.onclick = function(event) {
-                event.preventDefault(); // Prevent default anchor behavior
-                const tomorrowDate = new Date();
-                tomorrowDate.setDate(today.getDate() + 1);
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+            document.getElementById('today-link').onclick = function(event) {
+                event.preventDefault();
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
-
-        // Set the 'Today' link
-        document.getElementById('today-link').onclick = function(event) {
-            event.preventDefault(); // Prevent default anchor behavior
-            const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-            window.open(pdfUrl, '_blank');
-        };
-    }
-
-    // Initial calls
-    displayDate();
+        
+        displayDate();
     </script>
-
-    
-</body> 
+</body>
 </html>

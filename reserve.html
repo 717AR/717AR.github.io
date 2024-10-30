@@ -104,8 +104,8 @@
             <option value="VAC2025">Vacation - 2025</option>
         </select>
         <br>
-        Select date: <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px;">
-        <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Go</button>
+        Select date: <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px; display: none;">
+        <button class="button" id="submit-date" style="margin-top: 10px; width: 100%; display: none;">Go</button>
     </div>
 
     <div>
@@ -123,15 +123,8 @@
             return `${days}${month}${year}`;
         }
 
-        function getFormattedHeaderDate(date) {
-            const options = { weekday: 'long', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-
         function displayDate() {
             const today = new Date();
-            const formattedCurrentDate = getFormattedHeaderDate(today);
-            
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
@@ -152,27 +145,75 @@
             };
         }
 
-document.getElementById('doc').addEventListener('change', function() {
+        const docSelect = document.getElementById('doc');
+        const datePicker = document.getElementById('datepicker');
+        const submitDateBtn = document.getElementById('submit-date');
+
+        docSelect.addEventListener('change', function() {
             const selectedDoc = this.value;
-            if (selectedDoc === "VAC2024") {
-                // Open the specific link for Vacation - 2024 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option after opening
-            } else if (selectedDoc === "VAC2025") {
-                // Open the specific link for Vacation - 2025 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option after opening
+
+            // Hide the date picker by default
+            datePicker.style.display = 'none';
+            submitDateBtn.style.display = 'none';
+
+            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+                // Show the date picker and submit button
+                datePicker.style.display = 'block';
+                submitDateBtn.style.display = 'block';
+
+                // Clear previous date selection
+                datePicker.value = '';
+            } else {
+                datePicker.value = ''; // Clear date if vacation options are selected
+            }
+        });
+
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);
+
+            if (!isNaN(selectedDate.getTime())) {
+                let pdfUrl = '';
+                const formattedDate = getFormattedDateForUrl(selectedDate);
+
+                if (selectedDoc === "RSV") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                } else if (selectedDoc === "REC") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+                } else if (selectedDoc === "DFS") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+                }
+
+                // Open the corresponding PDF
+                if (pdfUrl) {
+                    window.open(pdfUrl, '_blank');
+                    // Clear the selection after opening
+                    docSelect.selectedIndex = 0;
+                    datePicker.style.display = 'none';
+                    submitDateBtn.style.display = 'none';
+                }
             }
         });
 
         document.getElementById('submit-date').onclick = function() {
-            const selectedDoc = document.getElementById('doc').value;
-            const datePicker = document.getElementById('datepicker').value;
-            const selectedDate = new Date(datePicker);
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(datePicker.value);
+            let pdfUrl = '';
 
-            if (selectedDoc !== "VAC2024" && !isNaN(selectedDate.getTime())) {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(selectedDate)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
+            if (!isNaN(selectedDate.getTime())) {
+                const formattedDate = getFormattedDateForUrl(selectedDate);
+
+                if (selectedDoc === "RSV") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                } else if (selectedDoc === "REC") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+                } else if (selectedDoc === "DFS") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+                }
+
+                if (pdfUrl) {
+                    window.open(pdfUrl, '_blank');
+                }
             }
         };
 

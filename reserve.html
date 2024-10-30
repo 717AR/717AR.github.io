@@ -152,14 +152,15 @@
             };
         }
 
-        document.getElementById('doc').addEventListener('change', function() {
+document.getElementById('doc').addEventListener('change', function() {
             const selectedDoc = this.value;
             if (selectedDoc === "VAC2024") {
                 // Open the specific link for Vacation - 2024 immediately
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option after opening
-            } elseif (selectedDoc === "VAC2025") {
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2025.pdf", '_blank');
+            } else if (selectedDoc === "VAC2025") {
+                // Open the specific link for Vacation - 2025 immediately
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option after opening
             }
         });

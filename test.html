@@ -75,7 +75,6 @@
         function displayDate() {
             const today = new Date();
             const formattedCurrentDate = getFormattedHeaderDate(today);
-            document.getElementById('current-date').innerText = formattedCurrentDate;
 
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;

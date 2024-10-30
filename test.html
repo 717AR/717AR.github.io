@@ -38,17 +38,6 @@
             return `${days}${month}${year}`;
         }
 
-        function getFormattedHeaderDate(date) {
-            const options = { weekday: 'long', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
-        }
-
-        // Function to display today's date and set buttons
-        function displayDate() {
-            const today = new Date();
-            const formattedCurrentDate = getFormattedHeaderDate(today);
-            document.getElementById('current-date').innerText = formattedCurrentDate;
-
             // Check if it's after 4 PM in Hawaii
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;
@@ -85,9 +74,6 @@
             // Hide the modal after selection
             document.getElementById('dateModal').style.display = "none";
         };
-
-        // Initial calls
-        displayDate();
     </script>
 
     

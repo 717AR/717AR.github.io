@@ -168,10 +168,12 @@
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;
             const selectedDate = new Date(this.value);
+            // Adjust the selected date to Hawaii time
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
-            if (!isNaN(selectedDate.getTime())) {
+            if (!isNaN(hawaiiDate.getTime())) {
                 let pdfUrl = '';
-                const formattedDate = getFormattedDateForUrl(selectedDate);
+                const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
                 if (selectedDoc === "RSV") {
                     pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;

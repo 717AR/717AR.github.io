@@ -120,34 +120,35 @@
             Or  <span class="reserve-dashboard-link" id="reserve-dashboard-link">select date</span>:
         </div>
     </div>
-<br>
-        Recalls
-    <br>
-        DFS History
-    <br>
 
     <div>
         Vacation:
             <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
             <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
     </div>
-
 <label for="cars">Select a PDF:</label>
-<select name="cars" id="cars">
-  <option value="volvo">Recalls</option>
-  <option value="saab">DFS History</option>
-  <option value="mercedes">Vacation</option>
-
+<select name="doc" id="doc">
+    <option value="RSV">Reserve Dashboard</option>
+  <option value="REC">Recalls</option>
+  <option value="DFS">DFS History</option>
+  <option value="VAC">Vacation</option>
 </select> 
+
 Select date: <input type="date" id="test" name="test">
     
     <!-- Modal for Date Picker -->
     <div id="dateModal" class="modal">
         <div class="modal-content">
             <span id="close" style="cursor:pointer; float:right;">×</span>
-            <h2>Select a Date</h2>
+            <label for="cars">Select a PDF:</label>
+<select name="doc" id="doc">
+    <option value="RSV">Reserve Dashboard</option>
+  <option value="REC">Recalls</option>
+  <option value="DFS">DFS History</option>
+  <option value="VAC">Vacation</option>
+</select> 
             <input type="date" id="datepicker" style="width: 100%; padding: 10px;">
-            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Submit</button>
+            <button class="button" id="submit-date" style="margin-top: 10px; width: 100%;">Go</button>
         </div>
     </div>
 

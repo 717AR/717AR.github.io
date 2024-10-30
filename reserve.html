@@ -64,12 +64,6 @@
         .vacation-link:hover {
             text-decoration: underline; /* Underline on hover */
         }
-        .button-container {
-            display: flex;
-            flex-direction: column; /* Stack buttons vertically */
-            align-items: center; /* Center buttons */
-            margin-top: 10px; /* Space above button area */
-        }
         .button {
             padding: 10px;
             background-color: #0077cc;
@@ -125,10 +119,11 @@
  <span class="current-date" id="current-date"></span>  
     
     <div class="reserve-dashboard">
-        <span class="reserve-dashboard-link" id="reserve-dashboard-link">Reserve Dashboard</span>:
-        <div class="button-container">
+        <div>
+            Reserve Dashboard:<br>
             <button class="button" id="today-button">Today</button>
             <button class="button" id="tomorrow-button" style="display: none;">Tomorrow</button>
+            Or  <span class="reserve-dashboard-link" id="reserve-dashboard-link">select date</span>:
         </div>
     </div>
 <br>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="apple-touch-icon" href="787.png">
     <title>787 Links</title>
-    0954 test
+    1000 test
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -179,10 +179,10 @@ datePicker.addEventListener('change', function() {
 
     // Check if the selected date is valid
     if (!isNaN(selectedDate.getTime())) {
-        // Ensure you get the correct date for Hawaii timezone
-        // Adjusting by timezone
         const hawaiiDate = new Date(selectedDate.toUTCString());
         hawaiiDate.setHours(hawaiiDate.getHours() - 10); // Adjust to Hawaii time
+
+        console.log(`selected date: ${selectedDate}`);
 
         // Format the date for URL
         let pdfUrl = '';

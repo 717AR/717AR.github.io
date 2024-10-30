@@ -142,6 +142,9 @@
             };
         }
 
+const docSelect = document.getElementById('doc');
+const datePicker = document.getElementById('datepicker');
+
 docSelect.addEventListener('change', function() {
     const selectedDoc = this.value;
 
@@ -154,10 +157,9 @@ docSelect.addEventListener('change', function() {
         // Clear previous date selection
         datePicker.value = '';
 
-        // Use a small timeout to make sure the date picker has time to appear
-        setTimeout(() => {
-            datePicker.focus(); // Focus on date picker
-        }, 0);
+        // Focus on date picker to allow user to select a date
+        datePicker.focus();
+        
     } else if (selectedDoc === "VAC2024") {
         // Open the specific link for Vacation - 2024 immediately
         window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
@@ -169,33 +171,34 @@ docSelect.addEventListener('change', function() {
     }
 });
 
-        datePicker.addEventListener('change', function() {
-            const selectedDoc = docSelect.value;
-            const selectedDate = new Date(this.value);
-            // Adjust the selected date to Hawaii time
-            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
-            if (!isNaN(hawaiiDate.getTime())) {
-                let pdfUrl = '';
-                const formattedDate = getFormattedDateForUrl(hawaiiDate);
+datePicker.addEventListener('change', function() {
+    const selectedDoc = docSelect.value;
+    const selectedDate = new Date(this.value);
+    // Adjust the selected date to Hawaii time
+    const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
-                if (selectedDoc === "RSV") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-                } else if (selectedDoc === "REC") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
-                } else if (selectedDoc === "DFS") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
-                }
+    if (!isNaN(hawaiiDate.getTime())) {
+        let pdfUrl = '';
+        const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
-                // Open the corresponding PDF
-                if (pdfUrl) {
-                    window.open(pdfUrl, '_blank');
-                    // Clear the selection after opening
-                    docSelect.selectedIndex = 0;
-                    datePicker.style.display = 'none'; // Hide the date picker again
-                }
-            }
-        });
+        if (selectedDoc === "RSV") {
+            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+        } else if (selectedDoc === "REC") {
+            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+        } else if (selectedDoc === "DFS") {
+            pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+        }
+
+        // Open the corresponding PDF
+        if (pdfUrl) {
+            window.open(pdfUrl, '_blank');
+            // Clear the selection after opening
+            docSelect.selectedIndex = 0;
+            datePicker.style.display = 'none'; // Hide the date picker again
+        }
+    }
+});
 
         displayDate();
     </script>

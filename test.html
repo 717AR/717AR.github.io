@@ -16,7 +16,7 @@
   <h1>787 Links</h1>
 </header>
 
- <button class="button" id="today-button">Today RSV</button> <br>
+ <a href="https://hawaiianair.sharepoint.com/recalls.pdf" id="today-link" target="_blank">Today RSV</a> <br>
  
 <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
 
@@ -57,11 +57,12 @@
                 };
             }
 
-            // Set the 'Today' button
-            document.getElementById('today-button').onclick = function() {
+            // Set the 'Today' link
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
+              document.getElementById('today-link').setAttribute("href",strLink);
+
             };
+
         }
 
         // Set submission event for the date

@@ -60,6 +60,22 @@ header {
   word-spacing: 0.5rem;
 }
 
+        .button {
+            padding: 10px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+
 pre {
   padding: 10px;
   margin: 0;

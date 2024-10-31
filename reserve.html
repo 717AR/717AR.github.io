@@ -111,35 +111,6 @@ docSelect.addEventListener('change', function() {
     }
 });
 
-
-datePicker.addEventListener('change', function() {
-    const selectedDoc = docSelect.value;
-    const selectedDate = new Date(this.value); // Value should be in local time
-
-    // Check if the selected date is valid
-    if (!isNaN(selectedDate.getTime())) {
-        const hawaiiDate = new Date(selectedDate.toString());
-        hawaiiDate.setHours(hawaiiDate.getHours() + 20); // Adjust to Hawaii time
-
-        // Format the date for URL
-        let pdfUrl = '';
-        const formattedDate = getFormattedDateForUrl(hawaiiDate);
-
-        if (selectedDoc === "RSV") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-        } else if (selectedDoc === "REC") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
-        } else if (selectedDoc === "DFS") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
-        }
-
-        // Open the corresponding PDF
-        if (pdfUrl) {
-            window.open(pdfUrl, '_blank');
-            // Clear the selection after opening
-            docSelect.selectedIndex = 0;
-        }
-    }
 });
         displayDate();
 

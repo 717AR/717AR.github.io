@@ -22,7 +22,9 @@
             <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
         </div>
     </div>
-
+    
+<br>
+    
     <div class="selector-container">
         <label for="doc">More Links:</label>
         <select name="doc" id="doc">
@@ -34,6 +36,8 @@
             <option value="VAC2025">Vacation - 2025</option>
         </select>
     </div>    
+
+ <br>
 
 <div class="container">
   <div class="calendar">
@@ -63,38 +67,9 @@
   </div>
 </div>
 
-    <script>
+<script>
 const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-        function getFormattedDateForUrl(date) {
-            const days = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
-            return `${days}${month}${year}`;
-        }
-
-        function displayDate() {
-            const today = new Date();
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
-
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'block';
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
-
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-
 let display = document.querySelector(".display");
 let days = document.querySelector(".days");
 let previous = document.querySelector(".left");
@@ -146,6 +121,30 @@ function displayCalendar() {
     }
   }
 }
+
+
+
+        function displayDate() {
+            const today = new Date();
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
 
 // Call the function to display the calendar
 displayCalendar();

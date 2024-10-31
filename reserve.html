@@ -179,7 +179,7 @@ function displaySelected() {
     dayElements.forEach((day) => {
         day.addEventListener("click", (e) => {
             const selectedDate = e.target.dataset.date;
-            selected.innerHTML = `Selected Date: ${selectedDate}`;
+            selected.innerHTML = `Selected: ${selectedDate}`;
 
             // Determine which URL to open based on the selected document
             if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {

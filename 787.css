@@ -109,7 +109,7 @@ pre {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   margin: auto;
-  padding: 0 20px;
+  padding: 0 10px;
   justify-content: space-between;
 }
 .week div,
@@ -117,8 +117,8 @@ pre {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 3rem;
-  width: 3em;
+  height: 2rem;
+  width: 2em;
   border-radius: 100%;
 }
 .days div:hover {

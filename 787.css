@@ -53,7 +53,6 @@ body {
   display: inline-block;
   background-color: var(--white);
   border-radius: 35px;
-  margin-top: 2em;
 }
 
  .reserve-dashboard {

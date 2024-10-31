@@ -29,7 +29,20 @@ body {
             text-transform: uppercase;
             width: 100%;
         }
-        .header-content {
+
+.header-display {
+  display: flex;
+  align-items: center;
+}
+
+.header-display p {
+  color: var(--accent);
+  margin: 5px;
+  font-size: 1.2rem;
+  word-spacing: 0.5rem;
+}
+
+ .header-content {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -67,17 +80,7 @@ header {
   align-items: center;
   padding: 10px;
 }
-.header-display {
-  display: flex;
-  align-items: center;
-}
 
-.header-display p {
-  color: var(--accent);
-  margin: 5px;
-  font-size: 1.2rem;
-  word-spacing: 0.5rem;
-}
 
         .button {
             padding: 10px;

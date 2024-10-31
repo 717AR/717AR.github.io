@@ -40,7 +40,6 @@ body {
   display: inline-block;
   background-color: var(--white);
   border-radius: 35px;
-  padding: 0 1em;
   margin-top: 2em;
 }
 

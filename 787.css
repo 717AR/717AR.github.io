@@ -41,12 +41,22 @@ body {
   margin-top: 2em;
 }
 
-     .reserve-dashboard {
+ .reserve-dashboard {
             text-align: center;
             margin: 10px;
             font-size: 18px;
             display: inline-block;
         }
+
+.selector-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+.selector-container label {
+            margin-right: 10px;
+        }
+
 
 header {
   margin: 20px;

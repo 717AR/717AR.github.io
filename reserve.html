@@ -71,20 +71,17 @@ let days = document.querySelector(".days");
 let previous = document.querySelector(".left");
 let next = document.querySelector(".right");
 let selected = document.querySelector(".selected");
+let docSelect = document.getElementById('doc'); // Document selection dropdown
 
 let date = new Date();
-
 let year = date.getFullYear();
 let month = date.getMonth();
 
 function displayCalendar() {
   const firstDay = new Date(year, month, 1);
-
   const lastDay = new Date(year, month + 1, 0);
-
-  const firstDayIndex = firstDay.getDay(); //4
-
-  const numberOfDays = lastDay.getDate(); //31
+  const firstDayIndex = firstDay.getDay();
+  const numberOfDays = lastDay.getDate();
 
   let formattedDate = date.toLocaleString("en-US", {
     month: "long",
@@ -93,21 +90,20 @@ function displayCalendar() {
 
   display.innerHTML = `${formattedDate}`;
 
+  // Filling in days
   for (let x = 1; x <= firstDayIndex; x++) {
     const div = document.createElement("div");
-    div.innerHTML += "";
-
     days.appendChild(div);
   }
 
   for (let i = 1; i <= numberOfDays; i++) {
     let div = document.createElement("div");
     let currentDate = new Date(year, month, i);
-
     div.dataset.date = currentDate.toDateString();
-
-    div.innerHTML += i;
+    div.innerHTML = i;
     days.appendChild(div);
+
+    // Highlight the current date
     if (
       currentDate.getFullYear() === new Date().getFullYear() &&
       currentDate.getMonth() === new Date().getMonth() &&
@@ -118,59 +114,42 @@ function displayCalendar() {
   }
 }
 
-
 // Call the function to display the calendar
 displayCalendar();
 
+// Navigate to previous month
 previous.addEventListener("click", () => {
   days.innerHTML = "";
   selected.innerHTML = "";
 
-  if (month < 0) {
+  if (month <= 0) {
     month = 11;
-    year = year - 1;
+    year -= 1;
   }
 
-  month = month - 1;
+  month -= 1;
 
   date.setMonth(month);
-
   displayCalendar();
-  displaySelected();
 });
 
+// Navigate to next month
 next.addEventListener("click", () => {
   days.innerHTML = "";
   selected.innerHTML = "";
 
-  if (month > 11) {
+  if (month >= 11) {
     month = 0;
-    year = year + 1;
+    year += 1;
   }
 
-  month = month + 1;
+  month += 1;
   date.setMonth(month);
 
-
   displayCalendar();
-  displaySelected();
 });
 
-function displaySelected() {
-  const dayElements = document.querySelectorAll(".days div");
-  dayElements.forEach((day) => {
-    day.addEventListener("click", (e) => {
-      const selectedDate = e.target.dataset.date;
-      selected.innerHTML = `Selected Date : ${selectedDate}`;
-    });
-  });
-}
-displaySelected();
-
-
-
-    
-    // Store selected document globally
+// Store selected document globally
 let selectedDocument = "";
 
 // Event listener for document selection
@@ -178,10 +157,18 @@ docSelect.addEventListener('change', function() {
     selectedDocument = this.value; // Store selected document
 });
 
-// Modify the displaySelected function to open the appropriate PDF
+// Function to get formatted date for URL
+function getFormattedDateForUrl(date) {
+    const days = String(date.getDate()).padStart(2, '0');
+    const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+    const year = String(date.getFullYear()).slice(-2);
+    return `${days}${month}${year}`;
+}
+
+// Function to display selected date and open the appropriate PDF
 function displaySelected() {
     const dayElements = document.querySelectorAll(".days div");
-    dayElements.forEach(day => {
+    dayElements.forEach((day) => {
         day.addEventListener("click", (e) => {
             const selectedDate = e.target.dataset.date;
             selected.innerHTML = `Selected Date: ${selectedDate}`;
@@ -189,62 +176,57 @@ function displaySelected() {
             // Determine which URL to open based on the selected document
             if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
                 const urlMap = {
-                    "RSV": "DDMMMYY-PI%20PAX%20RSV%20LIST.PDF",
-                    "REC": "DDMMMYY-PI%20RCL%20LIST.PDF",
-                    "DFS": "DDMMMYY-787%20DFSH.PDF",
-                 } else if (selectedDoc === "VAC2024") {
-                // Open the specific link for Vacation - 2024 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
-            } else if (selectedDoc === "VAC2025") {
-                // Open the specific link for Vacation - 2025 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
-            }
+                    "RSV": `${getFormattedDateForUrl(new Date(selectedDate))}-PI%20PAX%20RSV%20LIST.PDF`,
+                    "REC": `${getFormattedDateForUrl(new Date(selectedDate))}-PI%20RCL%20LIST.PDF`,
+                    "DFS": `${getFormattedDateForUrl(new Date(selectedDate))}-787%20DFSH.PDF`
                 };
 
-                // Format the date for the URL
-                const pdfDate = getFormattedDateForUrl(new Date(selectedDate));
-                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${pdfDate}-${urlMap[selectedDocument]}`;
-                
-                // Open the PDF in a new window
+                const pdfUrl = pdfBaseUrl + urlMap[selectedDocument];
                 window.open(pdfUrl, '_blank');
+                
+            } else if (selectedDocument === "VAC2024") {
+                // Open the specific link for Vacation - 2024
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+                docSelect.selectedIndex = 0; // Reset selection to the first option
+                
+            } else if (selectedDocument === "VAC2025") {
+                // Open the specific link for Vacation - 2025
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
+                docSelect.selectedIndex = 0; // Reset selection to the first option
             }
         });
     });
+}
 
+// Initialize the displaySelected functionality
+displaySelected();
 
-    
-function getFormattedDateForUrl(date) {
-            const days = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
-            return `${days}${month}${year}`;
-        }
-
+// Function to display today's or tomorrow's PDF based on button clicks
 function displayDate() {
     const today = new Date();
     const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
     const isAfter1600HST = hawaiiTime.getHours() >= 16;      
     const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'block';
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
 
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
+    if (isAfter1600HST) {
+        tomorrowButton.style.display = 'block';
+        tomorrowButton.onclick = function() {
+            const tomorrowDate = new Date();
+            tomorrowDate.setDate(today.getDate() + 1);
+            const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI%20PAX%20RSV%20LIST.PDF`;
+            window.open(pdfUrl, '_blank');
+        };
+    }
 
-    displayDate()
+    document.getElementById('today-button').onclick = function() {
+        const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI%20PAX%20RSV%20LIST.PDF`;
+        window.open(pdfUrl, '_blank');
+    };
+}
+
+// Call the displayDate function
+displayDate();
     
-    </script>
+</script>
 </body>
 </html>

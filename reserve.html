@@ -64,6 +64,7 @@ And Date:
 </div>
 
 <script>
+
 const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
 let display = document.querySelector(".display");
@@ -90,12 +91,14 @@ function displayCalendar() {
 
   display.innerHTML = `${formattedDate}`;
 
-  // Filling in days
+  // Filling in blanks for the first week
+  days.innerHTML = ""; // Clear previous days
   for (let x = 1; x <= firstDayIndex; x++) {
     const div = document.createElement("div");
     days.appendChild(div);
   }
 
+  // Filling in days of the month
   for (let i = 1; i <= numberOfDays; i++) {
     let div = document.createElement("div");
     let currentDate = new Date(year, month, i);
@@ -104,11 +107,7 @@ function displayCalendar() {
     days.appendChild(div);
 
     // Highlight the current date
-    if (
-      currentDate.getFullYear() === new Date().getFullYear() &&
-      currentDate.getMonth() === new Date().getMonth() &&
-      currentDate.getDate() === new Date().getDate()
-    ) {
+    if (currentDate.toDateString() === new Date().toDateString()) {
       div.classList.add("current-date");
     }
   }
@@ -122,14 +121,15 @@ previous.addEventListener("click", () => {
   days.innerHTML = "";
   selected.innerHTML = "";
 
-  if (month <= 0) {
+  month -= 1;
+  if (month < 0) {
     month = 11;
     year -= 1;
   }
 
-  month -= 1;
-
+  date.setFullYear(year);
   date.setMonth(month);
+
   displayCalendar();
 });
 
@@ -138,12 +138,13 @@ next.addEventListener("click", () => {
   days.innerHTML = "";
   selected.innerHTML = "";
 
-  if (month >= 11) {
+  month += 1;
+  if (month > 11) {
     month = 0;
     year += 1;
   }
 
-  month += 1;
+  date.setFullYear(year);
   date.setMonth(month);
 
   displayCalendar();
@@ -155,6 +156,15 @@ let selectedDocument = "";
 // Event listener for document selection
 docSelect.addEventListener('change', function() {
     selectedDocument = this.value; // Store selected document
+
+    // Open respective vacation PDFs immediately
+    if (selectedDocument === "VAC2024") {
+        window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+        docSelect.selectedIndex = 0; // Reset selection to the first option
+    } else if (selectedDocument === "VAC2025") {
+        window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
+        docSelect.selectedIndex = 0; // Reset selection to the first option
+    }
 });
 
 // Function to get formatted date for URL
@@ -171,7 +181,7 @@ function displaySelected() {
     dayElements.forEach((day) => {
         day.addEventListener("click", (e) => {
             const selectedDate = e.target.dataset.date;
-            selected.innerHTML = `Selected: ${selectedDate}`;
+            selected.innerHTML = `Selected Date: ${selectedDate}`;
 
             // Determine which URL to open based on the selected document
             if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
@@ -183,16 +193,6 @@ function displaySelected() {
 
                 const pdfUrl = pdfBaseUrl + urlMap[selectedDocument];
                 window.open(pdfUrl, '_blank');
-                
-            } else if (selectedDocument === "VAC2024") {
-                // Open the specific link for Vacation - 2024
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                docSelect.selectedIndex = 0; // Reset selection to the first option
-                
-            } else if (selectedDocument === "VAC2025") {
-                // Open the specific link for Vacation - 2025
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                docSelect.selectedIndex = 0; // Reset selection to the first option
             }
         });
     });
@@ -226,7 +226,6 @@ function displayDate() {
 
 // Call the displayDate function
 displayDate();
-    
 </script>
 </body>
 </html>

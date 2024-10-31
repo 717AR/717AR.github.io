@@ -64,7 +64,7 @@
 </div>
 
     <script>
-        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+                const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
         function getFormattedDateForUrl(date) {
             const days = String(date.getDate()).padStart(2, '0');
@@ -93,6 +93,8 @@
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
+        }
+
 
 let display = document.querySelector(".display");
 let days = document.querySelector(".days");

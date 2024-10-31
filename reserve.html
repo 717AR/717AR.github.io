@@ -171,9 +171,17 @@ function displaySelected() {
 }
 displaySelected();
 
+    function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
+
         function displayDate() {
             const today = new Date();
-            const formattedCurrentDate = getFormattedHeaderDate(today);
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
             
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;

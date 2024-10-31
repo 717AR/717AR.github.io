@@ -123,29 +123,6 @@ function displayCalendar() {
 }
 
 
-
-        function displayDate() {
-            const today = new Date();
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
-
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'block';
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
-
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-
 // Call the function to display the calendar
 displayCalendar();
 
@@ -193,6 +170,32 @@ function displaySelected() {
   });
 }
 displaySelected();
+
+        function displayDate() {
+            const today = new Date();
+            const formattedCurrentDate = getFormattedHeaderDate(today);
+            
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+    
     </script>
 </body>
 </html>

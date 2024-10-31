@@ -178,12 +178,8 @@ displaySelected();
             return `${days}${month}${year}`;
         }
 
-        function displayDate() {
-            const today = new Date();
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
-
-            const tomorrowButton = document.getElementById('tomorrow-button');
+ const today = new Date();
+ const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
                 tomorrowButton.style.display = 'block';
                 tomorrowButton.onclick = function() {

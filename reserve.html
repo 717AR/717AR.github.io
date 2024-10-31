@@ -158,7 +158,7 @@ docSelect.addEventListener('change', function() {
 
     // Open respective vacation PDFs immediately
     if (selectedDocument === "VAC2024") {
-        window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+        window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf"; 
         docSelect.selectedIndex = 0; // Reset selection to the first option
     } else if (selectedDocument === "VAC2025") {
         window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');

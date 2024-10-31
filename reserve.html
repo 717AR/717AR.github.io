@@ -167,13 +167,32 @@ function displaySelected() {
 }
 displaySelected();
 
-            const docSelect = document.getElementById('doc');
 
-        docSelect.addEventListener('change', function() {
-            const selectedDoc = this.value;
-            
-            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
-            } else if (selectedDoc === "VAC2024") {
+
+    
+    // Store selected document globally
+let selectedDocument = "";
+
+// Event listener for document selection
+docSelect.addEventListener('change', function() {
+    selectedDocument = this.value; // Store selected document
+});
+
+// Modify the displaySelected function to open the appropriate PDF
+function displaySelected() {
+    const dayElements = document.querySelectorAll(".days div");
+    dayElements.forEach(day => {
+        day.addEventListener("click", (e) => {
+            const selectedDate = e.target.dataset.date;
+            selected.innerHTML = `Selected Date: ${selectedDate}`;
+
+            // Determine which URL to open based on the selected document
+            if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
+                const urlMap = {
+                    "RSV": "DDMMMYY-PI%20PAX%20RSV%20LIST.PDF",
+                    "REC": "DDMMMYY-PI%20RCL%20LIST.PDF",
+                    "DFS": "DDMMMYY-787%20DFSH.PDF",
+                 } else if (selectedDoc === "VAC2024") {
                 // Open the specific link for Vacation - 2024 immediately
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option
@@ -182,23 +201,32 @@ displaySelected();
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option
             }
+                };
+
+                // Format the date for the URL
+                const pdfDate = getFormattedDateForUrl(new Date(selectedDate));
+                const pdfUrl = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${pdfDate}-${urlMap[selectedDocument]}`;
+                
+                // Open the PDF in a new window
+                window.open(pdfUrl, '_blank');
+            }
         });
+    });
 
 
     
-    function getFormattedDateForUrl(date) {
+function getFormattedDateForUrl(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getFullYear()).slice(-2);
             return `${days}${month}${year}`;
         }
 
-    function displayDate() {
+function displayDate() {
     const today = new Date();
     const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-    const isAfter1600HST = hawaiiTime.getHours() >= 16;
-        
- const tomorrowButton = document.getElementById('tomorrow-button');
+    const isAfter1600HST = hawaiiTime.getHours() >= 16;      
+    const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
                 tomorrowButton.style.display = 'block';
                 tomorrowButton.onclick = function() {
@@ -216,6 +244,7 @@ displaySelected();
         }
 
     displayDate()
+    
     </script>
 </body>
 </html>

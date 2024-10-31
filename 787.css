@@ -117,8 +117,8 @@ pre {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 2rem;
-  width: 2em;
+  height: 3rem;
+  width: 3em;
   border-radius: 100%;
 }
 .days div:hover {

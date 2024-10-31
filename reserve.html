@@ -27,7 +27,7 @@
      <div class="selector-container">
         <label for="doc"></label>
         <select name="doc" id="doc">
-             <option value="#">Select PDF</option>
+             <option value="#">Select PDF Then Date</option>
             <option value="RSV">Reserve Dashboard</option>
             <option value="REC">Recalls</option>
             <option value="DFS">DFS History</option>
@@ -84,7 +84,7 @@ function displayCalendar() {
   const numberOfDays = lastDay.getDate();
 
   let formattedDate = date.toLocaleString("en-US", {
-    month: "short",
+    month: "long",
     year: "numeric"
   });
 

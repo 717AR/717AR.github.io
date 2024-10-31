@@ -12,7 +12,7 @@
     <div class="top">
         <div class="top-content">
             <span>787 Links</span>
-                1513 test  
+                1515 test  
         </div>
     </div>
     
@@ -96,7 +96,6 @@
         }
 
 const docSelect = document.getElementById('doc');
-const datePicker = document.getElementById('datepicker');
 
 docSelect.addEventListener('change', function() {
     const selectedDoc = this.value;
@@ -122,8 +121,6 @@ datePicker.addEventListener('change', function() {
         const hawaiiDate = new Date(selectedDate.toString());
         hawaiiDate.setHours(hawaiiDate.getHours() + 20); // Adjust to Hawaii time
 
-        console.log(`selected date: ${selectedDate}`);
-
         // Format the date for URL
         let pdfUrl = '';
         const formattedDate = getFormattedDateForUrl(hawaiiDate);
@@ -136,20 +133,17 @@ datePicker.addEventListener('change', function() {
             pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
         }
 
-         console.log(`Hawaii date (adjusted): ${hawaiiDate}`);
-
         // Open the corresponding PDF
         if (pdfUrl) {
             window.open(pdfUrl, '_blank');
             // Clear the selection after opening
             docSelect.selectedIndex = 0;
-            datePicker.style.display = 'none'; // Hide the date picker again
         }
     }
 });
         displayDate();
 
-        let display = document.querySelector(".display");
+let display = document.querySelector(".display");
 let days = document.querySelector(".days");
 let previous = document.querySelector(".left");
 let next = document.querySelector(".right");

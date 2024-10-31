@@ -33,11 +33,7 @@
             <option value="VAC2024">Vacation - 2024</option>
             <option value="VAC2025">Vacation - 2025</option>
         </select>
-        <br>
-        <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px; display: none;">
-    </div>
-
-    
+    </div>    
 
 <div class="container">
   <div class="calendar">
@@ -49,7 +45,6 @@
       </div>
 
       <pre class="right">▶</pre>
-
     </header>
 
     <div class="week">
@@ -67,8 +62,6 @@
     <p class="selected"></p>
   </div>
 </div>
-
-
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
@@ -107,18 +100,6 @@ const datePicker = document.getElementById('datepicker');
 
 docSelect.addEventListener('change', function() {
     const selectedDoc = this.value;
-
-    // Hide the date picker by default
-    datePicker.style.display = 'none';
-
-    if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
-        // Show the date picker
-        datePicker.style.display = 'block';
-        // Clear previous date selection
-        datePicker.value = '';
-
-        // Focus on date picker to allow user to select a date
-        datePicker.focus();
         
     } else if (selectedDoc === "VAC2024") {
         // Open the specific link for Vacation - 2024 immediately

@@ -111,8 +111,9 @@
             <option value="VAC2024">Vacation - 2024</option>
             <option value="VAC2025">Vacation - 2025</option>
         </select>
-
+        
         <br>
+        <label for="datepicker">Select Date:</label>
         <input type="date" id="datepicker" aria-label="Select a date" style="width: 100%; max-width: 150px; padding: 10px; display: none;" onfocus="'showPicker' in this && this.showPicker()"/>
     </div>
 
@@ -162,9 +163,10 @@
         const moreLinksButton = document.getElementById('more-links-button');
 
         moreLinksButton.addEventListener('click', function() {
-            // Toggle the display of the selector container
+            // Toggle the visibility of the selector container
             if (selectorContainer.style.display === 'none') {
                 selectorContainer.style.display = 'block';
+                datePicker.style.display = 'block'; // Show the date picker right away
             } else {
                 selectorContainer.style.display = 'none';
             }

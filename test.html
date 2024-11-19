@@ -3,12 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="apple-touch-icon" href="787.png">
     <title>787 Links</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            height: 100vh;
             background-color: #f5f5f5;
+            overflow: auto;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -23,39 +26,95 @@
             text-transform: uppercase;
             width: 100%;
         }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
         .reserve-dashboard {
             text-align: center;
             margin: 10px;
-            font-size: 20px;
+            font-size: 18px;
+            display: inline-block;
         }
-        .vacation-link {
-            margin: 5px;
-            color: #0077cc; 
-            text-decoration: none; 
-            font-size: 20px;
-            font-weight: bold; 
+        .more-links-button {
+            padding: 10px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
         }
-        .vacation-link:hover {
-            text-decoration: underline; 
+        .more-links-button:hover {
+            background-color: #005999;
+        }
+        .button {
+            padding: 10px;
+            background-color: #0077cc;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            transition: background-color 0.3s;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .selector-container {
+            margin-top: 20px;
+            text-align: center;
+            display: none; /* Hide initially */
+        }
+        .selector-container label {
+            margin-right: 10px;
         }
     </style>
 </head>
 <body>
     <div class="header">
-        787 Links
+        <div class="header-content">
+            <span>787 Links</span>
+        </div>
     </div>
     
     <div class="reserve-dashboard">
-        <a href="#" id="today-link" class="vacation-link">Today RSV</a><br>
-        <a href="#" id="tomorrow-link" class="vacation-link" style="display: none;">Tomorrow RSV</a>
+        <div>
+            <button class="button" id="today-button">Today RSV</button>
+            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
+        </div>
     </div>
 
-    <a href="#" class="vacation-link">Recalls</a>  <br>
-    <a href="#"  class="vacation-link">DFS History</a>  <br>
-    
-    <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf" class="vacation-link" target="_blank">2024</a>
-   <br>
-    <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" class="vacation-link" target="_blank">2025</a>
+    <button class="more-links-button" id="more-links-button">More Links</button>
+
+    <div class="selector-container" id="selector-container">
+        <label for="doc">Select PDF:</label>
+        <select name="doc" id="doc" aria-label="Select document type">
+             <option value="#">Select PDF</option>
+            <option value="RSV">Reserve Dashboard</option>
+            <option value="REC">Recalls</option>
+            <option value="DFS">DFS History</option>
+            <option value="VAC2024">Vacation - 2024</option>
+            <option value="VAC2025">Vacation - 2025</option>
+        </select>
+
+        <br>
+        <input type="date" id="datepicker" aria-label="Select a date" style="width: 100%; max-width: 150px; padding: 10px; display: none;" onfocus="'showPicker' in this && this.showPicker()"/>
+    </div>
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
@@ -67,38 +126,91 @@
             return `${days}${month}${year}`;
         }
 
-        function getFormattedHeaderDate(date) {
-            const options = { weekday: 'long', month: 'short', day: 'numeric' };
-            return date.toLocaleDateString('en-US', options);
+        function openPdf(url) {
+            window.open(url, '_blank');
+            // Reset the form
+            docSelect.selectedIndex = 0; // Resets the dropdown
+            datePicker.style.display = 'none'; // Hides date picker
+            selectorContainer.style.display = 'none'; // Hides the selector container
         }
 
-        function displayDate() {
+        function setupDateButtons() {
             const today = new Date();
-            const formattedCurrentDate = getFormattedHeaderDate(today);
-
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-            const tomorrowLink = document.getElementById('tomorrow-link');
+            const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
-                tomorrowLink.style.display = 'inline';
-                tomorrowLink.onclick = function(event) {
-                    event.preventDefault();
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);
                     const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
+                    openPdf(pdfUrl);
                 };
             }
 
-            document.getElementById('today-link').onclick = function(event) {
-                event.preventDefault();
+            document.getElementById('today-button').onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
+                openPdf(pdfUrl);
             };
         }
-        
-        displayDate();
+
+        const docSelect = document.getElementById('doc');
+        const datePicker = document.getElementById('datepicker');
+        const selectorContainer = document.getElementById('selector-container');
+        const moreLinksButton = document.getElementById('more-links-button');
+
+        moreLinksButton.addEventListener('click', function() {
+            // Toggle the display of the selector container
+            if (selectorContainer.style.display === 'none') {
+                selectorContainer.style.display = 'block';
+            } else {
+                selectorContainer.style.display = 'none';
+            }
+        });
+
+        docSelect.addEventListener('change', function() {
+            const selectedDoc = this.value;
+            datePicker.style.display = 'none';
+
+            if (["RSV", "REC", "DFS"].includes(selectedDoc)) {
+                datePicker.style.display = 'block';
+                datePicker.value = ''; // Clear previous date selection
+            } else if (selectedDoc === "VAC2024") {
+                openPdf("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf");
+            } else if (selectedDoc === "VAC2025") {
+                openPdf("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf");
+            }
+        });
+
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);
+            // Adjust the selected date to Hawaii time
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+
+            if (!isNaN(hawaiiDate.getTime())) {
+                let pdfUrl = '';
+                const formattedDate = getFormattedDateForUrl(hawaiiDate);
+
+                if (selectedDoc === "RSV") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                } else if (selectedDoc === "REC") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+                } else if (selectedDoc === "DFS") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+                }
+
+                // Open the corresponding PDF
+                if (pdfUrl) {
+                    openPdf(pdfUrl);
+                }
+            }
+        });
+
+        setupDateButtons();
     </script>
+
 </body>
 </html>

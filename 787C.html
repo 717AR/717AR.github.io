@@ -102,8 +102,8 @@
             <option value="RSV">Reserve Dashboard</option>
             <option value="REC">Recalls</option>
             <option value="DFS">DFS History</option>
-            <option value="VAC2024">Vacation - 2024</option>
-            <option value="VAC2025">Vacation - 2025</option>
+            <option value="FO2025">F/O Vacation (2025)</option>
+            <option value="C2025">Captain Vacation (2025)</option>
         </select>
         <br>
         <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px; display: none;">
@@ -156,13 +156,13 @@
                 datePicker.style.display = 'block';
                 // Clear previous date selection
                 datePicker.value = '';
-            } else if (selectedDoc === "VAC2024") {
+            } else if (selectedDoc === "FO2025") {
                 // Open the specific link for Vacation - 2024 immediately
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option
-            } else if (selectedDoc === "VAC2025") {
+            } else if (selectedDoc === "C2025") {
                 // Open the specific link for Vacation - 2025 immediately
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/Forms/AllItems.aspx?id=%2Fsites%2Fflightoperations%2FCrewPlanning%2FVacation%2F2025 Vacation Availability%2F787ca2025.pdf", '_blank');
                 this.selectedIndex = 0; // Reset to the first option
             }
         });

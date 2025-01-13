@@ -20,13 +20,13 @@ body {
 }
     
         .header {
-            background-color: #0077cc;
+            background-color: #6617cb;
+            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
             color: white;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            text-transform: uppercase;
+            font-family: "Chronicle Display",Georgia,serif;
+            font-size: 28px;
             width: 100%;
         }
 

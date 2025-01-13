@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>787 Links</title>
+    <link rel="apple-touch-icon" href="787.png">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            margin: 0;
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #6617cb;
+            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            text-transform: uppercase;
+            width: 100%;
+        }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .reserve-dashboard {
+            margin: 20px;
+        }
+        .section {
+            margin: 10px;
+        }
+        .vacation-link {
+            margin-right: 10px;
+            color: #66b3ff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .vacation-link:hover {
+            text-decoration: underline;
+            color: #66b3ff;
+        }
+        .button {
+            background-color: #66b3ff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .button:hover {
+            background-color: #4682b4;
+        }
+        .button:active {
+            background-color: #2e6da4;
+        }
+        .input {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .date-picker {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .selector-container {
+            margin: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <span>787 Links</span>
+        </div>
+    </div>
+
+    <div class="reserve-dashboard">
+        <div style="margin-top: 10px;" class="section">
+            <button class="button" id="today-button" style="width: auto;">Today RSV</button>
+            <button class="button" id="tomorrow-button" style="display: none; width: auto;">Tomorrow RSV</button>
+        </div>
+        <div class="section">
+            <label for="doc">More Links:</label>
+            <select name="doc" id="doc" style="margin-right: 20px;">
+                <option value="#">Select PDF</option>
+                <option value="RSV">Reserve Dashboard</option>
+                <option value="REC">Recalls</option>
+                <option value="DFS">DFS History</option>
+                <!-- <option value="FO2025">Flight Ops Vacation (2025)</option> -->
+                <!-- <option value="C2025">Captain Vacation (2025)</option> -->
+            </select>
+        </div>
+    </div>
+
+    <div style="margin-top: 20px;" class="selector-container">
+        <label for="datepicker">Select Date:</label>
+        <input type="date" id="datepicker" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <script>
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
+
+        function displayDate() {
+            const today = new Date();
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+        const docSelect = document.getElementById('doc');
+        const datePicker = document.getElementById('datepicker');
+
+        docSelect.addEventListener('change', function() {
+            const selectedDoc = this.value;
+
+            // Hide the date picker by default
+            datePicker.style.display = 'none';
+
+            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+                // Show the date picker
+                datePicker.style.display = 'block';
+                // Clear previous date selection
+                datePicker.value = '';
+            } else if (selectedDoc === "RSV") {
+                // Open the specific link for RSV immediately
+                window.open("https://sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/today-PI-PAX-RSV-LIST.PDF", '_blank');
+                this.selectedIndex = 0; // Reset to the first option
+            }
+        });
+
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);
+            // Adjust the selected date to Hawaii time
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+
+            if (!isNaN(hawaiiDate.getTime())) {
+                let pdfUrl = '';
+                const formattedDate = getFormattedDateForUrl(hawaiiDate);
+
+                if (selectedDoc === "RSV") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                } else if (selectedDoc === "REC") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+                } else if (selectedDoc === "DFS") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+                }
+
+                // Open the corresponding PDF
+                if (pdfUrl) {
+                    window.open(pdfUrl, '_blank');
+                    // Clear the selection after opening
+                    docSelect.selectedIndex = 0;
+                    datePicker.style.display = 'none'; // Hide the date picker again
+                }
+            }
+        });
+
+        displayDate();
+    </script>
+
+    <input type="date" onfocus="'showPicker' in this && this.showPicker()"/>
+</body>
+</html>

@@ -55,21 +55,22 @@
         .vacation-link:hover {
             text-decoration: underline;
         }
-        .button {
-            padding: 10px;
-            background-color: #0077cc;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            max-width: 150px;
-            text-align: center;
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            transition: background-color 0.3s;
-        }
+.button {
+    padding: 10px;
+    background-color: #6617cb; /* Updated to purple */
+    color: white;
+    border: none;
+    border-radius: 0; /* Change to squared edges */
+    cursor: pointer;
+    font-size: 16px;
+    width: 100%;
+    max-width: 150px;
+    text-align: center;
+    text-transform: uppercase;
+    margin: 5px; /* Adjust margin for spacing */
+    transition: background-color 0.3s;
+    display: inline-block; /* Display buttons inline */
+}
         .disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -89,11 +90,12 @@
             <span>787 Links</span>
         </div>
     </div>
-    
+    <br>
+    <br>
     <div class="reserve-dashboard">
-        <div>
-            <button class="button" id="today-button">Today RSV</button>
-            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
+        <div>  
+    <button class="button" id="today-button">Today RSV</button>
+    <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
         </div>
     </div>
 

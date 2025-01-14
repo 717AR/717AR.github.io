@@ -41,6 +41,7 @@ body {
   display: inline-block;
   background-color: var(--white);
   border-radius: 0px;
+  width: 90%; /* Widen the white box to 90% of the page */
 }
 
 .reserve-dashboard {
@@ -55,6 +56,17 @@ body {
   text-align: center;
 }
 
+.more-links {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.more-links label {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
 .button {
   padding: 10px;
   background-color: #4a2c88;
@@ -67,6 +79,10 @@ body {
   margin: 5px;
   transition: background-color 0.3s;
   display: inline-block;
+}
+
+#today-button {
+  width: 100%; /* Widen the "Today's RSV" button */
 }
 
 .calendar {
@@ -89,7 +105,7 @@ body {
 
 .vacation-dot a {
   display: block;
-  width: 8px; /* Smaller dot */
+  width: 8px;
   height: 8px;
   background-color: #000;
   border-radius: 50%;
@@ -97,7 +113,7 @@ body {
   bottom: 10px;
   left: 50%;
   transform: translateX(-50%);
-  pointer-events: all; /* Make it clickable */
+  pointer-events: all;
 }
 
 .vacation-dot a:hover {

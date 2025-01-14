@@ -118,7 +118,8 @@
             <option value="VAC2025">Vacation - 2025</option>
         </select>
         <br>
-        <input type="date" id="datepicker" style="display: none;">
+        <!-- Datepicker is always visible now -->
+        <input type="date" id="datepicker">
     </div>
 
     <script>
@@ -128,4 +129,82 @@
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getFullYear()).slice(-2);
- 
+            return `${days}${month}${year}`;
+        }
+
+        function displayDate() {
+            const today = new Date();
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'inline'; // Fix: Ensure it is displayed inline
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+        const docSelect = document.getElementById('doc');
+        const datePicker = document.getElementById('datepicker');
+
+        docSelect.addEventListener('change', function() {
+            const selectedDoc = this.value;
+
+            // Always show the date picker
+            datePicker.style.display = 'inline';
+
+            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+                datePicker.style.display = 'inline'; // Ensure it's visible when selecting these options
+            } else {
+                // The date picker is always shown; this code is redundant now
+            }
+
+            if (selectedDoc === "VAC2024") {
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
+                this.selectedIndex = 0;
+            } else if (selectedDoc === "VAC2025") {
+                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
+                this.selectedIndex = 0;
+            }
+        });
+
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+
+            if (!isNaN(hawaiiDate.getTime())) {
+                let pdfUrl = '';
+                const formattedDate = getFormattedDateForUrl(hawaiiDate);
+
+                if (selectedDoc === "RSV") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+                } else if (selectedDoc === "REC") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+                } else if (selectedDoc === "DFS") {
+                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+                }
+
+                if (pdfUrl) {
+                    window.open(pdfUrl, '_blank');
+                    docSelect.selectedIndex = 0;
+                    datePicker.style.display = 'inline';  // Keep the datepicker visible
+                }
+            }
+        });
+
+        displayDate();
+    </script>
+
+</body>
+</html>

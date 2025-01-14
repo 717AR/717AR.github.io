@@ -23,13 +23,11 @@
     </div>
 
     <div class="container">
-        <!-- Added the "More Links" label -->
         <div class="more-links">
             <label for="doc">More Links</label>
         </div>
         
         <div class="selector-container">
-            <label for="doc"></label>
             <select name="doc" id="doc">
                 <option value="#">Select PDF Then Date</option>
                 <option value="RSV">Reserve Dashboard</option>
@@ -64,13 +62,149 @@
         </div>
     </div>
 
-    <!-- Vacation Dot -->
     <div class="vacation-dot">
         <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" target="_blank"></a>
     </div>
 
     <script>
-        // Your JavaScript code remains the same
+        // Variables for date handling and elements
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        let display = document.querySelector(".display");
+        let days = document.querySelector(".days");
+        let previous = document.querySelector(".left");
+        let next = document.querySelector(".right");
+        let selected = document.querySelector(".selected");
+        let docSelect = document.getElementById('doc'); // Document selection dropdown
+
+        let date = new Date();
+        let year = date.getFullYear();
+        let month = date.getMonth();
+
+        function displayCalendar() {
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const firstDayIndex = firstDay.getDay();
+            const numberOfDays = lastDay.getDate();
+
+            let formattedDate = date.toLocaleString("en-US", {
+                month: "long",
+                year: "numeric"
+            });
+
+            display.innerHTML = `${formattedDate}`;
+
+            // Filling in blanks for the first week
+            days.innerHTML = ""; // Clear previous days
+            for (let x = 1; x <= firstDayIndex; x++) {
+                const div = document.createElement("div");
+                days.appendChild(div);
+            }
+
+            // Filling in days of the month
+            for (let i = 1; i <= numberOfDays; i++) {
+                let div = document.createElement("div");
+                let currentDate = new Date(year, month, i);
+                div.dataset.date = currentDate.toDateString();
+                div.innerHTML = i;
+                days.appendChild(div);
+
+                // Highlight the current date
+                if (currentDate.toDateString() === new Date().toDateString()) {
+                    div.classList.add("current-date");
+                }
+            }
+        }
+
+        // Call the function to display the calendar
+        displayCalendar();
+
+        // Event listener for document selection
+        docSelect.addEventListener('change', function() {
+            let selectedDocument = this.value; // Store selected document
+
+            // Show the calendar only when "RSV", "REC", or "DFS" is selected
+            if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
+                document.querySelector(".calendar").style.display = "block";  // Show calendar
+            } else {
+                document.querySelector(".calendar").style.display = "none"; // Hide calendar for other options
+            }
+
+            // Handle other document opening links as before
+            if (selectedDocument === "VAC2024") {
+                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf"; 
+                docSelect.selectedIndex = 0;
+            } else if (selectedDocument === "VAC2025") {
+                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf";
+                docSelect.selectedIndex = 0;
+            }
+        });
+
+        // Navigation for calendar
+        previous.addEventListener("click", () => {
+            days.innerHTML = "";
+            selected.innerHTML = "";
+
+            month -= 1;
+            if (month < 0) {
+                month = 11;
+                year -= 1;
+            }
+
+            date.setFullYear(year);
+            date.setMonth(month);
+
+            displayCalendar();
+        });
+
+        next.addEventListener("click", () => {
+            days.innerHTML = "";
+            selected.innerHTML = "";
+
+            month += 1;
+            if (month > 11) {
+                month = 0;
+                year += 1;
+            }
+
+            date.setFullYear(year);
+            date.setMonth(month);
+
+            displayCalendar();
+        });
+
+        // Function to display today's or tomorrow's PDF based on button clicks
+        function displayDate() {
+            const today = new Date();
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;      
+            const tomorrowButton = document.getElementById('tomorrow-button');
+
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI%20PAX%20RSV%20LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI%20PAX%20RSV%20LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+        }
+
+        // Function to get formatted date for URL
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
+
+        // Call the displayDate function
+        displayDate();
     </script>
 </body>
 </html>

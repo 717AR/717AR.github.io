@@ -194,18 +194,12 @@
 
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);  // Use the exact date from the datepicker
 
-            // Correct the issue with the date offset
-            const selectedDate = new Date(this.value);
-            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            // Ensure we handle the date correctly without changing the day
+            const formattedDate = getFormattedDateForUrl(selectedDate);
 
-            // Now, this will correctly select the date in Hawaii time zone
-            const correctedDate = new Date(hawaiiDate.toISOString().split('T')[0]);  // Corrected date without the time part
-
-            // Update the datepicker value to reflect the corrected date
-            datePicker.value = correctedDate.toISOString().split('T')[0];
-
-            // Disable the Go button until both a valid date and document are selected
+            // Enable the Go button when a valid document and date are selected
             goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
             goButton.classList.toggle('enabled', !goButton.disabled);
             goButton.classList.toggle('disabled', goButton.disabled);
@@ -214,23 +208,20 @@
         goButton.addEventListener('click', function() {
             const selectedDoc = docSelect.value;
             const selectedDate = new Date(datePicker.value);
-            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
-            if (!isNaN(hawaiiDate.getTime())) {
-                let pdfUrl = '';
-                const formattedDate = getFormattedDateForUrl(hawaiiDate);
+            let pdfUrl = '';
+            const formattedDate = getFormattedDateForUrl(selectedDate);
 
-                if (selectedDoc === "RSV") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-                } else if (selectedDoc === "REC") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
-                } else if (selectedDoc === "DFS") {
-                    pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
-                }
+            if (selectedDoc === "RSV") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+            } else if (selectedDoc === "REC") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+            } else if (selectedDoc === "DFS") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+            }
 
-                if (pdfUrl) {
-                    window.open(pdfUrl, '_blank');
-                }
+            if (pdfUrl) {
+                window.open(pdfUrl, '_blank');
             }
         });
 

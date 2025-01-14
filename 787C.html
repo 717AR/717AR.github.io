@@ -78,7 +78,7 @@
         .selector-container {
             margin-top: 20px;
             text-align: center;
-            background-color: #f0f0f0; 
+            background-color: #e0e0e0;  /* Slightly darker shade */
             width: 95%;
             padding: 10px;
         }
@@ -90,6 +90,12 @@
             max-width: 150px;
             padding: 10px;
             margin-top: 10px;
+        }
+        #go-button:disabled {
+            background-color: #ccc;
+        }
+        #go-button.enabled {
+            background-color: #CE0C88;
         }
     </style>
 </head>
@@ -121,7 +127,7 @@
         <!-- Datepicker is always visible now -->
         <input type="date" id="datepicker">
         <br>
-        <button class="button" id="go-button">Go</button> <!-- New Go button -->
+        <button class="button disabled" id="go-button" disabled>Go</button> <!-- New Go button initially disabled -->
     </div>
 
     <script>
@@ -141,7 +147,7 @@
 
             const tomorrowButton = document.getElementById('tomorrow-button');
             if (isAfter1600HST) {
-                tomorrowButton.style.display = 'inline'; // Fix: Ensure it is displayed inline
+                tomorrowButton.style.display = 'inline'; // Ensure it is displayed inline
                 tomorrowButton.onclick = function() {
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);
@@ -163,22 +169,29 @@
         docSelect.addEventListener('change', function() {
             const selectedDoc = this.value;
 
-            // Always show the date picker
+            // Ensure the date picker is visible
             datePicker.style.display = 'inline';
 
-            if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
-                datePicker.style.display = 'inline'; // Ensure it's visible when selecting these options
-            } else {
-                // The date picker is always shown; this code is redundant now
-            }
+            // Disable the Go button initially
+            goButton.disabled = true;
+            goButton.classList.add('disabled');
+            goButton.classList.remove('enabled');
 
-            if (selectedDoc === "VAC2024") {
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                this.selectedIndex = 0;
-            } else if (selectedDoc === "VAC2025") {
-                window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                this.selectedIndex = 0;
+            if (selectedDoc !== "#" && datePicker.value) {
+                // Enable the Go button when both date and document are selected
+                goButton.disabled = false;
+                goButton.classList.add('enabled');
+                goButton.classList.remove('disabled');
             }
+        });
+
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+
+            // Disable the Go button until both a valid date and document are selected
+            goButton.disabled = !(selectedDoc !== "#" && this.value);
+            goButton.classList.toggle('enabled', !goButton.disabled);
+            goButton.classList.toggle('disabled', goButton.disabled);
         });
 
         goButton.addEventListener('click', function() {

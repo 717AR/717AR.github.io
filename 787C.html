@@ -150,6 +150,8 @@
 
         function displayDate() {
             const today = new Date();
+
+            // Adjust to Hawaii Standard Time (HST)
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
             const todayHawaii = hawaiiTime;

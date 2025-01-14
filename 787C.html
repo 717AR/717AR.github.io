@@ -1,93 +1,236 @@
-<script>
-    const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="787.png">
+    <title>787 Links</title>
+    <style>
+        body {
+            font-family: "Chronicle Display",Georgia,serif;
+            margin: 0;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #6617cb;
+            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+            color: white;
+            padding: 25px;
+            font-family: "Chronicle Display",Georgia,serif;
+            text-align: center;
+            font-size: 30px;
+            width: 100%;
+        }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .reserve-dashboard {
+            text-align: center;
+            margin: 5px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center; /* Center the buttons */
+            gap: 10px; /* Add some space between the buttons */
+        }
+        .section {
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+        }
+        .vacation-link {
+            margin: 0 10px;
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .vacation-link:hover {
+            text-decoration: underline;
+        }
+        .button {
+            padding: 10px;
+            background-color: #4a2c88;
+            color: white;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            margin: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .selector-container {
+            margin-top: 20px;
+            text-align: center;
+            background-color: #e0e0e0;  /* Slightly darker shade */
+            width: 95%;
+            padding: 10px;
+        }
+        .selector-container label {
+            margin-right: 10px;
+        }
+        #datepicker {
+            width: 100%;
+            max-width: 150px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #go-button:disabled {
+            background-color: #ccc;
+        }
+        #go-button.enabled {
+            background-color: #CE0C88;
+        }
+        .go-button-container {
+            width: 100%; /* Ensure it stretches the full width of the container */
+            display: flex;
+            justify-content: center; /* Center the button horizontally */
+            padding: 10px;
+            margin-top: 10px; /* Add space between the grey div and the Go button */
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <span>787 Links</span>
+        </div>
+    </div>
+    <br>
+    <div class="reserve-dashboard">
+        <div>  
+            <button class="button" id="today-button">Today RSV</button>
+            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> 
+        </div>
+    </div>
 
-    function getFormattedDateForUrl(date) {
-        // Make sure to get the date in UTC for proper formatting
-        const days = String(date.getUTCDate()).padStart(2, '0'); // Use getUTCDate()
-        const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-        const year = String(date.getUTCFullYear()).slice(-2); // Use getUTCFullYear()
-        return `${days}${month}${year}`;
-    }
+    <div class="selector-container">
+        <label for="doc">More Links:</label>
+        <select name="doc" id="doc">
+            <option value="#">Select PDF</option>
+            <option value="RSV">Reserve Dashboard</option>
+            <option value="REC">Recalls</option>
+            <option value="DFS">DFS History</option>
+            <option value="VAC2024">Vacation - 2024</option>
+            <option value="VAC2025">Vacation - 2025</option>
+        </select>
+        <br>
+        <!-- Datepicker is always visible now -->
+        <input type="date" id="datepicker">
+    </div>
 
-    function displayDate() {
-        const today = new Date();
-        
-        // Convert local time to Hawaii Standard Time (HST)
-        const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-        const isAfter1600HST = hawaiiTime.getHours() >= 16;
+    <div class="go-button-container">
+        <button class="button disabled" id="go-button" disabled>Go</button> <!-- New Go button initially disabled -->
+    </div>
 
-        const tomorrowButton = document.getElementById('tomorrow-button');
-        if (isAfter1600HST) {
-            tomorrowButton.style.display = 'inline'; // Ensure it is displayed inline
-            tomorrowButton.onclick = function() {
-                const tomorrowDate = new Date();
-                tomorrowDate.setDate(today.getDate() + 1);
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+    <script>
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+
+        function getFormattedDateForUrl(date) {
+            // Make sure to get the date in UTC for proper formatting
+            const days = String(date.getUTCDate()).padStart(2, '0'); // Use getUTCDate()
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getUTCFullYear()).slice(-2); // Use getUTCFullYear()
+            return `${days}${month}${year}`;
+        }
+
+        function displayDate() {
+            const today = new Date();
+            
+            // Convert local time to Hawaii Standard Time (HST)
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'inline'; // Ensure it is displayed inline
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
+
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(hawaiiTime)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
 
-        document.getElementById('today-button').onclick = function() {
-            const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(hawaiiTime)}-PI PAX RSV LIST.PDF`;
-            window.open(pdfUrl, '_blank');
-        };
-    }
+        const docSelect = document.getElementById('doc');
+        const datePicker = document.getElementById('datepicker');
+        const goButton = document.getElementById('go-button');
 
-    const docSelect = document.getElementById('doc');
-    const datePicker = document.getElementById('datepicker');
-    const goButton = document.getElementById('go-button');
+        docSelect.addEventListener('change', function() {
+            const selectedDoc = this.value;
 
-    docSelect.addEventListener('change', function() {
-        const selectedDoc = this.value;
+            // Ensure the date picker is visible
+            datePicker.style.display = 'inline';
 
-        // Ensure the date picker is visible
-        datePicker.style.display = 'inline';
+            // Disable the Go button initially
+            goButton.disabled = true;
+            goButton.classList.add('disabled');
+            goButton.classList.remove('enabled');
 
-        // Disable the Go button initially
-        goButton.disabled = true;
-        goButton.classList.add('disabled');
-        goButton.classList.remove('enabled');
+            if (selectedDoc !== "#" && datePicker.value) {
+                // Enable the Go button when both date and document are selected
+                goButton.disabled = false;
+                goButton.classList.add('enabled');
+                goButton.classList.remove('disabled');
+            }
+        });
 
-        if (selectedDoc !== "#" && datePicker.value) {
-            // Enable the Go button when both date and document are selected
-            goButton.disabled = false;
-            goButton.classList.add('enabled');
-            goButton.classList.remove('disabled');
-        }
-    });
+        datePicker.addEventListener('change', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(this.value);  // Use the exact date from the datepicker
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));  // Adjust for Hawaii time
+            const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
-    datePicker.addEventListener('change', function() {
-        const selectedDoc = docSelect.value;
-        const selectedDate = new Date(this.value);  // Use the exact date from the datepicker
-        const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));  // Adjust for Hawaii time
-        const formattedDate = getFormattedDateForUrl(hawaiiDate);
+            // Enable the Go button when a valid document and date are selected
+            goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
+            goButton.classList.toggle('enabled', !goButton.disabled);
+            goButton.classList.toggle('disabled', goButton.disabled);
+        });
 
-        // Enable the Go button when a valid document and date are selected
-        goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
-        goButton.classList.toggle('enabled', !goButton.disabled);
-        goButton.classList.toggle('disabled', goButton.disabled);
-    });
+        goButton.addEventListener('click', function() {
+            const selectedDoc = docSelect.value;
+            const selectedDate = new Date(datePicker.value);
 
-    goButton.addEventListener('click', function() {
-        const selectedDoc = docSelect.value;
-        const selectedDate = new Date(datePicker.value);
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" })); // Adjust for Hawaii time
+            let pdfUrl = '';
+            const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
-        const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" })); // Adjust for Hawaii time
-        let pdfUrl = '';
-        const formattedDate = getFormattedDateForUrl(hawaiiDate);
+            if (selectedDoc === "RSV") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+            } else if (selectedDoc === "REC") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
+            } else if (selectedDoc === "DFS") {
+                pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
+            }
 
-        if (selectedDoc === "RSV") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
-        } else if (selectedDoc === "REC") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
-        } else if (selectedDoc === "DFS") {
-            pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
-        }
+            if (pdfUrl) {
+                window.open(pdfUrl, '_blank');
+            }
+        });
 
-        if (pdfUrl) {
-            window.open(pdfUrl, '_blank');
-        }
-    });
-
-    displayDate();
-</script>
+        displayDate();
+    </script>
+</body>
+</html>

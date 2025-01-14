@@ -120,6 +120,8 @@
         <br>
         <!-- Datepicker is always visible now -->
         <input type="date" id="datepicker">
+        <br>
+        <button class="button" id="go-button">Go</button> <!-- New Go button -->
     </div>
 
     <script>
@@ -156,6 +158,7 @@
 
         const docSelect = document.getElementById('doc');
         const datePicker = document.getElementById('datepicker');
+        const goButton = document.getElementById('go-button');
 
         docSelect.addEventListener('change', function() {
             const selectedDoc = this.value;
@@ -178,9 +181,9 @@
             }
         });
 
-        datePicker.addEventListener('change', function() {
+        goButton.addEventListener('click', function() {
             const selectedDoc = docSelect.value;
-            const selectedDate = new Date(this.value);
+            const selectedDate = new Date(datePicker.value);
             const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
             if (!isNaN(hawaiiDate.getTime())) {
@@ -197,8 +200,6 @@
 
                 if (pdfUrl) {
                     window.open(pdfUrl, '_blank');
-                    docSelect.selectedIndex = 0;
-                    datePicker.style.display = 'inline';  // Keep the datepicker visible
                 }
             }
         });

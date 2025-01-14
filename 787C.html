@@ -98,7 +98,9 @@
             background-color: #CE0C88;
         }
         .go-button-container {
-            width: 95%; /* Ensure it stretches the full width of the container */
+            width: 100%; /* Ensure it stretches the full width of the container */
+            display: flex;
+            justify-content: center; /* Center the button horizontally */
             padding: 10px;
             margin-top: 10px; /* Add space between the grey div and the Go button */
         }
@@ -195,8 +197,6 @@
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;
             const selectedDate = new Date(this.value);  // Use the exact date from the datepicker
-
-            // Ensure we handle the date correctly without changing the day
             const formattedDate = getFormattedDateForUrl(selectedDate);
 
             // Enable the Go button when a valid document and date are selected

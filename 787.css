@@ -18,7 +18,15 @@ body {
             align-items: center;
  
 }
-    
+
+header {
+  margin: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px;
+}
+
         .header {
             z-index: 1; /* Ensure header content is above the background */
             background-color: #6617cb;
@@ -73,14 +81,6 @@ body {
         }
 
 
-header {
-  margin: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px;
-}
-
         .button {
             padding: 10px;
             background-color: #4a2c88;
@@ -95,6 +95,31 @@ header {
             transition: background-color 0.3s;
             display: inline-block;
         }
+
+/* Hide the calendar initially */
+.calendar {
+    display: none;
+}
+
+/* Style the dot at the bottom center */
+.vacation-dot a {
+    display: block;
+    width: 10px;
+    height: 10px;
+    background-color: #000; /* Black dot */
+    border-radius: 50%;
+    position: fixed;
+    bottom: 10px; /* Adjust positioning if needed */
+    left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none; /* Make it non-interactive, only for personal use */
+}
+
+/* Optional: Style the hover effect if needed for personal use */
+.vacation-dot a:hover {
+    background-color: #555; /* Darker on hover, only for you */
+}
+
 
 pre {
   padding: 0px;

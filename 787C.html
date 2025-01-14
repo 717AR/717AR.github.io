@@ -21,7 +21,7 @@
             background-color: #6617cb;
             background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
             color: white;
-            padding: 20px;
+            padding: 25px;
             font-family: "Chronicle Display",Georgia,serif;
             text-align: center;
             font-size: 30px;
@@ -65,7 +65,7 @@
             cursor: pointer;
             font-size: 16px;
             width: 100%;
-           /* max-width: 150px; */
+            max-width: 150px;
             text-align: center;
             margin: 5px;
             transition: background-color 0.3s;
@@ -143,7 +143,7 @@
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
 
         function getFormattedDateForUrl(date) {
-            // Make sure to get the date in UTC for proper formatting
+            // Get the date in UTC for proper formatting
             const days = String(date.getUTCDate()).padStart(2, '0'); // Use getUTCDate()
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getUTCFullYear()).slice(-2); // Use getUTCFullYear()
@@ -152,24 +152,28 @@
 
         function displayDate() {
             const today = new Date();
-            
+
             // Convert local time to Hawaii Standard Time (HST)
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+            
+            // Get the date for today in Hawaii time
+            const todayHawaii = hawaiiTime;
 
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'inline'; // Ensure it is displayed inline
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
-
+            // Display the 'Today' button function
             document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(hawaiiTime)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayHawaii)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            // Get the date for tomorrow in Hawaii time
+            const tomorrowHawaii = new Date(todayHawaii);
+            tomorrowHawaii.setDate(todayHawaii.getDate() + 1);
+
+            // Display the 'Tomorrow' button function
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            tomorrowButton.style.display = 'inline'; // Ensure it is displayed inline
+            tomorrowButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }

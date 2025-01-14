@@ -36,6 +36,7 @@
             </select>
         </div> 
         
+        <!-- Calendar Section -->
         <div class="calendar">
             <header>
                 <pre class="left">◀</pre>
@@ -67,8 +68,10 @@
     </div>
 
     <script>
-        // Variables for date handling and elements
+        // PDF Base URL
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        
+        // Elements
         let display = document.querySelector(".display");
         let days = document.querySelector(".days");
         let previous = document.querySelector(".left");
@@ -80,6 +83,7 @@
         let year = date.getFullYear();
         let month = date.getMonth();
 
+        // Function to display the calendar
         function displayCalendar() {
             const firstDay = new Date(year, month, 1);
             const lastDay = new Date(year, month + 1, 0);
@@ -118,28 +122,7 @@
         // Call the function to display the calendar
         displayCalendar();
 
-        // Event listener for document selection
-        docSelect.addEventListener('change', function() {
-            let selectedDocument = this.value; // Store selected document
-
-            // Show the calendar only when "RSV", "REC", or "DFS" is selected
-            if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
-                document.querySelector(".calendar").style.display = "block";  // Show calendar
-            } else {
-                document.querySelector(".calendar").style.display = "none"; // Hide calendar for other options
-            }
-
-            // Handle other document opening links as before
-            if (selectedDocument === "VAC2024") {
-                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf"; 
-                docSelect.selectedIndex = 0;
-            } else if (selectedDocument === "VAC2025") {
-                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf";
-                docSelect.selectedIndex = 0;
-            }
-        });
-
-        // Navigation for calendar
+        // Calendar navigation (previous/next month)
         previous.addEventListener("click", () => {
             days.innerHTML = "";
             selected.innerHTML = "";
@@ -172,6 +155,62 @@
             displayCalendar();
         });
 
+        // Function to handle date selection and open the PDF for selected date
+        function displaySelected() {
+            const dayElements = document.querySelectorAll(".days div");
+            dayElements.forEach((day) => {
+                day.addEventListener("click", (e) => {
+                    const selectedDate = e.target.dataset.date;
+                    selected.innerHTML = `Selected: ${selectedDate}`;
+
+                    let selectedDocument = docSelect.value;
+                    // Determine which PDF URL to open based on selected document
+                    if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
+                        const urlMap = {
+                            "RSV": `${getFormattedDateForUrl(new Date(selectedDate))}-PI%20PAX%20RSV%20LIST.PDF`,
+                            "REC": `${getFormattedDateForUrl(new Date(selectedDate))}-PI%20RCL%20LIST.PDF`,
+                            "DFS": `${getFormattedDateForUrl(new Date(selectedDate))}-787%20DFSH.PDF`
+                        };
+
+                        const pdfUrl = pdfBaseUrl + urlMap[selectedDocument];
+                        window.open(pdfUrl, '_blank');
+                    }
+                });
+            });
+        }
+
+        // Initialize the displaySelected functionality
+        displaySelected();
+
+        // Function to get formatted date for URL
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
+        }
+
+        // Show calendar based on document selection
+        docSelect.addEventListener('change', function() {
+            const selectedDocument = this.value;
+
+            // Show the calendar only for certain options
+            if (selectedDocument === "RSV" || selectedDocument === "REC" || selectedDocument === "DFS") {
+                document.querySelector(".calendar").style.display = "block";  // Show calendar
+            } else {
+                document.querySelector(".calendar").style.display = "none"; // Hide calendar
+            }
+
+            // Open respective PDFs based on selection
+            if (selectedDocument === "VAC2024") {
+                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf"; 
+                docSelect.selectedIndex = 0;
+            } else if (selectedDocument === "VAC2025") {
+                window.location.href = "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf";
+                docSelect.selectedIndex = 0;
+            }
+        });
+
         // Function to display today's or tomorrow's PDF based on button clicks
         function displayDate() {
             const today = new Date();
@@ -193,14 +232,6 @@
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI%20PAX%20RSV%20LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
-        }
-
-        // Function to get formatted date for URL
-        function getFormattedDateForUrl(date) {
-            const days = String(date.getDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
-            return `${days}${month}${year}`;
         }
 
         // Call the displayDate function

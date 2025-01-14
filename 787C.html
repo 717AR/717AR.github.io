@@ -38,6 +38,8 @@
             margin: 5px;
             font-size: 18px;
             display: flex;
+            justify-content: center; /* Center the buttons */
+            gap: 10px; /* Add some space between the buttons */
         }
         .section {
             text-align: center;
@@ -54,22 +56,21 @@
         .vacation-link:hover {
             text-decoration: underline;
         }
-.button {
-    padding: 10px;
-    background-color: #4a2c88;
-    color: white;
-    border: none;
-    border-radius: 0; /* Change to squared edges */
-    cursor: pointer;
-    font-size: 16px;
-    width: 100%;
-    max-width: 150px;
-    text-align: center;
-   /* text-transform: uppercase; */
-    margin: 5px; /* Adjust margin for spacing */
-    transition: background-color 0.3s;
-    display: inline-block; /* Display buttons inline */
-}
+        .button {
+            padding: 10px;
+            background-color: #4a2c88;
+            color: white;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            max-width: 150px;
+            text-align: center;
+            margin: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
         .disabled {
             background-color: #ccc;
             cursor: not-allowed;
@@ -95,8 +96,8 @@
     <br>
     <div class="reserve-dashboard">
         <div>  
-    <button class="button" id="today-button">Today RSV</button>
-    <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> <br>
+            <button class="button" id="today-button">Today RSV</button>
+            <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button> 
         </div>
     </div>
 
@@ -113,7 +114,6 @@
         <br>
         <input type="date" id="datepicker" style="width: 100%; max-width: 150px; padding: 10px; display: none;">
     </div>
-
 
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
@@ -153,27 +153,21 @@
         docSelect.addEventListener('change', function() {
             const selectedDoc = this.value;
 
-
             if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
-                // Show the date picker
                 datePicker.style.display = 'block';
-                // Clear previous date selection
                 datePicker.value = '';
             } else if (selectedDoc === "VAC2024") {
-                // Open the specific link for Vacation - 2024 immediately
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2024%20Vacation%20Availability/787ca2024.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
+                this.selectedIndex = 0;
             } else if (selectedDoc === "VAC2025") {
-                // Open the specific link for Vacation - 2025 immediately
                 window.open("https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf", '_blank');
-                this.selectedIndex = 0; // Reset to the first option
+                this.selectedIndex = 0;
             }
         });
 
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;
             const selectedDate = new Date(this.value);
-            // Adjust the selected date to Hawaii time
             const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
 
             if (!isNaN(hawaiiDate.getTime())) {
@@ -188,18 +182,16 @@
                     pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
                 }
 
-                // Open the corresponding PDF
                 if (pdfUrl) {
                     window.open(pdfUrl, '_blank');
-                    // Clear the selection after opening
                     docSelect.selectedIndex = 0;
-                    datePicker.style.display = 'none'; // Hide the date picker again
+                    datePicker.style.display = 'none';
                 }
             }
         });
 
         displayDate();
     </script>
-    
+
 </body>
 </html>

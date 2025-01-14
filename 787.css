@@ -71,6 +71,20 @@ body {
 
 .calendar {
   display: none;
+  margin-top: 20px;
+}
+
+.header-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.display {
+  color: var(--accent);
+  margin: 5px;
+  font-size: 1.5rem; /* Ensure the month title is visible */
 }
 
 .vacation-dot a {

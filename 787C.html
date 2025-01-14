@@ -97,6 +97,11 @@
         #go-button.enabled {
             background-color: #CE0C88;
         }
+        .go-button-container {
+            width: 95%; /* Ensure it stretches the full width of the container */
+            padding: 10px;
+            margin-top: 10px; /* Add space between the grey div and the Go button */
+        }
     </style>
 </head>
 <body>
@@ -126,7 +131,9 @@
         <br>
         <!-- Datepicker is always visible now -->
         <input type="date" id="datepicker">
-        <br>
+    </div>
+
+    <div class="go-button-container">
         <button class="button disabled" id="go-button" disabled>Go</button> <!-- New Go button initially disabled -->
     </div>
 
@@ -188,8 +195,18 @@
         datePicker.addEventListener('change', function() {
             const selectedDoc = docSelect.value;
 
+            // Correct the issue with the date offset
+            const selectedDate = new Date(this.value);
+            const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+
+            // Now, this will correctly select the date in Hawaii time zone
+            const correctedDate = new Date(hawaiiDate.toISOString().split('T')[0]);  // Corrected date without the time part
+
+            // Update the datepicker value to reflect the corrected date
+            datePicker.value = correctedDate.toISOString().split('T')[0];
+
             // Disable the Go button until both a valid date and document are selected
-            goButton.disabled = !(selectedDoc !== "#" && this.value);
+            goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
             goButton.classList.toggle('enabled', !goButton.disabled);
             goButton.classList.toggle('disabled', goButton.disabled);
         });

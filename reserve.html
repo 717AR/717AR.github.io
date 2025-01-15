@@ -21,6 +21,8 @@
             <button class="button" id="today-button">Today RSV</button>
             <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button>
         </div>
+                    console.log(today);
+            console.log(hawaiiTIme);
     </div>
         
         <div class="selector-container">
@@ -56,6 +58,8 @@
 
             // Adjust to Hawaii Standard Time (HST)
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+
+
 
             const todayHawaii = hawaiiTime;
             document.getElementById('today-button').onclick = function() {

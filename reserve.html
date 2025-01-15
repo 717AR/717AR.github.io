@@ -31,38 +31,17 @@
                 <option value="REC">Recalls</option>
                 <option value="DFS">DFS History</option>
             </select>
-        </div> 
-        
-        <!-- Calendar Section -->
-        <div class="calendar">
-            <header>
-                <pre class="left">◀</pre>
-                <div class="header-display">
-                    <p class="display">""</p>
-                </div>
-                <pre class="right">▶</pre>
-            </header>
+        <br>
+        <input type="date" id="datepicker">
+    </div>
 
-            <div class="week">
-                <div>Su</div>
-                <div>Mo</div>
-                <div>Tu</div>
-                <div>We</div>
-                <div>Th</div>
-                <div>Fr</div>
-                <div>Sa</div>
-            </div>
-            <div class="days"></div>
-        </div>
-
-        <div class="display-selected">
-            <p class="selected"></p>
-        </div>
-
+    <div class="go-button-container">
+        <button class="button disabled" id="go-button" disabled>Go</button>
+    </div>
+    
     <div class="vacation-dot">
         <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" target="_blank"></a>
     </div>
-
     <script>
         // PDF Base URL
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';

@@ -7,92 +7,102 @@
 }
 
 /*styles*/
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  height: 100vh;
-  background-color: #f5f5f5;
-  overflow: auto;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-header {
-  margin: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0px;
-}
-
-.header {
-  z-index: 1; /* Ensure header content is above the background */
-  background-color: #6617cb;
-  background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
-  color: white;
-  padding: 20px;
-  text-align: center;
-  font-family: "Chronicle Display",Georgia,serif;
-  font-size: 30px;
-  width: 100%;
-}
-
-.header-display {
-  display: flex;
-  align-items: center;
-}
-
-.header-display p {
-  color: var(--accent);
-  margin: 5px;
-  font-size: 1.2rem;
-  word-spacing: 0.5rem;
-}
-
-.header-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.container {
-  display: inline-block;
-  background-color: var(--white);
-  border-radius: 0px;
-}
-
-.reserve-dashboard {
-  text-align: center;
-  margin: 10px;
-  font-size: 18px;
-  display: inline-block;
-}
-
-.selector-container {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.selector-container label {
-  margin-right: 10px;
-}
-
-.button {
-  padding: 10px;
-  background-color: #4a2c88;
-  color: white;
-  border: none;
-  border-radius: 0;
-  cursor: pointer;
-  font-size: 16px;
-  width: 100%;
-  text-align: center;
-  margin: 5px;
-  transition: background-color 0.3s;
-  display: inline-block;
-}
+        body {
+            font-family: "Chronicle Display",Georgia,serif;
+            margin: 0;
+            height: 100vh;
+            background-color: #f5f5f5;
+            overflow: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .header {
+            background-color: #6617cb;
+            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+            color: white;
+            padding: 20px;
+            font-family: "Chronicle Display",Georgia,serif;
+            text-align: center;
+            font-size: 30px;
+            width: 100%;
+        }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .reserve-dashboard {
+            text-align: center;
+            margin: 5px;
+            font-size: 18px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .section {
+            text-align: center;
+            margin: 10px;
+            font-size: 18px;
+        }
+        .vacation-link {
+            margin: 0 10px;
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 16px;
+        }
+        .vacation-link:hover {
+            text-decoration: underline;
+        }
+        .button {
+            padding: 10px;
+            background-color: #4a2c88;
+            color: white;
+            border: none;
+            border-radius: 0;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+            text-align: center;
+            margin: 5px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        .disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .selector-container {
+            margin-top: 20px;
+            text-align: center;
+            background-color: #e0e0e0;
+            width: 90%;
+            padding: 10px;
+        }
+        .selector-container label {
+            margin-right: 10px;
+        }
+        #datepicker {
+            width: 100%;
+            max-width: 150px;
+            padding: 10px;
+            margin-top: 10px;
+        }
+        #go-button:disabled {
+            background-color: #ccc;
+        }
+        #go-button.enabled {
+            background-color: #CE0C88;
+        }
+        .go-button-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            margin-top: 10px;
+        }
 
 /* Hide the calendar initially */
 .calendar {

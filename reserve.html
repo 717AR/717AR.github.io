@@ -42,34 +42,34 @@
     <div class="vacation-dot">
         <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" target="_blank"></a>
     </div>
-    <script>
-        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-        
+    <script> const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+
         function getFormattedDateForUrl(date) {
-            const days = String(date.getDate()).padStart(2, '0');
+            const days = String(date.getUTCDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getFullYear()).slice(-2);
+            const year = String(date.getUTCFullYear()).slice(-2);
             return `${days}${month}${year}`;
         }
 
         function displayDate() {
             const today = new Date();
+
+            // Adjust to Hawaii Standard Time (HST)
             const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const isAfter1600HST = hawaiiTime.getHours() >= 16;
+
+            const todayHawaii = hawaiiTime;
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayHawaii)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
+
+            const tomorrowHawaii = new Date(todayHawaii);
+            tomorrowHawaii.setDate(todayHawaii.getDate() + 1);
 
             const tomorrowButton = document.getElementById('tomorrow-button');
-            if (isAfter1600HST) {
-                tomorrowButton.style.display = 'block';
-                tomorrowButton.onclick = function() {
-                    const tomorrowDate = new Date();
-                    tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    window.open(pdfUrl, '_blank');
-                };
-            }
-
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+            tomorrowButton.style.display = 'inline'; 
+            tomorrowButton.onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }

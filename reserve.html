@@ -43,54 +43,36 @@
         <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" target="_blank"></a>
     </div>
     <script>
-         // Function to get today's date in the correct format DDMMMYY
-        function getFormattedDate(date) {
-            const days = String(date.getDate()).padStart(2, '0');  // Get day of month
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase(); // Get month name in uppercase
-            const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year          
-            return `${days}${month}${year}`; // Format as DDMMMYY
+        const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
+        
+        function getFormattedDateForUrl(date) {
+            const days = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year = String(date.getFullYear()).slice(-2);
+            return `${days}${month}${year}`;
         }
 
-        // Function to check if the current time is past 4:00 PM Hawaii time
-        function isAfterFourPMHawaii() {
-            const hawaiiTime = new Intl.DateTimeFormat('en-US', {
-                timeZone: 'Pacific/Honolulu', // Hawaii time zone
-                hour: '2-digit', 
-                minute: '2-digit',
-                hour12: false // 24-hour format to make comparison easier
-            }).format(new Date());
-
-            const [hours, minutes] = hawaiiTime.split(':').map(Number);
-            return (hours > 16) || (hours === 16 && minutes >= 0);
-        }
-
-              // Function to display the PDF link
-        function displayPDFLink() {
+        function displayDate() {
             const today = new Date();
-            const tomorrow = new Date();
-            tomorrow.setDate(today.getDate() + 1); // Increment date by 1 for tomorrow
+            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const isAfter1600HST = hawaiiTime.getHours() >= 16;
 
-            const formattedToday = getFormattedDate(today); // For today
-            const formattedTomorrow = getFormattedDate(tomorrow); // For tomorrow
+            const tomorrowButton = document.getElementById('tomorrow-button');
+            if (isAfter1600HST) {
+                tomorrowButton.style.display = 'block';
+                tomorrowButton.onclick = function() {
+                    const tomorrowDate = new Date();
+                    tomorrowDate.setDate(today.getDate() + 1);
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    window.open(pdfUrl, '_blank');
+                };
+            }
 
-            const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
-            const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
-
-            const pdfContainer = document.getElementById('pdf-container');
-            const tomorrowVisible = isAfterFourPMHawaii();
-
-            pdfContainer.innerHTML = `
-                <h2></h2>
-                <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today</a>
-                </br>
-                <div id="tomorrow-link" class="${tomorrowVisible ? '' : 'hidden'}">
-                    <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow</a>
-                </div>
-            `;
+            document.getElementById('today-button').onclick = function() {
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                window.open(pdfUrl, '_blank');
+            };
         }
-
-        // Call the function to display the PDF link on page load
-        displayPDFLink();
 
         const docSelect = document.getElementById('doc');
         const datePicker = document.getElementById('datepicker');

@@ -21,8 +21,6 @@
             <button class="button" id="today-button">Today RSV</button>
             <button class="button" id="tomorrow-button" style="display: none;">Tomorrow RSV</button>
         </div>
-                    console.log(today);
-            console.log(hawaiiTIme);
     </div>
         
         <div class="selector-container">
@@ -69,6 +67,9 @@
 
             const tomorrowHawaii = new Date(todayHawaii);
             tomorrowHawaii.setDate(todayHawaii.getDate() + 1);
+
+            console.log(today);
+            console.log(hawaiiTIme);
 
             const tomorrowButton = document.getElementById('tomorrow-button');
             tomorrowButton.style.display = 'inline'; 

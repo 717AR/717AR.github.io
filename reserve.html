@@ -43,36 +43,41 @@
         <a href="https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacation/2025%20Annual%20Vacation%20Bidding/787ca2025.pdf" target="_blank"></a>
     </div>
     <script>
-    const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
-
-        function getFormattedDateForUrl(date) {
-            const days = String(date.getUTCDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getUTCFullYear()).slice(-2);
-            return `${days}${month}${year}`;
+         // Function to get today's date in the correct format DDMMMYY
+        function getFormattedDate(date) {
+            const days = String(date.getDate()).padStart(2, '0');  // Get day of month
+            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase(); // Get month name in uppercase
+            const year = String(date.getFullYear()).slice(-2); // Get last two digits of the year          
+            return `${days}${month}${year}`; // Format as DDMMMYY
         }
 
-        function displayDate() {
+        // Function to check if the current time is past 4:00 PM Hawaii time
+        function isAfterFourPMHawaii() {
+            const hawaiiTime = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Pacific/Honolulu', // Hawaii time zone
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false // 24-hour format to make comparison easier
+            }).format(new Date());
+
+            const [hours, minutes] = hawaiiTime.split(':').map(Number);
+            return (hours > 16) || (hours === 16 && minutes >= 0);
+        }
+
+        // Function to display the PDF link
+        function displayPDFLink() {
             const today = new Date();
+            const tomorrow = new Date();
+            tomorrow.setDate(today.getDate() + 1); // Increment date by 1 for tomorrow
 
-            // Adjust to Hawaii Standard Time (HST)
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
+            const formattedToday = getFormattedDate(today); // For today
+            const formattedTomorrow = getFormattedDate(tomorrow); // For tomorrow
 
-            const todayHawaii = hawaiiTime;
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayHawaii)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
+            const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
+            const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
-            const tomorrowHawaii = new Date(todayHawaii);
-            tomorrowHawaii.setDate(todayHawaii.getDate() + 1);
-
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            tomorrowButton.style.display = 'inline'; 
-            tomorrowButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
+            const pdfContainer = document.getElementById('tomorrow-button');
+            const tomorrowVisible = isAfterFourPMHawaii();
         }
 
         const docSelect = document.getElementById('doc');

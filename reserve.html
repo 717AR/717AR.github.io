@@ -64,7 +64,7 @@
             return (hours > 16) || (hours === 16 && minutes >= 0);
         }
 
-        // Function to display the PDF link
+              // Function to display the PDF link
         function displayPDFLink() {
             const today = new Date();
             const tomorrow = new Date();
@@ -76,9 +76,21 @@
             const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
             const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
-            const pdfContainer = document.getElementById('tomorrow-button');
+            const pdfContainer = document.getElementById('pdf-container');
             const tomorrowVisible = isAfterFourPMHawaii();
+
+            pdfContainer.innerHTML = `
+                <h2></h2>
+                <a href="${pdfUrlToday}" target="_blank" class="pdf-link">Today</a>
+                </br>
+                <div id="tomorrow-link" class="${tomorrowVisible ? '' : 'hidden'}">
+                    <a href="${pdfUrlTomorrow}" target="_blank" class="pdf-link">Tomorrow</a>
+                </div>
+            `;
         }
+
+        // Call the function to display the PDF link on page load
+        displayPDFLink();
 
         const docSelect = document.getElementById('doc');
         const datePicker = document.getElementById('datepicker');

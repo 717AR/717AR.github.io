@@ -77,9 +77,7 @@
             const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
             const todayHawaii = hawaiiTime;
-            document.getElementById('today-button').onclick = function() {
-                const pdfUrlToday;
-                window.open(pdfUrl, '_blank');
+            document.getElementById('today-button').onclick = window.open(pdfUrlToday, '_blank');
             };
 
             const tomorrowButton = document.getElementById('tomorrow-button');
@@ -92,9 +90,6 @@
         
 
         }
-
-
-        
 
 
         const docSelect = document.getElementById('doc');
@@ -147,7 +142,7 @@
             }
         });
 
-        displayDate();
+        displayPDFLink();
     </script>
 </body>
 </html>

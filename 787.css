@@ -82,7 +82,7 @@
             text-align: center;
             background-color: #e0e0e0;
             width: 80%;
-            max-width: 300px;
+            max-width: 400px;
             padding: 10px;
         }
         .selector-container label {
@@ -99,13 +99,6 @@
         }
         #go-button.enabled {
             background-color: #CE0C88;
-        }
-        .go-button-container {
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 10px;
-            margin-top: 10px;
         }
 
 /* Hide the calendar initially */
@@ -140,35 +133,6 @@ pre {
   color: var(--accent);
 }
 
-.days,
-.week {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  margin: auto;
-  padding: 0 10px;
-  justify-content: space-between;
-}
-.week div,
-.days div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 2.0rem;
-  width: 2.0em;
-  border-radius: 100%;
-}
-.days div:hover {
-  background: var(--accent-2);
-  color: rgb(25, 25, 201);
-  cursor: pointer;
-}
-.week div {
-  opacity: 0.5;
-}
-.current-date {
-  background-color: var(--accent);
-  color: var(--white);
-}
 .display-selected {
   margin-bottom: 10px;
   padding: 20px 20px;

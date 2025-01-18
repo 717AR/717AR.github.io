@@ -44,37 +44,39 @@
     </div>
     <script> const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
 
-        function getFormattedDateForUrl(date) {
+        function getFormattedDate(date) {
             const days = String(date.getUTCDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getUTCFullYear()).slice(-2);
             return `${days}${month}${year}`;
         }
 
-        function displayDate() {
-            const today = new Date();
+        // Function to check if the current time is past 4:00 PM Hawaii time
+        function isAfterFourPMHawaii() {
+            const hawaiiTime = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Pacific/Honolulu', // Hawaii time zone
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false // 24-hour format to make comparison easier
+            }).format(new Date());
 
-            // Adjust to Hawaii Standard Time (HST)
-            const hawaiiTime = new Date(today.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-
-
+            const [hours, minutes] = hawaiiTime.split(':').map(Number);
+            return (hours > 16) || (hours === 16 && minutes >= 0);
+        }
 
             const todayHawaii = hawaiiTime;
             document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(todayHawaii)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(todayHawaii)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
 
             const tomorrowHawaii = new Date(todayHawaii);
             tomorrowHawaii.setDate(todayHawaii.getDate() + 1);
 
-            console.log(today);
-            console.log(hawaiiTIme);
-
             const tomorrowButton = document.getElementById('tomorrow-button');
             tomorrowButton.style.display = 'inline'; 
             tomorrowButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank');
             };
         }
@@ -102,7 +104,7 @@
             const selectedDoc = docSelect.value;
             const selectedDate = new Date(this.value); 
             const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
-            const formattedDate = getFormattedDateForUrl(hawaiiDate);
+            const formattedDate = getFormattedDate(hawaiiDate);
 
             goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
             goButton.classList.toggle('enabled', !goButton.disabled);
@@ -114,7 +116,7 @@
             const selectedDate = new Date(datePicker.value);
             const hawaiiDate = new Date(selectedDate.toLocaleString("en-US", { timeZone: "Pacific/Honolulu" }));
             let pdfUrl = '';
-            const formattedDate = getFormattedDateForUrl(hawaiiDate);
+            const formattedDate = getFormattedDate(hawaiiDate);
 
             if (selectedDoc === "RSV") {
                 pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;

@@ -110,9 +110,9 @@
 /* Style the dot at the bottom center */
 .vacation-dot a {
   display: block;
-  width: 20px;
-  height: 20px;
-  background-color: white; /* Black dot */
+  width: 15px;
+  height: 15px;
+  background-color: white; /* white dot */
   border-radius: 50%;
   position: fixed;
   bottom: 10px; /* Adjust positioning if needed */

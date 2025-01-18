@@ -52,7 +52,7 @@
             return `${days}${month}${year}`;
         }
        
-        function getFormattedDateForUrl(date) {
+        function getFormattedUTCDate(date) {
             const days2 = String(date.getUTCDate()).padStart(2, '0');
             const month2 = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year2 = String(date.getUTCFullYear()).slice(-2);
@@ -105,7 +105,7 @@ datePicker.addEventListener('change', function() {
     const selectedDoc = docSelect.value;
     const selectedDate = new Date(this.value)
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
-    const formattedDate = getFormattedDateForUrl(hawaiiDate);
+    const formattedDate = getFormattedUTCDate(hawaiiDate);
 
     // Enable Go button if both document and date are selected
     goButton.disabled = !(selectedDoc !== "#" && datePicker.value);
@@ -118,7 +118,7 @@ goButton.addEventListener('click', function() {
     const selectedDate = new Date(datePicker.value);
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     let pdfUrl = '';
-    const formattedDate = getFormattedDateUrl(hawaiiDate);
+    const formattedDate = getFormattedUTCDate(hawaiiDate);
 
     // Construct PDF URL based on the selected document and formatted date
     if (selectedDoc === "RSV") {

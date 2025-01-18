@@ -103,7 +103,7 @@ docSelect.addEventListener('change', function() {
         
 datePicker.addEventListener('change', function() {
     const selectedDoc = docSelect.value;
-    const selectedDate = new Date(this.value); 
+    const selectedDate = new Date(this.value.replace(/-/g, '/')); // Replace '-' with '/' in the selected date - leave this in or JS fucks up the dates
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     const formattedDate = getFormattedDateForUrl(hawaiiDate);
 

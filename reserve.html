@@ -103,7 +103,7 @@ docSelect.addEventListener('change', function() {
         
 datePicker.addEventListener('change', function() {
     const selectedDoc = docSelect.value;
-    const selectedDate = new Date(this.value.replace(/-/g, '/')); // Replace '-' with '/' in the selected date - leave this in or JS fucks up the dates
+    const selectedDate = new Date(this.value)
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
@@ -118,7 +118,7 @@ goButton.addEventListener('click', function() {
     const selectedDate = new Date(datePicker.value);
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     let pdfUrl = '';
-    const formattedDate = getFormattedDate(hawaiiDate);
+    const formattedDate = getFormattedDateUrl(hawaiiDate);
 
     // Construct PDF URL based on the selected document and formatted date
     if (selectedDoc === "RSV") {

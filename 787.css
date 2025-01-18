@@ -120,7 +120,7 @@
   bottom: 10px; /* Adjust positioning if needed */
   left: 50%;
   transform: translateX(-50%);
-/*  pointer-events: none; /* Make it non-interactive, only for personal use */
+  pointer-events: auto;
 }
 
 /* Optional: Style the hover effect if needed for personal use */

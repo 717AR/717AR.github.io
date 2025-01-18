@@ -51,6 +51,13 @@
             const year = String(date.getFullYear()).slice(-2);
             return `${days}${month}${year}`;
         }
+       
+        function getFormattedDateForUrl(date) {
+            const days2 = String(date.getUTCDate()).padStart(2, '0');
+            const month2 = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year2 = String(date.getUTCFullYear()).slice(-2);
+            return `${days2}${month2}${year2}`;
+        }
 
         function setupDateButtons() {
             const today = new Date();
@@ -93,14 +100,6 @@ docSelect.addEventListener('change', function() {
         goButton.classList.remove('disabled');
     }
 });
-       
-        function getFormattedDateForUrl(date) {
-            const days2 = String(date.getUTCDate()).padStart(2, '0');
-            const month2 = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year2 = String(date.getUTCFullYear()).slice(-2);
-            return `${days2}${month2}${year2}`;
-        }
-
         
 datePicker.addEventListener('change', function() {
     const selectedDoc = docSelect.value;

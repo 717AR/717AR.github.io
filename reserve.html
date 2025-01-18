@@ -100,10 +100,55 @@ docSelect.addEventListener('change', function() {
         "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
     };
 
-    // Check if the selected option has a pre-defined link
+ // Handle selections for AWARD, SEN, FLICA
     if (links[selectedDoc]) {
-        // For mobile, use window.location.href to open the link in the same tab
+        // Do not redirect yet; wait for the Go button
+        goButton.disabled = false; // Enable Go button
+        goButton.classList.add('enabled');
+        goButton.classList.remove('disabled');
+        document.getElementById('date-label').style.display = 'none'; // Hide the date label
+        datePicker.style.display = 'none'; // Hide the datepicker
+    } else {
+        // Show the date label and datepicker for RSV, REC, DFS
+        if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+            document.getElementById('date-label').style.display = 'inline';
+            datePicker.style.display = 'inline';
+            goButton.disabled = true; // Disable Go button since a date is required
+            goButton.classList.add('disabled');
+            goButton.classList.remove('enabled');
+        } else {
+            document.getElementById('date-label').style.display = 'none'; // Hide the date label
+            datePicker.style.display = 'none'; // Hide the datepicker
+            goButton.disabled = true; // Disable Go button
+            goButton.classList.add('disabled');
+            goButton.classList.remove('enabled');
+        }
+    }
+});
+
+// Redirect when Go button is clicked
+goButton.addEventListener('click', function() {
+    const selectedDoc = docSelect.value;
+    const links = {
+        "AWARD": "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacancy%20Bids%20%20Awards/Vacancy%20Awards/Vacancy%20Award%2024-05A.pdf",
+        "SEN": "https://hawaiianair.sharepoint.com/sites/flightoperations/otl/SiteAssets/SitePages/Home/Pilot-s-System-Seniority-List-Effective-January-1st-2025.pdf",
+        "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
+    };
+
+    // Redirect to the corresponding link based on the selected option
+    if (links[selectedDoc]) {
+        // Navigate to the link
         window.location.href = links[selectedDoc];
+        
+        // Reset dropdown and hide datepicker after a slight delay
+        setTimeout(() => {
+            docSelect.selectedIndex = 0; // Reset to the placeholder option
+            datePicker.style.display = 'none'; // Hide datepicker
+            document.getElementById('date-label').style.display = 'none'; // Hide date label
+            goButton.disabled = true; // Disable Go button
+            goButton.classList.add('disabled');
+            goButton.classList.remove('enabled');
+        }, 100); // Adjust the timeout as needed
     } else {
         // Show the date label and datepicker for the top 3 choices
         if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {

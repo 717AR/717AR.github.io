@@ -97,10 +97,10 @@ docSelect.addEventListener('change', function() {
 
         
         function getFormattedDateForUrl(date) {
-            const days = String(date.getUTCDate()).padStart(2, '0');
-            const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const year = String(date.getUTCFullYear()).slice(-2);
-            return `${days}${month}${year}`;
+            const 2days = String(date.getUTCDate()).padStart(2, '0');
+            const 2month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const 2year = String(date.getUTCFullYear()).slice(-2);
+            return `${2days}${2month}${2year}`;
         }
 
         

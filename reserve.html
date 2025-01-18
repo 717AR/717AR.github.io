@@ -64,13 +64,13 @@
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);
                     const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
-                    openPdf(pdfUrl);
+                    window.open(pdfUrl, '_blank'); 
                 };
             }
 
             document.getElementById('today-button').onclick = function() {
                 const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
-                openPdf(pdfUrl);
+                window.open(pdfUrl, '_blank'); 
             };
         }
 

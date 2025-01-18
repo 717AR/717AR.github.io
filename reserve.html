@@ -85,6 +85,9 @@ const docSelect = document.getElementById('doc');
 const datePicker = document.getElementById('datepicker');
 const goButton = document.getElementById('go-button');
 
+/ Hide the datepicker initially
+datePicker.style.display = 'none';
+        
 // Add an event listener to the dropdown to handle instant link opening
 docSelect.addEventListener('change', function() {
     const selectedDoc = this.value;
@@ -98,11 +101,17 @@ docSelect.addEventListener('change', function() {
 
     // Check if the selected option has a pre-defined link
     if (links[selectedDoc]) {
+        // For mobile, use window.location.href to open the link in the same tab
         window.location.href = links[selectedDoc];
-  //      window.open(links[selectedDoc], '_blank');
-                        
     } else {
-        datePicker.style.display = 'inline';  // Show the date picker for other options
+        // Show the datepicker for the top 3 choices
+        if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+            datePicker.style.display = 'inline';
+        } else {
+            datePicker.style.display = 'none'; // Hide the datepicker for other choices
+        }
+
+        // Reset the Go button state
         goButton.disabled = true;
         goButton.classList.add('disabled');
         goButton.classList.remove('enabled');

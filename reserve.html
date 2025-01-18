@@ -138,6 +138,15 @@ goButton.addEventListener('click', function() {
         window.open(pdfUrl, '_blank');
     }
 
+   // Reset dropdown and clear the datepicker
+    docSelect.selectedIndex = 0;
+    datePicker.value = "";
+
+    // Disable the Go button
+    goButton.disabled = true;
+    goButton.classList.add('disabled');
+    goButton.classList.remove('enabled');
+
     
 });
         setupDateButtons();

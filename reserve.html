@@ -85,19 +85,32 @@ const docSelect = document.getElementById('doc');
 const datePicker = document.getElementById('datepicker');
 const goButton = document.getElementById('go-button');
 
+// Add an event listener to the dropdown to handle instant link opening
 docSelect.addEventListener('change', function() {
     const selectedDoc = this.value;
-    datePicker.style.display = 'inline';  // Ensure the date picker is visible
 
-    goButton.disabled = true;
-    goButton.classList.add('disabled');
-    goButton.classList.remove('enabled');
+ // Define the links for the new options
+    const links = {
+        "AWARD": "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacancy%20Bids%20%20Awards/Vacancy%20Awards/Vacancy%20Award%2024-05A.pdf",
+        "SEN": "https://https://hawaiianair.sharepoint.com/sites/flightoperations/otl/SiteAssets/SitePages/Home/Pilot-s-System-Seniority-List-Effective-January-1st-2025.pdf",
+        "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
+    };
 
-    // Enable the Go button if a valid document is selected and a date is picked
-    if (selectedDoc !== "#" && datePicker.value) {
-        goButton.disabled = false;
-        goButton.classList.add('enabled');
-        goButton.classList.remove('disabled');
+    // Check if the selected option has a pre-defined link
+    if (links[selectedDoc]) {
+        window.open(links[selectedDoc], '_blank');
+    } else {
+        datePicker.style.display = 'inline';  // Show the date picker for other options
+        goButton.disabled = true;
+        goButton.classList.add('disabled');
+        goButton.classList.remove('enabled');
+
+        // Enable the Go button if a valid document is selected and a date is picked
+        if (selectedDoc !== "#" && datePicker.value) {
+            goButton.disabled = false;
+            goButton.classList.add('enabled');
+            goButton.classList.remove('disabled');
+        }
     }
 });
         

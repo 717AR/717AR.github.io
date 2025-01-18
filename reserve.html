@@ -76,18 +76,16 @@
             const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
             const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
 
-            const todayHawaii = hawaiiTime;
-            document.getElementById('today-button').onclick = window.open(pdfUrlToday, '_blank');
-            };
 
-            const tomorrowButton = document.getElementById('tomorrow-button');
-            tomorrowButton.style.display = 'inline'; 
-            tomorrowButton.onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowHawaii)}-PI PAX RSV LIST.PDF`;
-                window.open(pdfUrl, '_blank');
-            };
-        }
-        
+            document.getElementById('today-button').onclick = function() {
+    const pdfUrlToday = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedToday}-PI PAX RSV LIST.PDF`;
+    window.open(pdfUrlToday, '_blank');
+};
+
+document.getElementById('tomorrow-button').onclick = function() {
+    const pdfUrlTomorrow = `https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/${formattedTomorrow}-PI PAX RSV LIST.PDF`;
+    window.open(pdfUrlTomorrow, '_blank');
+};
 
         }
 

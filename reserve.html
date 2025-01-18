@@ -98,7 +98,9 @@ docSelect.addEventListener('change', function() {
 
     // Check if the selected option has a pre-defined link
     if (links[selectedDoc]) {
-        window.open(links[selectedDoc], '_blank');
+        window.location.href = links[selectedDoc];
+  //      window.open(links[selectedDoc], '_blank');
+                        
     } else {
         datePicker.style.display = 'inline';  // Show the date picker for other options
         goButton.disabled = true;

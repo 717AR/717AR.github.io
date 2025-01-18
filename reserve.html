@@ -33,9 +33,10 @@
                 <option value="FLICA">FLICA Open Time</option>
             </select>
         <br>
-        Date: <input type="date" id="datepicker">
-             <br>
-             <br>
+        <label id="date-label" for="datepicker" style="display: none;">Date:</label>
+        <input type="date" id="datepicker">
+        <br>
+        <br>
              <button class="button disabled" id="go-button" disabled>Go</button>
     </div>
     
@@ -104,10 +105,12 @@ docSelect.addEventListener('change', function() {
         // For mobile, use window.location.href to open the link in the same tab
         window.location.href = links[selectedDoc];
     } else {
-        // Show the datepicker for the top 3 choices
+        // Show the date label and datepicker for the top 3 choices
         if (selectedDoc === "RSV" || selectedDoc === "REC" || selectedDoc === "DFS") {
+            document.getElementById('date-label').style.display = 'inline';
             datePicker.style.display = 'inline';
         } else {
+            document.getElementById('date-label').style.display = 'none'; // Hide the date label for other choices
             datePicker.style.display = 'none'; // Hide the datepicker for other choices
         }
 

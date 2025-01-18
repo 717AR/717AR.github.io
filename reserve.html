@@ -93,14 +93,12 @@ docSelect.addEventListener('change', function() {
         goButton.classList.remove('disabled');
     }
 });
-
-
-        
+       
         function getFormattedDateForUrl(date) {
-            const 2days = String(date.getUTCDate()).padStart(2, '0');
-            const 2month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
-            const 2year = String(date.getUTCFullYear()).slice(-2);
-            return `${2days}${2month}${2year}`;
+            const days2 = String(date.getUTCDate()).padStart(2, '0');
+            const month2 = date.toLocaleString('default', { month: 'short' }).toUpperCase();
+            const year2 = String(date.getUTCFullYear()).slice(-2);
+            return `${days2}${month2}${year2}`;
         }
 
         

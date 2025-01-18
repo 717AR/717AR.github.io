@@ -97,7 +97,7 @@ docSelect.addEventListener('change', function() {
 datePicker.addEventListener('change', function() {
     const selectedDoc = docSelect.value;
     const selectedDate = new Date(this.value); 
-    const hawaiiDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     const formattedDate = getFormattedDate(hawaiiDate);
 
     // Enable Go button if both document and date are selected
@@ -109,7 +109,7 @@ datePicker.addEventListener('change', function() {
 goButton.addEventListener('click', function() {
     const selectedDoc = docSelect.value;
     const selectedDate = new Date(datePicker.value);
-    const hawaiiDate = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+    const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     let pdfUrl = '';
     const formattedDate = getFormattedDate(hawaiiDate);
 

@@ -121,7 +121,9 @@ goButton.addEventListener('click', function() {
     } else if (selectedDoc === "DFS") {
         pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
     }
-    console.log('Selected Doc:', selectedDoc);
+    console.log('Raw Date (Today):', today);
+    console.log('Raw Date (Tomorrow):', tomorrow);
+    console.log('Raw Date (Selected Date from Input):', selectedDate);
     console.log('Formatted Date:', formattedDate);
     console.log('PDF URL:', pdfUrl);
     

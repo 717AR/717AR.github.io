@@ -121,11 +121,16 @@ goButton.addEventListener('click', function() {
     } else if (selectedDoc === "DFS") {
         pdfUrl = `${pdfBaseUrl}${formattedDate}-787 DFSH.PDF`;
     }
-
+    console.log('Selected Doc:', selectedDoc);
+    console.log('Formatted Date:', formattedDate);
+    console.log('PDF URL:', pdfUrl);
+    
     // If a PDF URL was constructed, open it in a new tab
     if (pdfUrl) {
         window.open(pdfUrl, '_blank');
     }
+
+    
 });
 
 

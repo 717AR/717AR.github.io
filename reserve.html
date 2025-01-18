@@ -45,7 +45,7 @@
     <script>
         const pdfBaseUrl = 'https://hawaiianair.sharepoint.com/sites/flightoperations/Daily%20Flight%20Schedules/';
         
-        function getFormattedDateForUrl(date) {
+        function getFormattedDate(date) {
             const days = String(date.getDate()).padStart(2, '0');
             const month = date.toLocaleString('default', { month: 'short' }).toUpperCase();
             const year = String(date.getFullYear()).slice(-2);
@@ -63,13 +63,13 @@
                 tomorrowButton.onclick = function() {
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
                     window.open(pdfUrl, '_blank'); 
                 };
             }
 
             document.getElementById('today-button').onclick = function() {
-                const pdfUrl = `${pdfBaseUrl}${getFormattedDateForUrl(today)}-PI PAX RSV LIST.PDF`;
+                const pdfUrl = `${pdfBaseUrl}${getFormattedDate(today)}-PI PAX RSV LIST.PDF`;
                 window.open(pdfUrl, '_blank'); 
             };
         }
@@ -132,8 +132,6 @@ goButton.addEventListener('click', function() {
 
     
 });
-
-
         setupDateButtons();
     </script>
 </body>

@@ -112,15 +112,15 @@
 /* Style the dot at the bottom center */
 .vacation-dot a {
   display: block;
-  width: 6px;
-  height: 6px;
-  background-color: #000; /* Black dot */
+  width: 10px;
+  height: 10px;
+  background-color: white; /* Black dot */
   border-radius: 50%;
   position: fixed;
   bottom: 10px; /* Adjust positioning if needed */
   left: 50%;
   transform: translateX(-50%);
-  pointer-events: none; /* Make it non-interactive, only for personal use */
+/*  pointer-events: none; /* Make it non-interactive, only for personal use */
 }
 
 /* Optional: Style the hover effect if needed for personal use */

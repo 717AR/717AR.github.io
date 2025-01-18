@@ -118,7 +118,7 @@ goButton.addEventListener('click', function() {
     const selectedDate = new Date(datePicker.value);
     const hawaiiDate = new Date(Date.UTC(selectedDate.getUTCFullYear(), selectedDate.getUTCMonth(), selectedDate.getUTCDate()));
     let pdfUrl = '';
-    const formattedDate = getFormattedDateForURL(hawaiiDate);
+    const formattedDate = getFormattedDateForUrl(hawaiiDate);
 
     // Construct PDF URL based on the selected document and formatted date
     if (selectedDoc === "RSV") {

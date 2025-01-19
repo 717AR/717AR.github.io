@@ -40,7 +40,7 @@
             display: flex;
             flex-direction: column; /* Stacking buttons vertically */
             justify-content: center;
-            width: 90%;
+            width: 80%;
             max-width: 400px;
         }
         .section {
@@ -148,7 +148,7 @@ pre {
 @media (max-width: 768px) {
   .reserve-dashboard {
     flex-direction: column; /* Ensures buttons are stacked vertically */
-    width: 100%; /* Takes full width on smaller screens */
+    width: 90%; /* Takes full width on smaller screens */
   }
 
   .button {
@@ -157,6 +157,6 @@ pre {
   }
 
   .selector-container {
-    width: 90%; /* Slightly smaller width for mobile screens */
+    width: 85%; /* Slightly smaller width for mobile screens */
   }
 }

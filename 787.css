@@ -1,4 +1,4 @@
-/*variables*/
+/* Variables */
 :root {
   --white: #fff;
   --main: #eaedf0;
@@ -6,134 +6,116 @@
   --accent-2: #ebedf0;
 }
 
-/*styles*/
-        body {
-            font-family: "Chronicle Display",Georgia,serif;
-            margin: 0;
-            height: 100vh;
-            background-color: #f5f5f5;
-            overflow: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding-top: 80px; 
-        }
-        .header {
-            background-color: #6617cb;
-            background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
-            color: white;
-            padding: 20px;
-            font-family: "Chronicle Display",Georgia,serif;
-            text-align: center;
-            font-size: 30px;
-            width: 100%;
-            position: fixed; /* Fix header to the top of the page */
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 10; /* Ensure the header is above other content */
-            height: 80px; /* Ensure the header height doesn't overlap content */
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds slight shadow for depth */
-        }
-        .header-content {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-        .reserve-dashboard {
-            text-align: center;
-            margin: 5px;
-            font-size: 18px;
-            display: flex;
-            flex-direction: column; /* Stacking buttons vertically */
-            justify-content: center;
-            width: 80%;
-            max-width: 400px;
-        }
-        .section {
-            text-align: center;
-            margin: 10px;
-            font-size: 18px;
-        }
-        .vacation-link {
-            margin: 0 10px;
-            color: white;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 16px;
-        }
-        .vacation-link:hover {
-            text-decoration: underline;
-        }
-        .button {
-            padding: 10px;
-            background-color: #4a2c88;
-            color: white;
-            border: none;
-            border-radius: 0;
-            cursor: pointer;
-            font-size: 16px;
-            width: 100%;
-            max-width: 300px;
-            text-align: center;
-            margin: 5px;
-            transition: background-color 0.3s;
-            display: inline-block;
-        }
-        .disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        .selector-container {
-            margin-top: 20px;
-            text-align: center;
-            background-color: #e0e0e0;
-            width: 80%;
-            max-width: 400px;
-            padding: 20px;
-            border-radius: 10px;
-        }
-        .selector-container label {
-            margin-right: 10px;
-        }
-        #datepicker {
-            width: 100%;
-            max-width: 150px;
-            padding: 10px;
-            margin-top: 10px;
-        }
-        #go-button:disabled {
-            background-color: #ccc;
-        }
-        #go-button.enabled {
-            background-color: #CE0C88;
-        }
-
-/* Hide the calendar initially */
-.calendar {
-  display: none;
+/* Styles */
+body {
+  font-family: "Chronicle Display", Georgia, serif;
+  margin: 0;
+  height: 100vh;
+  background-color: #f5f5f5;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Style the dot at the bottom center */
+/* Header */
+.header {
+  background-color: #6617cb;
+  background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
+  color: white;
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Header Content */
+.header-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+/* Reserve Dashboard */
+.reserve-dashboard {
+  text-align: center;
+  margin: 5px;
+  font-size: 18px;
+  display: flex;
+  justify-content: center;
+  width: 90%;
+  max-width: 400px;
+}
+
+.button {
+  padding: 10px;
+  background-color: #4a2c88;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  margin: 5px 0;
+  transition: background-color 0.3s;
+}
+
+.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* Selector Container */
+.selector-container {
+  margin-top: 20px;
+  text-align: center;
+  background-color: #e0e0e0;
+  width: 80%;
+  max-width: 400px;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.selector-container label {
+  margin-right: 10px;
+}
+
+#datepicker {
+  width: 100%;
+  max-width: 150px;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+#go-button:disabled {
+  background-color: #ccc;
+}
+
+#go-button.enabled {
+  background-color: #CE0C88;
+}
+
+/* Vacation Dot */
 .vacation-dot a {
   display: block;
-  width: 15px;
-  height: 15px;
-  background-color: white; /* white dot */
+  width: 30px;
+  height: 30px;
+  background-color: white;
   border-radius: 50%;
   position: fixed;
-  bottom: 10px; /* Adjust positioning if needed */
+  bottom: 15px;
   left: 50%;
   transform: translateX(-50%);
   pointer-events: auto;
 }
 
-/* Optional: Style the hover effect if needed for personal use */
 .vacation-dot a:hover {
-  background-color: #555; /* Darker on hover, only for you */
+  background-color: #555;
 }
 
+/* Preformatted Text */
 pre {
   padding: 0px;
   margin: 0;
@@ -142,29 +124,31 @@ pre {
   color: var(--accent);
 }
 
+/* Display Selected */
 .display-selected {
   margin-bottom: 10px;
   padding: 20px 20px;
   text-align: center;
 }
 
+/* Vacation Dot (Non-interactive) */
 .vacation-dot {
-  pointer-events: none; /* Ensures the dot is not interactive */
+  pointer-events: none;
 }
 
 /* Mobile Optimization */
 @media (max-width: 768px) {
   .reserve-dashboard {
-    flex-direction: column; /* Ensures buttons are stacked vertically */
-    width: 90%; /* Takes full width on smaller screens */
+    flex-direction: column;
+    width: 100%;
   }
 
   .button {
-    width: 100%; /* Full width for buttons */
-    max-width: none; /* Remove max width for full responsiveness */
+    width: 100%;
+    max-width: none;
   }
 
   .selector-container {
-    width: 85%; /* Slightly smaller width for mobile screens */
+    width: 90%;
   }
 }

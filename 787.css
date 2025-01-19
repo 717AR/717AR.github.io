@@ -38,6 +38,7 @@
             margin: 5px;
             font-size: 18px;
             display: flex;
+            flex-direction: column; /* Stacking buttons vertically */
             justify-content: center;
             width: 90%;
             max-width: 400px;
@@ -68,7 +69,7 @@
             width: 100%;
             max-width: 300px;
             text-align: center;
-            margin: 2px;
+            margin: 5px;
             transition: background-color 0.3s;
             display: inline-block;
         }
@@ -141,4 +142,21 @@ pre {
 
 .vacation-dot {
   pointer-events: none; /* Ensures the dot is not interactive */
+}
+
+/* Mobile Optimization */
+@media (max-width: 768px) {
+  .reserve-dashboard {
+    flex-direction: column; /* Ensures buttons are stacked vertically */
+    width: 100%; /* Takes full width on smaller screens */
+  }
+
+  .button {
+    width: 100%; /* Full width for buttons */
+    max-width: none; /* Remove max width for full responsiveness */
+  }
+
+  .selector-container {
+    width: 90%; /* Slightly smaller width for mobile screens */
+  }
 }

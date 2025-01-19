@@ -16,6 +16,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding-top: 80px; 
         }
         .header {
             background-color: #6617cb;
@@ -26,6 +27,13 @@
             text-align: center;
             font-size: 30px;
             width: 100%;
+            position: fixed; /* Fix header to the top of the page */
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10; /* Ensure the header is above other content */
+            height: 80px; /* Ensure the header height doesn't overlap content */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: Adds slight shadow for depth */
         }
         .header-content {
             display: flex;

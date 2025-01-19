@@ -140,7 +140,7 @@ pre {
 @media (max-width: 768px) {
   .reserve-dashboard {
     flex-direction: column;
-    width: 100%;
+    width: 85%;
   }
 
   .button {
@@ -149,6 +149,6 @@ pre {
   }
 
   .selector-container {
-    width: 90%;
+    width: 85%;
   }
 }

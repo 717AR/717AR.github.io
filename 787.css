@@ -68,7 +68,7 @@
             width: 100%;
             max-width: 300px;
             text-align: center;
-            margin: 5px;
+            margin: 2px;
             transition: background-color 0.3s;
             display: inline-block;
         }

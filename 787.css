@@ -7,6 +7,21 @@
 }
 
 /* Styles */
+
+@font-face {
+    font-family: 'SlatePro-Bold';
+    src:url('SlatePro-Bold.woff') format('woff'),
+        url('SlatePro-Bold.woff2') format('woff2'),
+        url('SlatePro-Bold.svg#SlatePro-Bold') format('svg'),
+        url('SlatePro-Bold.eot'),
+        url('SlatePro-Bold.eot?#iefix') format('embedded-opentype'),
+        url('SlatePro-Bold.ttf') format('truetype');
+
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 body {
   margin: 0;
   height: 100vh;

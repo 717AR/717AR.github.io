@@ -50,8 +50,8 @@ body {
 
 .button {
   padding: 10px;
-  background-color: #4a2c88;
-  border-color: #e1e3e4;
+  background: #5b105e;
+  border-color: #5b105e;
   color: white;
   border-width: 1px 0 1px 1px;
   cursor: pointer;

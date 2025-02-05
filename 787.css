@@ -8,7 +8,6 @@
 
 /* Styles */
 body {
-  font-family: "Chronicle Display",Georgia,serif;
   margin: 0;
   height: 100vh;
   background-color: #f5f5f5;
@@ -90,7 +89,7 @@ body {
   text-align: center;
   background-color: #e0e0e0;
   width: 80%;
-  max-width: 400px;
+  max-width: 370px;
   padding: 20px;
   border-radius: 10px;
 }
@@ -130,6 +129,7 @@ body {
 
 .vacation-dot a:hover {
   background-color: #555;
+  pointer-events: none;
 }
 
 /* Preformatted Text */
@@ -148,24 +148,10 @@ pre {
   text-align: center;
 }
 
-/* Vacation Dot (Non-interactive) */
-.vacation-dot {
-  pointer-events: none;
-}
-
 /* Mobile Optimization */
 @media (max-width: 768px) {
   .reserve-dashboard {
     flex-direction: column;
-    width: 85%;
-  }
-
-  .button {
-    width: 100%;
-    max-width: none;
-  }
-
-  .selector-container {
     width: 85%;
   }
 }

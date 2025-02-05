@@ -51,6 +51,22 @@ body {
 .button {
   padding: 10px;
   background-color: #4a2c88;
+  border-color: #e1e3e4;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  text-align: center;
+  margin: 5px 0;
+  transition: background-color 0.3s;
+}
+
+.button2 {
+  padding: 10px;
+  background-color: #4a2c88;
+  border-color: #e1e3e4;
   color: white;
   border: none;
   cursor: pointer;

@@ -39,7 +39,7 @@ body {
   background-image: linear-gradient(315deg, #6617cb 0%, #cb218e 74%);
   color: white;
   padding: 20px;
-  font-size: 30px;
+  font-size: 28px;
   text-align: center;
   width: 100%;
 }
@@ -67,7 +67,7 @@ body {
   padding: 13px 28px 12px;
   font-family: SlatePro-Bold,Helvetica,Arial,sans-serif;
   font-size: 1.125em; 
-  background: #5b105e;
+  background: #6c25be;
   color: white;
   border-width: 1px 0 1px 1px;
   cursor: pointer;
@@ -81,7 +81,7 @@ body {
 .button2 {
   padding: 13px 28px 12px;
   font-family: SlatePro-Bold,Helvetica,Arial,sans-serif;
-  background-color: #4a2c88;
+  background-color: #6c25be;
   color: white;
   border: none;
   cursor: pointer;

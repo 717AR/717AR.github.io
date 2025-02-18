@@ -131,8 +131,8 @@ body {
 /* Vacation Dot */
 .vacation-dot a {
   display: block;
-  width: 30px;
-  height: 30px;
+  width: 10px;
+  height: 10px;
   background-color: white;
   border-radius: 50%;
   position: fixed;

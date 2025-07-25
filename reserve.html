@@ -72,7 +72,7 @@
                 tomorrowButton.onclick = function() {
                     const tomorrowDate = new Date();
                     tomorrowDate.setDate(today.getDate() + 1);
-                    const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-PI PAX RSV LIST.PDF`;
+                    const pdfUrl = `${pdfBaseUrl}${getFormattedDate(tomorrowDate)}-RSV-Pilots.PDF`;
                     window.open(pdfUrl, '_blank'); 
                 };
             }
@@ -195,7 +195,7 @@ goButton.addEventListener('click', function() {
 
     // Construct PDF URL based on the selected document and formatted date
     if (selectedDoc === "RSV") {
-        pdfUrl = `${pdfBaseUrl}${formattedDate}-PI PAX RSV LIST.PDF`;
+        pdfUrl = `${pdfBaseUrl}${formattedDate}-RSV-Pilots.PDF`;
     } else if (selectedDoc === "REC") {
         pdfUrl = `${pdfBaseUrl}${formattedDate}-PI RCL LIST.PDF`;
     } else if (selectedDoc === "DFS") {

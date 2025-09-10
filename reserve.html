@@ -32,6 +32,7 @@
                 <option value="DFS">DFS History</option>
                  <!-- <option value="AWARD">Vacancy Award 25-01A</option></option> -->          
                 <option value="SEN">Senority List</option>
+                <option value="HOT">Hotel/Transportation Info</option>
             </select>
         <br>
         <label id="date-label" for="datepicker" style="display: none;">Select Date:</label>
@@ -98,6 +99,7 @@ docSelect.addEventListener('change', function() {
     const links = {
         "AWARD": "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacancy%20Bids%20%20Awards/Vacancy%20Awards/Vacancy%20Award%2025-01A.pdf",
         "SEN": "https://hawaiianair.sharepoint.com/sites/flightoperations/otl/SiteAssets/SitePages/Home/Pilot-Seniority-List-01JUL2025.pdf",
+        "HOT": "https://hawaiianair.sharepoint.com/sites/flightoperations/crewaccommodations",
 //        "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
     };
 
@@ -133,7 +135,8 @@ goButton.addEventListener('click', function() {
     const links = {
         "AWARD": "https://hawaiianair.sharepoint.com/sites/flightoperations/CrewPlanning/Vacancy%20Bids%20%20Awards/Vacancy%20Awards/Vacancy%20Award%2025-01A.pdf",
         "SEN": "https://hawaiianair.sharepoint.com/sites/flightoperations/otl/SiteAssets/SitePages/Home/Pilot-Seniority-List-01JUL2025.pdf",
- //       "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
+        "HOT": "https://hawaiianair.sharepoint.com/sites/flightoperations/crewaccommodations",
+     //       "FLICA": "https://ha2.flica.net/full/otframe.cgi?BCID=003.130&ViewOT=1",
     };
 
     // Redirect to the corresponding link based on the selected option

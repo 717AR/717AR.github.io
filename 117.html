@@ -3,140 +3,211 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FAR Part 117 FDP Calculator</title>
+<title>Max FDP Calculator</title>
 <style>
-  body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; }
-  label { margin-top: 12px; display: block; font-weight: bold; }
-  input, select { padding: 6px; margin: 6px 0; width: 100%; max-width: 320px; }
-  button { margin-top: 15px; padding: 10px 20px; background-color: #2e7d32; color: white; border: none; cursor: pointer; font-size: 1rem; }
-  button:hover { background-color: #1b5e20; }
-  .result { margin-top: 25px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
-  .warning { color: #b71c1c; font-weight: bold; }
-  .note { font-size: 0.9rem; color: #555; }
+  body {
+    font-family: Arial, sans-serif;
+    padding: 16px;
+    background-color: #f0f4f8;
+    color: #1a1a1a;
+  }
+
+  h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+
+  .calculator-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 16px;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  }
+
+  label {
+    display: block;
+    margin-top: 12px;
+    font-weight: bold;
+  }
+
+  input[type="time"],
+  select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 4px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+  }
+
+  button {
+    margin-top: 16px;
+    padding: 12px;
+    width: 100%;
+    font-size: 1.1rem;
+    background-color: #1fa2ff;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background-color: #0d8ae6;
+  }
+
+  .result {
+    margin-top: 20px;
+    padding: 14px;
+    background: #e8f0fe;
+    border-radius: 8px;
+  }
+
+  .warning {
+    color: #b71c1c;
+    font-weight: bold;
+  }
+
+  .note {
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  @media (max-width: 480px) {
+    body {
+      padding: 12px;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    button {
+      font-size: 1rem;
+    }
+  }
 </style>
 </head>
 <body>
 
-<h1>FAR Part 117 Flight Duty Period (FDP) Calculator</h1>
-<p class="note">This calculator uses <strong>Table B</strong> of 14 CFR Part 117 for maximum FDP. For planning purposes only.</p>
+<h1>Max FDP Calculator</h1>
 
-<form id="fdpForm">
-  <label for="reportTime">Report Time (HH:mm)</label>
-  <input type="time" id="reportTime" required>
+<div class="calculator-card">
+  <form id="fdpForm">
+    <label for="reportTime">Report Time (HH:mm)</label>
+    <input type="time" id="reportTime" required>
 
-  <label for="segments">Number of Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    <option value="6">6</option>
-    <option value="7">7</option>
-  </select>
+    <label for="segments">Number of Flight Segments</label>
+    <select id="segments">
+      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+      <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+    </select>
 
-  <label for="pilots">Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2 (Unaugmented)</option>
-    <option value="3">3 (Augmented)</option>
-    <option value="4">4 (Augmented)</option>
-  </select>
+    <label for="pilots">Number of Pilots</label>
+    <select id="pilots">
+      <option value="2">2 (Unaugmented)</option>
+      <option value="3">3 (Augmented)</option>
+      <option value="4">4 (Augmented)</option>
+    </select>
 
-  <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
-  <select id="restFacility">
-    <option value="1">Class 1</option>
-    <option value="2">Class 2</option>
-    <option value="3">Class 3</option>
-  </select>
+    <div id="restFacilityWrapper" style="display:none;">
+      <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
+      <select id="restFacility">
+        <option value="1">Class 1</option>
+        <option value="2">Class 2</option>
+        <option value="3">Class 3</option>
+      </select>
+    </div>
 
-  <button type="submit">Calculate FDP</button>
-</form>
+    <button type="submit">Calculate FDP</button>
+  </form>
 
-<div class="result" id="result"></div>
+  <div class="result" id="result"></div>
+</div>
 
 <script>
-  // Table B FDP values (14 CFR Part 117)
-  const tableB_unaugmented = [
-    { start: 0, end: 239, values: [9, 9, 9, 9, 9, 9, 9] },
-    { start: 240, end: 299, values: [10, 10, 10, 10, 9, 9, 9] },
-    { start: 300, end: 359, values: [12, 12, 12, 12, 11.5, 11, 10.5] },
-    { start: 360, end: 419, values: [13, 13, 12, 12, 11.5, 11, 10.5] },
-    { start: 420, end: 719, values: [14, 14, 13, 13, 12.5, 12, 11.5] },
-    { start: 720, end: 779, values: [13, 13, 13, 13, 12.5, 12, 11.5] },
-    { start: 780, end: 1019, values: [12, 12, 12, 12, 11.5, 11, 10.5] },
-    { start: 1020, end: 1319, values: [12, 12, 11, 11, 10, 9, 9] },
-    { start: 1320, end: 1379, values: [11, 11, 10, 10, 9, 9, 9] },
-    { start: 1380, end: 1439, values: [10, 10, 10, 9, 9, 9, 9] }
-  ];
+const tableB_unaugmented = [
+  { start: 0, end: 239, values: [9,9,9,9,9,9,9] },
+  { start: 240, end: 299, values: [10,10,10,10,9,9,9] },
+  { start: 300, end: 359, values: [12,12,12,12,11.5,11,10.5] },
+  { start: 360, end: 419, values: [13,13,12,12,11.5,11,10.5] },
+  { start: 420, end: 719, values: [14,14,13,13,12.5,12,11.5] },
+  { start: 720, end: 779, values: [13,13,13,13,12.5,12,11.5] },
+  { start: 780, end: 1019, values: [12,12,12,12,11.5,11,10.5] },
+  { start: 1020, end: 1319, values: [12,12,11,11,10,9,9] },
+  { start: 1320, end: 1379, values: [11,11,10,10,9,9,9] },
+  { start: 1380, end: 1439, values: [10,10,10,9,9,9,9] }
+];
 
-  // Augmented crew FDP values (3–4 pilots) — Table B (§117.17)
-  const tableB_augmented = {
-    3: { // 3 pilots
-      1: { day: 13, night: 12 },
-      2: { day: 12, night: 11 },
-      3: { day: 11, night: 10 }
-    },
-    4: { // 4 pilots
-      1: { day: 17, night: 16 },
-      2: { day: 16, night: 15 },
-      3: { day: 15, night: 14 }
-    }
-  };
+const tableB_augmented = {
+  3: { 1: { day: 13, night: 12 }, 2: { day: 12, night: 11 }, 3: { day: 11, night: 10 } },
+  4: { 1: { day: 17, night: 16 }, 2: { day: 16, night: 15 }, 3: { day: 15, night: 14 } }
+};
 
-  function timeToMinutes(timeStr) {
-    if (!timeStr) return 0;
-    const [h, m] = timeStr.split(':').map(Number);
-    return h * 60 + m;
+// Convert HH:mm to minutes
+function timeToMinutes(timeStr) {
+  const [h,m] = timeStr.split(':').map(Number);
+  return h*60 + m;
+}
+
+function getRowForMinutes(mins) {
+  return tableB_unaugmented.find(r => mins >= r.start && mins <= r.end);
+}
+
+function getDayNight(mins) {
+  return (mins >= 300 && mins <= 1199) ? 'day' : 'night';
+}
+
+// Show/hide rest facility dropdown
+const pilotsSelect = document.getElementById('pilots');
+const restWrapper = document.getElementById('restFacilityWrapper');
+
+pilotsSelect.addEventListener('change', () => {
+  const val = parseInt(pilotsSelect.value);
+  restWrapper.style.display = (val >= 3) ? 'block' : 'none';
+});
+
+document.getElementById('fdpForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  const reportTime = document.getElementById('reportTime').value;
+  const segments = parseInt(document.getElementById('segments').value, 10);
+  const pilots = parseInt(document.getElementById('pilots').value, 10);
+  const rest = parseInt(document.getElementById('restFacility').value, 10);
+
+  const mins = timeToMinutes(reportTime);
+  const row = getRowForMinutes(mins);
+
+  if (!row) {
+    document.getElementById('result').innerHTML = `<p class="warning">Invalid report time</p>`;
+    return;
   }
 
-  function getRowForMinutes(mins) {
-    return tableB_unaugmented.find(r => mins >= r.start && mins <= r.end);
+  let maxFDP = 0, notes = [];
+  if (pilots === 2) {
+    maxFDP = row.values[Math.min(segments-1,row.values.length-1)];
+    notes.push(`Unaugmented FDP per Table B (§117.13), window ${reportTime}`);
+  } else {
+    const segKey = Math.min(segments,3);
+    const windowType = getDayNight(mins);
+    maxFDP = tableB_augmented[pilots][segKey][windowType];
+    notes.push(`Augmented FDP per Table B (§117.17), ${pilots} pilots, Class ${rest}, ${windowType}`);
   }
 
-  function getDayNight(mins) {
-    return (mins >= 300 && mins <= 1199) ? 'day' : 'night'; // 0500–1959 day
-  }
+  const wocl = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ WOCL risk (§117.25)</p>' : '';
 
-  document.getElementById('fdpForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const reportTime = document.getElementById('reportTime').value;
-    const segments = parseInt(document.getElementById('segments').value, 10);
-    const pilots = parseInt(document.getElementById('pilots').value, 10);
-    const rest = parseInt(document.getElementById('restFacility').value, 10);
-
-    const mins = timeToMinutes(reportTime);
-    const row = getRowForMinutes(mins);
-    if (!row) {
-      document.getElementById('result').innerHTML = `<p class="warning">Invalid report time</p>`;
-      return;
-    }
-
-    let maxFDP, notes = [];
-
-    if (pilots === 2) {
-      // Unaugmented — Table B (§117.13)
-      maxFDP = row.values[Math.min(segments - 1, row.values.length - 1)];
-      notes.push(`Unaugmented FDP per Table B (§117.13), report window ${reportTime}.`);
-    } else {
-      // Augmented — Table B (§117.17)
-      const segKey = Math.min(segments,3);
-      const windowType = getDayNight(mins);
-      maxFDP = tableB_augmented[pilots][segKey][windowType];
-      notes.push(`Augmented FDP per Table B (§117.17), ${pilots} pilots, Class ${rest} rest, ${windowType} window.`);
-    }
-
-    const woclWarning = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ FDP occurs during WOCL (0200–0559) — per §117.25 fatigue risk alert.</p>' : '';
-
-    document.getElementById('result').innerHTML = `
-      <h3>FDP Calculation Result</h3>
-      <p><strong>Report Time:</strong> ${reportTime}</p>
-      <p><strong>Number of Pilots:</strong> ${pilots}</p>
-      <p><strong>Number of Segments:</strong> ${segments}</p>
-      <p><strong>Maximum Flight Duty Period (FDP):</strong> ${maxFDP} hours</p>
-      ${woclWarning}
-      ${notes.map(n => `<p class="note">${n}</p>`).join('')}
-    `;
-  });
+  document.getElementById('result').innerHTML = `
+    <p><strong>Report:</strong> ${reportTime}</p>
+    <p><strong>Pilots:</strong> ${pilots}</p>
+    <p><strong>Segments:</strong> ${segments}</p>
+    <p><strong>Max FDP:</strong> ${maxFDP} hrs</p>
+    ${wocl}
+    ${notes.map(n=>`<p class="note">${n}</p>`).join('')}
+  `;
+});
 </script>
 
 </body>

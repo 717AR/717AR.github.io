@@ -1,19 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAR Part 117 FDP Calculator</title>
-  <style>
-    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; }
-    label { margin-top: 12px; display: block; font-weight: bold; }
-    input, select { padding: 6px; margin: 6px 0; width: 100%; max-width: 320px; }
-    button { margin-top: 15px; padding: 10px 20px; background-color: #2e7d32; color: white; border: none; cursor: pointer; font-size: 1rem; }
-    button:hover { background-color: #1b5e20; }
-    .result { margin-top: 25px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
-    .warning { color: #b71c1c; font-weight: bold; }
-    .note { font-size: 0.9rem; color: #555; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAR Part 117 FDP Calculator</title>
+<style>
+  body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; }
+  label { margin-top: 12px; display: block; font-weight: bold; }
+  input, select { padding: 6px; margin: 6px 0; width: 100%; max-width: 320px; }
+  button { margin-top: 15px; padding: 10px 20px; background-color: #2e7d32; color: white; border: none; cursor: pointer; font-size: 1rem; }
+  button:hover { background-color: #1b5e20; }
+  .result { margin-top: 25px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+  .warning { color: #b71c1c; font-weight: bold; }
+  .note { font-size: 0.9rem; color: #555; }
+</style>
 </head>
 <body>
 
@@ -57,12 +57,87 @@
 <script>
   // Table B FDP values (14 CFR Part 117)
   const tableB_unaugmented = [
-    { window: '0000-0359', values: [9, 9, 9, 9, 9, 9, 9] },
-    { window: '0400-0459', values: [10, 10, 10, 10, 9, 9, 9] },
-    { window: '0500-0559', values: [12, 12, 12, 12, 11.5, 11, 10.5] },
-    { window: '0600-0659', values: [13, 13, 12, 12, 11.5, 11, 10.5] },
-    { window: '0700-1159', values: [14, 14, 13, 13, 12.5, 12, 11.5] },
-    { window: '1200-1259', values: [13, 13, 13, 13, 12.5, 12, 11.5] },
-    { window: '1300-1659', values: [12, 12, 12, 12, 11.5, 11, 10.5] },
-    { window: '1700-2159', values: [12, 12, 11, 11, 10, 9, 9] },
-    { window: '
+    { start: 0, end: 239, values: [9, 9, 9, 9, 9, 9, 9] },
+    { start: 240, end: 299, values: [10, 10, 10, 10, 9, 9, 9] },
+    { start: 300, end: 359, values: [12, 12, 12, 12, 11.5, 11, 10.5] },
+    { start: 360, end: 419, values: [13, 13, 12, 12, 11.5, 11, 10.5] },
+    { start: 420, end: 719, values: [14, 14, 13, 13, 12.5, 12, 11.5] },
+    { start: 720, end: 779, values: [13, 13, 13, 13, 12.5, 12, 11.5] },
+    { start: 780, end: 1019, values: [12, 12, 12, 12, 11.5, 11, 10.5] },
+    { start: 1020, end: 1319, values: [12, 12, 11, 11, 10, 9, 9] },
+    { start: 1320, end: 1379, values: [11, 11, 10, 10, 9, 9, 9] },
+    { start: 1380, end: 1439, values: [10, 10, 10, 9, 9, 9, 9] }
+  ];
+
+  // Augmented crew FDP values (3–4 pilots) — Table B (§117.17)
+  const tableB_augmented = {
+    3: { // 3 pilots
+      1: { day: 13, night: 12 },
+      2: { day: 12, night: 11 },
+      3: { day: 11, night: 10 }
+    },
+    4: { // 4 pilots
+      1: { day: 17, night: 16 },
+      2: { day: 16, night: 15 },
+      3: { day: 15, night: 14 }
+    }
+  };
+
+  function timeToMinutes(timeStr) {
+    if (!timeStr) return 0;
+    const [h, m] = timeStr.split(':').map(Number);
+    return h * 60 + m;
+  }
+
+  function getRowForMinutes(mins) {
+    return tableB_unaugmented.find(r => mins >= r.start && mins <= r.end);
+  }
+
+  function getDayNight(mins) {
+    return (mins >= 300 && mins <= 1199) ? 'day' : 'night'; // 0500–1959 day
+  }
+
+  document.getElementById('fdpForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const reportTime = document.getElementById('reportTime').value;
+    const segments = parseInt(document.getElementById('segments').value, 10);
+    const pilots = parseInt(document.getElementById('pilots').value, 10);
+    const rest = parseInt(document.getElementById('restFacility').value, 10);
+
+    const mins = timeToMinutes(reportTime);
+    const row = getRowForMinutes(mins);
+    if (!row) {
+      document.getElementById('result').innerHTML = `<p class="warning">Invalid report time</p>`;
+      return;
+    }
+
+    let maxFDP, notes = [];
+
+    if (pilots === 2) {
+      // Unaugmented — Table B (§117.13)
+      maxFDP = row.values[Math.min(segments - 1, row.values.length - 1)];
+      notes.push(`Unaugmented FDP per Table B (§117.13), report window ${reportTime}.`);
+    } else {
+      // Augmented — Table B (§117.17)
+      const segKey = Math.min(segments,3);
+      const windowType = getDayNight(mins);
+      maxFDP = tableB_augmented[pilots][segKey][windowType];
+      notes.push(`Augmented FDP per Table B (§117.17), ${pilots} pilots, Class ${rest} rest, ${windowType} window.`);
+    }
+
+    const woclWarning = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ FDP occurs during WOCL (0200–0559) — per §117.25 fatigue risk alert.</p>' : '';
+
+    document.getElementById('result').innerHTML = `
+      <h3>FDP Calculation Result</h3>
+      <p><strong>Report Time:</strong> ${reportTime}</p>
+      <p><strong>Number of Pilots:</strong> ${pilots}</p>
+      <p><strong>Number of Segments:</strong> ${segments}</p>
+      <p><strong>Maximum Flight Duty Period (FDP):</strong> ${maxFDP} hours</p>
+      ${woclWarning}
+      ${notes.map(n => `<p class="note">${n}</p>`).join('')}
+    `;
+  });
+</script>
+
+</body>
+</html>

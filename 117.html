@@ -5,108 +5,69 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Max FDP Calculator</title>
 <style>
-body { font-family: Arial; background:#0e1a2b; color:#f5f5f5; padding:12px; }
-h1 { text-align:center; }
-.calculator-card { background:#11243b; padding:16px; max-width:480px; margin:auto; border-radius:10px; }
-label { display:block; margin-top:10px; }
-input, select { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #4a90e2; background:#1a2a44; color:#f5f5f5; }
-button { margin-top:12px; padding:10px; width:100%; background:#1fa2ff; color:#f5f5f5; border:none; border-radius:6px; cursor:pointer; }
-button:hover { background:#0d8ae6; }
-.result { margin-top:16px; background:rgba(255,255,255,0.05); padding:12px; border-radius:8px; }
-.toggle-switch { position: relative; height:44px; margin-bottom:12px; }
-.toggle-switch input { display:none; }
-.switch-label { display:block; width:100%; height:100%; background:#1a2a44; border-radius:30px; position:relative; cursor:pointer; }
-.switch-text-left, .switch-text-right { position:absolute; top:50%; transform:translateY(-50%); width:50%; text-align:center; pointer-events:none; }
-.switch-text-left { left:0; color:#f5f5f5; font-weight:bold; }
-.switch-text-right { right:0; color:rgba(245,245,245,0.5); font-weight:bold; }
-input:checked + .switch-label .switch-text-left { color:rgba(245,245,245,0.5); }
-input:checked + .switch-label .switch-text-right { color:#f5f5f5; }
-.switch-knob { position:absolute; top:2px; left:2px; width:calc(50% - 4px); height:calc(100%-4px); background:#1fa2ff; border-radius:30px; transition:left 0.3s; }
-input:checked + .switch-label .switch-knob { left:50%; }
-</style>
-</head>
-<body>
+:root {
+  --bg-color: #0e1a2b;
+  --card-bg: #11243b;
+  --accent-color: #1fa2ff;
+  --accent-hover: #0d8ae6;
+  --text-light: #f5f5f5;
+  --input-bg: #1a2a44;
+  --input-border: #4a90e2;
+  --warning-color: #ff6b6b;
+  --note-color: #cbd5e1;
+}
 
-<h1>Max FDP Calculator</h1>
+body {
+  font-family: Arial, sans-serif;
+  padding: 16px;
+  background-color: var(--bg-color);
+  color: var(--text-light);
+}
 
-<div class="calculator-card">
-<form id="fdpForm">
+h1 {
+  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 16px;
+}
 
-  <div class="toggle-switch">
-    <input type="checkbox" id="reportType">
-    <label class="switch-label" for="reportType">
-      <span class="switch-text-left">Bid</span>
-      <span class="switch-text-right">Short Call Rsv</span>
-      <span class="switch-knob"></span>
-    </label>
-  </div>
+.calculator-card {
+  background-color: var(--card-bg);
+  border-radius: 12px;
+  padding: 16px;
+  max-width: 480px;
+  margin: 0 auto;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+}
 
-  <label id="timeLabel" for="reportTime">Report Time</label>
-  <input type="time" id="reportTime" required>
+label {
+  display: block;
+  margin-top: 12px;
+  font-weight: bold;
+}
 
-  <label for="segments">Number of Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-    <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
-  </select>
+input[type="time"],
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 4px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background-color: var(--input-bg);
+  color: var(--text-light);
+  font-size: 1rem;
+}
 
-  <label for="pilots">Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-  </select>
+button {
+  margin-top: 16px;
+  padding: 12px;
+  width: 100%;
+  font-size: 1.1rem;
+  background-color: var(--accent-color);
+  color: var(--text-light);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
 
-  <div id="restFacilityWrapper" style="display:none;">
-    <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
-    <select id="restFacility">
-      <option value="1">Class 1</option>
-      <option value="2">Class 2</option>
-      <option value="3">Class 3</option>
-    </select>
-  </div>
-
-  <button type="submit">Calculate FDP</button>
-</form>
-
-<div class="result" id="result"></div>
-</div>
-
-<script>
-// Minimal FDP logic
-const tableB_unaugmented = [
-  { start:0,end:239,values:[9,9,9,9,9,9,9]},
-  { start:240,end:299,values:[10,10,10,10,9,9,9]},
-  { start:300,end:359,values:[12,12,12,12,11.5,11,10.5]},
-  { start:360,end:419,values:[13,13,12,12,11.5,11,10.5]},
-  { start:420,end:719,values:[14,14,13,13,12.5,12,11.5]},
-  { start:720,end:779,values:[13,13,13,13,12.5,12,11.5]},
-  { start:780,end:1019,values:[12,12,12,12,11.5,11,10.5]},
-  { start:1020,end:1319,values:[12,12,11,11,10,9,9]},
-  { start:1320,end:1379,values:[11,11,10,10,9,9,9]},
-  { start:1380,end:1439,values:[10,10,10,9,9,9,9]}
-];
-
-const tableB_augmented = {
-  3:{1:{day:13,night:12},2:{day:12,night:11},3:{day:11,night:10}},
-  4:{1:{day:17,night:16},2:{day:16,night:15},3:{day:15,night:14}}
-};
-
-function timeToMinutes(t){const [h,m]=t.split(':').map(Number);return h*60+m;}
-function getRow(mins){return tableB_unaugmented.find(r=>mins>=r.start && mins<=r.end);}
-function dayNight(mins){return (mins>=300&&mins<=1199)?'day':'night';}
-
-const pilotsSelect=document.getElementById('pilots');
-const restWrapper=document.getElementById('restFacilityWrapper');
-pilotsSelect.addEventListener('change',()=>{restWrapper.style.display=(parseInt(pilotsSelect.value)>=3)?'block':'none';});
-
-const reportTypeCheckbox=document.getElementById('reportType');
-const timeLabel=document.getElementById('timeLabel');
-reportTypeCheckbox.addEventListener('change',()=>{timeLabel.textContent=reportTypeCheckbox.checked?'RAP Start Time':'Report Time';});
-
-document.getElementById('fdpForm').addEventListener('submit',function(e){
-  e.preventDefault();
-  const reportTime=document.getElementById('reportTime').value;
-  const segments=parseInt(document.getElementById('segments').value);
-  const pilots=parseInt(document.getElementById('pilots').value);
-  const mins=timeToMinutes(reportTime
+button:hover {
+  backg

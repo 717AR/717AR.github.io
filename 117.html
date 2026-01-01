@@ -77,17 +77,9 @@
   }
 
   @media (max-width: 480px) {
-    body {
-      padding: 12px;
-    }
-
-    h1 {
-      font-size: 1.5rem;
-    }
-
-    button {
-      font-size: 1rem;
-    }
+    body { padding: 12px; }
+    h1 { font-size: 1.5rem; }
+    button { font-size: 1rem; }
   }
 </style>
 </head>
@@ -97,7 +89,16 @@
 
 <div class="calculator-card">
   <form id="fdpForm">
-    <label for="reportTime">Report Time (HH:mm)</label>
+
+    <!-- Bid / Short Call Selector -->
+    <label for="reportType">Select Type</label>
+    <select id="reportType">
+      <option value="bid">Bid</option>
+      <option value="shortcall">Short Call Rsv</option>
+    </select>
+
+    <!-- Time Input -->
+    <label id="timeLabel" for="reportTime">Report Time</label>
     <input type="time" id="reportTime" required>
 
     <label for="segments">Number of Flight Segments</label>
@@ -147,7 +148,6 @@ const tableB_augmented = {
   4: { 1: { day: 17, night: 16 }, 2: { day: 16, night: 15 }, 3: { day: 15, night: 14 } }
 };
 
-// Convert HH:mm to minutes
 function timeToMinutes(timeStr) {
   const [h,m] = timeStr.split(':').map(Number);
   return h*60 + m;
@@ -164,10 +164,16 @@ function getDayNight(mins) {
 // Show/hide rest facility dropdown
 const pilotsSelect = document.getElementById('pilots');
 const restWrapper = document.getElementById('restFacilityWrapper');
-
 pilotsSelect.addEventListener('change', () => {
   const val = parseInt(pilotsSelect.value);
   restWrapper.style.display = (val >= 3) ? 'block' : 'none';
+});
+
+// Change label dynamically based on Bid / Short Call Rsv
+const reportType = document.getElementById('reportType');
+const timeLabel = document.getElementById('timeLabel');
+reportType.addEventListener('change', () => {
+  timeLabel.textContent = (reportType.value === 'shortcall') ? 'RAP Start Time' : 'Report Time';
 });
 
 document.getElementById('fdpForm').addEventListener('submit', function(e) {
@@ -200,7 +206,8 @@ document.getElementById('fdpForm').addEventListener('submit', function(e) {
   const wocl = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ WOCL risk (§117.25)</p>' : '';
 
   document.getElementById('result').innerHTML = `
-    <p><strong>Report:</strong> ${reportTime}</p>
+    <p><strong>Report Type:</strong> ${reportType.options[reportType.selectedIndex].text}</p>
+    <p><strong>Time:</strong> ${reportTime}</p>
     <p><strong>Pilots:</strong> ${pilots}</p>
     <p><strong>Segments:</strong> ${segments}</p>
     <p><strong>Max FDP:</strong> ${maxFDP} hrs</p>

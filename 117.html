@@ -90,20 +90,32 @@
 <div class="result" id="result"></div>
 
 <script>
-  // FAR 117 FDP limits — TABLE B (§117.13 / §117.17)
-  // Single authoritative table for FDP
-  // Unaugmented (2 pilots) values are embedded per Table B
-  const tableB_FDP = {
-    unaugmented: {
-      day:   [9, 9, 9, 9, 8.5, 8, 7.5, 7.5],
-      night:[8, 8, 8, 8, 8,   8, 7.5, 7.5]
-    },
-    3: { // 3 pilots (augmented)
+  // FAR 117 TABLE B — MAXIMUM FLIGHT DUTY PERIOD (FDP)
+  // Source: 14 CFR Part 117, Table B
+  // Applies to UN-AUGMENTED operations (2 pilots)
+  // Values indexed by report-time window and number of segments
+
+  const tableB_unaugmented = [
+    { window: '0000-0359', values: [9, 9, 9, 9, 9, 9, 9] },
+    { window: '0400-0459', values: [10, 10, 10, 10, 9, 9, 9] },
+    { window: '0500-0559', values: [12, 12, 12, 12, 11.5, 11, 10.5] },
+    { window: '0600-0659', values: [13, 13, 12, 12, 11.5, 11, 10.5] },
+    { window: '0700-1159', values: [14, 14, 13, 13, 12.5, 12, 11.5] },
+    { window: '1200-1259', values: [13, 13, 13, 13, 12.5, 12, 11.5] },
+    { window: '1300-1659', values: [12, 12, 12, 12, 11.5, 11, 10.5] },
+    { window: '1700-2159', values: [12, 12, 11, 11, 10, 9, 9] },
+    { window: '2200-2259', values: [11, 11, 10, 10, 9, 9, 9] },
+    { window: '2300-2359', values: [10, 10, 10, 9, 9, 9, 9] }
+  ];
+
+  // FAR 117 TABLE B — AUGMENTED FDP LIMITS
+  const tableB_augmented = {
+    3: { // 3 pilots
       1: { day: 13, night: 12 },
       2: { day: 12, night: 11 },
       3: { day: 11, night: 10 }
     },
-    4: { // 4 pilots (augmented)
+    4: { // 4 pilots
       1: { day: 17, night: 16 },
       2: { day: 16, night: 15 },
       3: { day: 15, night: 14 }
@@ -124,13 +136,20 @@
     }
   };
 
-  function getTimeWindow(timeStr) {
+  function getReportRow(timeStr) {
     const [h, m] = timeStr.split(':').map(Number);
-    const minutes = h * 60 + m;
+    const t = h * 60 + m;
 
-    // Day window: 0500–1959
-    if (minutes >= 300 && minutes <= 1199) return 'day';
-    return 'night';
+    if (t <= 239) return '0000-0359';
+    if (t <= 299) return '0400-0459';
+    if (t <= 359) return '0500-0559';
+    if (t <= 419) return '0600-0659';
+    if (t <= 719) return '0700-1159';
+    if (t <= 779) return '1200-1259';
+    if (t <= 1019) return '1300-1659';
+    if (t <= 1319) return '1700-2159';
+    if (t <= 1379) return '2200-2259';
+    return '2300-2359';
   }
 
   document.getElementById('fdpForm').addEventListener('submit', function (e) {
@@ -141,15 +160,17 @@
     const pilots = parseInt(document.getElementById('pilots').value, 10);
     const rest = parseInt(document.getElementById('restFacility').value, 10);
 
-    const window = getTimeWindow(reportTime);
+    const reportRow = getReportRow(reportTime);
 
     let maxFDP;
     let notes = [];
 
     if (pilots === 2) {
-      // FDP per Table B – Unaugmented (§117.13)
-      maxFDP = tableB_FDP.unaugmented[window][Math.min(segments - 1, 7)];
-      notes.push('FDP calculated per Table B (§117.13), unaugmented.');
+      // TABLE B — UN-AUGMENTED FDP
+      const row = tableB_unaugmented.find(r => r.window === reportRow);
+      maxFDP = row.values[Math.min(segments - 1, 6)];
+      notes.push(`FDP per Table B (unaugmented), report window ${row.window}.`);
+    }
     } else {
       // FDP per Table B – Augmented (§117.17)
       maxFDP = tableB_FDP[pilots][rest][window];

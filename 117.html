@@ -5,11 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Max FDP Calculator</title>
 <style>
+  :root {
+    --bg-color: #0e1a2b;
+    --card-bg: #11243b;
+    --accent-color: #1fa2ff;
+    --accent-hover: #0d8ae6;
+    --text-light: #f5f5f5;
+    --input-bg: #1a2a44;
+    --input-border: #4a90e2;
+    --warning-color: #ff6b6b;
+    --note-color: #cbd5e1;
+  }
+
   body {
     font-family: Arial, sans-serif;
     padding: 16px;
-    background-color: #f0f4f8;
-    color: #1a1a1a;
+    background-color: var(--bg-color);
+    color: var(--text-light);
   }
 
   h1 {
@@ -19,12 +31,12 @@
   }
 
   .calculator-card {
-    background-color: #ffffff;
-    border-radius: 10px;
+    background-color: var(--card-bg);
+    border-radius: 12px;
     padding: 16px;
     max-width: 480px;
     margin: 0 auto;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.4);
   }
 
   label {
@@ -39,7 +51,9 @@
     padding: 10px;
     margin-top: 4px;
     border-radius: 6px;
-    border: 1px solid #ccc;
+    border: 1px solid var(--input-border);
+    background-color: var(--input-bg);
+    color: var(--text-light);
     font-size: 1rem;
   }
 
@@ -48,32 +62,78 @@
     padding: 12px;
     width: 100%;
     font-size: 1.1rem;
-    background-color: #1fa2ff;
-    color: white;
+    background-color: var(--accent-color);
+    color: var(--text-light);
     border: none;
     border-radius: 6px;
     cursor: pointer;
   }
 
   button:hover {
-    background-color: #0d8ae6;
+    background-color: var(--accent-hover);
   }
 
   .result {
     margin-top: 20px;
     padding: 14px;
-    background: #e8f0fe;
+    background: rgba(255,255,255,0.05);
     border-radius: 8px;
   }
 
-  .warning {
-    color: #b71c1c;
-    font-weight: bold;
+  .warning { color: var(--warning-color); font-weight: bold; }
+  .note { font-size: 0.9rem; color: var(--note-color); }
+
+  /* Toggle switch */
+  .toggle-switch {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
   }
 
-  .note {
-    font-size: 0.9rem;
-    color: #555;
+  .toggle-switch input {
+    display: none;
+  }
+
+  .switch-label {
+    display: inline-block;
+    width: 100%;
+    background-color: var(--input-bg);
+    border-radius: 30px;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .switch-label span {
+    display: block;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+    color: var(--text-light);
+  }
+
+  .switch-label::after {
+    content: '';
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    background-color: var(--accent-color);
+    border-radius: 30px;
+    top: 0;
+    left: 0;
+    transition: 0.3s;
+  }
+
+  input:checked + .switch-label::after {
+    left: 50%;
+  }
+
+  input:checked + .switch-label span:first-child {
+    color: var(--text-light);
+  }
+
+  input:checked + .switch-label span:last-child {
+    color: var(--text-light);
   }
 
   @media (max-width: 480px) {
@@ -90,12 +150,14 @@
 <div class="calculator-card">
   <form id="fdpForm">
 
-    <!-- Bid / Short Call Selector -->
-    <label for="reportType">Select Type</label>
-    <select id="reportType">
-      <option value="bid">Bid</option>
-      <option value="shortcall">Short Call Rsv</option>
-    </select>
+    <!-- Modern toggle switch -->
+    <div class="toggle-switch">
+      <input type="checkbox" id="reportType" />
+      <label class="switch-label" for="reportType">
+        <span>Bid</span>
+        <span>Short Call Rsv</span>
+      </label>
+    </div>
 
     <!-- Time Input -->
     <label id="timeLabel" for="reportTime">Report Time</label>
@@ -169,11 +231,11 @@ pilotsSelect.addEventListener('change', () => {
   restWrapper.style.display = (val >= 3) ? 'block' : 'none';
 });
 
-// Change label dynamically based on Bid / Short Call Rsv
-const reportType = document.getElementById('reportType');
+// Toggle switch change
+const reportTypeCheckbox = document.getElementById('reportType');
 const timeLabel = document.getElementById('timeLabel');
-reportType.addEventListener('change', () => {
-  timeLabel.textContent = (reportType.value === 'shortcall') ? 'RAP Start Time' : 'Report Time';
+reportTypeCheckbox.addEventListener('change', () => {
+  timeLabel.textContent = reportTypeCheckbox.checked ? 'RAP Start Time' : 'Report Time';
 });
 
 document.getElementById('fdpForm').addEventListener('submit', function(e) {
@@ -206,7 +268,7 @@ document.getElementById('fdpForm').addEventListener('submit', function(e) {
   const wocl = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ WOCL risk (§117.25)</p>' : '';
 
   document.getElementById('result').innerHTML = `
-    <p><strong>Report Type:</strong> ${reportType.options[reportType.selectedIndex].text}</p>
+    <p><strong>Report Type:</strong> ${reportTypeCheckbox.checked ? 'Short Call Rsv' : 'Bid'}</p>
     <p><strong>Time:</strong> ${reportTime}</p>
     <p><strong>Pilots:</strong> ${pilots}</p>
     <p><strong>Segments:</strong> ${segments}</p>

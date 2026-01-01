@@ -83,7 +83,7 @@ button:hover {
 .warning { color: var(--warning-color); font-weight: bold; }
 .note { font-size: 0.9rem; color: var(--note-color); }
 
-/* Fixed toggle switch */
+/* Fixed toggle switch with active highlight */
 .toggle-switch {
   position: relative;
   width: 100%;
@@ -112,14 +112,21 @@ button:hover {
   transform: translateY(-50%);
   font-size: 0.95rem;
   font-weight: bold;
-  color: var(--text-light);
   width: 50%;
   text-align: center;
   pointer-events: none;
+  transition: color 0.3s;
 }
 
-.switch-text-left { left: 0; }
-.switch-text-right { right: 0; }
+.switch-text-left { left: 0; color: var(--text-light); }
+.switch-text-right { right: 0; color: rgba(245,245,245,0.5); }
+
+input:checked + .switch-label .switch-text-left {
+  color: rgba(245,245,245,0.5);
+}
+input:checked + .switch-label .switch-text-right {
+  color: var(--text-light);
+}
 
 .switch-knob {
   position: absolute;
@@ -137,64 +144,4 @@ input:checked + .switch-label .switch-knob {
 }
 
 @media (max-width: 480px) {
-  body { padding: 12px; }
-  h1 { font-size: 1.5rem; }
-  button { font-size: 1rem; }
-}
-</style>
-</head>
-<body>
-
-<h1>Max FDP Calculator</h1>
-
-<div class="calculator-card">
-<form id="fdpForm">
-
-  <!-- Working toggle switch -->
-  <div class="toggle-switch">
-    <input type="checkbox" id="reportType" />
-    <label class="switch-label" for="reportType">
-      <span class="switch-text-left">Bid</span>
-      <span class="switch-text-right">Short Call Rsv</span>
-      <span class="switch-knob"></span>
-    </label>
-  </div>
-
-  <label id="timeLabel" for="reportTime">Report Time</label>
-  <input type="time" id="reportTime" required>
-
-  <label for="segments">Number of Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-    <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
-  </select>
-
-  <label for="pilots">Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2 (Unaugmented)</option>
-    <option value="3">3 (Augmented)</option>
-    <option value="4">4 (Augmented)</option>
-  </select>
-
-  <div id="restFacilityWrapper" style="display:none;">
-    <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
-    <select id="restFacility">
-      <option value="1">Class 1</option>
-      <option value="2">Class 2</option>
-      <option value="3">Class 3</option>
-    </select>
-  </div>
-
-  <button type="submit">Calculate FDP</button>
-</form>
-
-<div class="result" id="result"></div>
-</div>
-
-<script>
-// FDP tables
-const tableB_unaugmented = [
-  { start: 0, end: 239, values: [9,9,9,9,9,9,9] },
-  { start: 240, end: 299, values: [10,10,10,10,9,9,9] },
-  { start: 300, end: 359, values: [12,12,12,12,11.5,11,10.5] },
-  { start: 360, end:
+  body {

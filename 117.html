@@ -1,62 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>FAR Part 117 FDP Calculator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-      max-width: 800px;
-    }
-    label {
-      margin-top: 12px;
-      display: block;
-      font-weight: bold;
-    }
-    input, select {
-      padding: 6px;
-      margin: 6px 0;
-      width: 100%;
-      max-width: 320px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 10px 20px;
-      background-color: #2e7d32;
-      color: white;
-      border: none;
-      cursor: pointer;
-      font-size: 1rem;
-    }
-    button:hover {
-      background-color: #1b5e20;
-    }
-    .result {
-      margin-top: 25px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      background: #f9f9f9;
-    }
-    .warning {
-      color: #b71c1c;
-      font-weight: bold;
-    }
-    .note {
-      font-size: 0.9rem;
-      color: #555;
-    }
+    body { font-family: Arial, sans-serif; padding: 20px; max-width: 800px; }
+    label { margin-top: 12px; display: block; font-weight: bold; }
+    input, select { padding: 6px; margin: 6px 0; width: 100%; max-width: 320px; }
+    button { margin-top: 15px; padding: 10px 20px; background-color: #2e7d32; color: white; border: none; cursor: pointer; font-size: 1rem; }
+    button:hover { background-color: #1b5e20; }
+    .result { margin-top: 25px; padding: 15px; border: 1px solid #ccc; background: #f9f9f9; }
+    .warning { color: #b71c1c; font-weight: bold; }
+    .note { font-size: 0.9rem; color: #555; }
   </style>
 </head>
 <body>
 
 <h1>FAR Part 117 Flight Duty Period (FDP) Calculator</h1>
-<p class="note">This calculator models FAA FAR 117 Tables A & B. It is for planning and educational use only.</p>
+<p class="note">This calculator uses <strong>Table B</strong> of 14 CFR Part 117 for maximum FDP. For planning purposes only.</p>
 
 <form id="fdpForm">
-  <label for="reportTime">Report Time (Local, HH:mm)</label>
-  <input type="time" id="reportTime" required />
+  <label for="reportTime">Report Time (HH:mm)</label>
+  <input type="time" id="reportTime" required>
 
   <label for="segments">Number of Flight Segments</label>
   <select id="segments">
@@ -67,7 +33,6 @@
     <option value="5">5</option>
     <option value="6">6</option>
     <option value="7">7</option>
-    <option value="8">8</option>
   </select>
 
   <label for="pilots">Number of Pilots</label>
@@ -90,11 +55,7 @@
 <div class="result" id="result"></div>
 
 <script>
-  // FAR 117 TABLE B — MAXIMUM FLIGHT DUTY PERIOD (FDP)
-  // Source: 14 CFR Part 117, Table B
-  // Applies to UN-AUGMENTED operations (2 pilots)
-  // Values indexed by report-time window and number of segments
-
+  // Table B FDP values (14 CFR Part 117)
   const tableB_unaugmented = [
     { window: '0000-0359', values: [9, 9, 9, 9, 9, 9, 9] },
     { window: '0400-0459', values: [10, 10, 10, 10, 9, 9, 9] },
@@ -104,100 +65,4 @@
     { window: '1200-1259', values: [13, 13, 13, 13, 12.5, 12, 11.5] },
     { window: '1300-1659', values: [12, 12, 12, 12, 11.5, 11, 10.5] },
     { window: '1700-2159', values: [12, 12, 11, 11, 10, 9, 9] },
-    { window: '2200-2259', values: [11, 11, 10, 10, 9, 9, 9] },
-    { window: '2300-2359', values: [10, 10, 10, 9, 9, 9, 9] }
-  ];
-
-  // FAR 117 TABLE B — AUGMENTED FDP LIMITS
-  const tableB_augmented = {
-    3: { // 3 pilots
-      1: { day: 13, night: 12 },
-      2: { day: 12, night: 11 },
-      3: { day: 11, night: 10 }
-    },
-    4: { // 4 pilots
-      1: { day: 17, night: 16 },
-      2: { day: 16, night: 15 },
-      3: { day: 15, night: 14 }
-    }
-  };
-
-  // FAR 117 Table B (Augmented)
-  const tableB = {
-    3: { // 3 pilots
-      1: { day: 13, night: 12 },
-      2: { day: 12, night: 11 },
-      3: { day: 11, night: 10 }
-    },
-    4: { // 4 pilots
-      1: { day: 17, night: 16 },
-      2: { day: 16, night: 15 },
-      3: { day: 15, night: 14 }
-    }
-  };
-
-  function getReportRow(timeStr) {
-    const [h, m] = timeStr.split(':').map(Number);
-    const t = h * 60 + m;
-
-    if (t <= 239) return '0000-0359';
-    if (t <= 299) return '0400-0459';
-    if (t <= 359) return '0500-0559';
-    if (t <= 419) return '0600-0659';
-    if (t <= 719) return '0700-1159';
-    if (t <= 779) return '1200-1259';
-    if (t <= 1019) return '1300-1659';
-    if (t <= 1319) return '1700-2159';
-    if (t <= 1379) return '2200-2259';
-    return '2300-2359';
-  }
-
-  document.getElementById('fdpForm').addEventListener('submit', function (e) {
-    e.preventDefault();
-
-    const reportTime = document.getElementById('reportTime').value;
-    const segments = parseInt(document.getElementById('segments').value, 10);
-    const pilots = parseInt(document.getElementById('pilots').value, 10);
-    const rest = parseInt(document.getElementById('restFacility').value, 10);
-
-    const reportRow = getReportRow(reportTime);
-
-    let maxFDP;
-    let notes = [];
-
-    if (pilots === 2) {
-      // TABLE B — UN-AUGMENTED FDP
-      const row = tableB_unaugmented.find(r => r.window === reportRow);
-      maxFDP = row.values[Math.min(segments - 1, 6)];
-      notes.push(`FDP per Table B (unaugmented), report window ${row.window}.`);
-    }
-    } else {
-      // FDP per Table B – Augmented (§117.17)
-      maxFDP = tableB_FDP[pilots][rest][window];
-      notes.push('FDP calculated per Table B (§117.17), augmented.');
-    }
-      
-      // Augmented – Table B
-      maxFDP = tableB[pilots][rest][window];
-      notes.push('Augmented operation assumed per §117.17.');
-    }
-
-    const woclWarning = window === 'night'
-      ? '<p class="warning">⚠ FDP occurs during the WOCL (0200–0559). This reduces allowable FDP per FAR 117.</p>'
-      : '';
-
-    document.getElementById('result').innerHTML = `
-      <h3>FDP Calculation Result</h3>
-      <p><strong>Report Time:</strong> ${reportTime}</p>
-      <p><strong>Time Window:</strong> ${window === 'day' ? '0500–1959' : '2000–0459'}</p>
-      <p><strong>Segments:</strong> ${segments}</p>
-      <p><strong>Pilots:</strong> ${pilots}</p>
-      <p><strong>Maximum Allowable FDP:</strong> ${maxFDP} hours</p>
-      ${woclWarning}
-      ${notes.map(n => `<p class="note">${n}</p>`).join('')}
-    `;
-  });
-</script>
-
-</body>
-</html>
+    { window: '

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAR Part 117 Flight & Duty Time Calculator</title>
+  <title>FAR Part 117 Duty & Flight Time Calculator</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -46,8 +46,30 @@
       <option value="international">International</option>
     </select>
 
-    <label for="flightHours">Number of Flight Hours:</label>
-    <input type="number" id="flightHours" min="1" max="8" required>
+    <label for="pilotCrew">Number of Pilots:</label>
+    <select id="pilotCrew">
+      <option value="2">2 Pilots</option>
+      <option value="3">3 Pilots</option>
+      <option value="4">4 Pilots</option>
+    </select>
+
+    <label for="crewRestFacility">Crew Rest Facility Type:</label>
+    <select id="crewRestFacility">
+      <option value="1">Facility Type 1</option>
+      <option value="2">Facility Type 2</option>
+      <option value="3">Facility Type 3</option>
+    </select>
+
+    <label for="segments">Number of Segments:</label>
+    <select id="segments">
+      <option value="1">1 Segment</option>
+      <option value="2">2 Segments</option>
+      <option value="3">3 Segments</option>
+      <option value="4">4 Segments</option>
+      <option value="5">5 Segments</option>
+      <option value="6">6 Segments</option>
+      <option value="7">7 Segments</option>
+    </select>
 
     <button type="submit">Calculate</button>
   </form>
@@ -61,34 +83,66 @@
       // Get user input
       const startTime = document.getElementById('startTime').value;
       const flightType = document.getElementById('flightType').value;
-      const flightHours = parseInt(document.getElementById('flightHours').value);
+      const pilotCrew = parseInt(document.getElementById('pilotCrew').value);
+      const crewRestFacility = parseInt(document.getElementById('crewRestFacility').value);
+      const segments = parseInt(document.getElementById('segments').value);
 
-      // Convert start time into 24-hour format
-      const startDate = new Date(`1970-01-01T${startTime}:00`);
+      // Base duty time limit (starts as a baseline for domestic flights with Facility Type 1)
+      let maxDutyTime = 9;  // Default for 2 pilots, domestic, Facility Type 1, 1 segment
 
-      // Basic FAR Part 117 calculations
-      let maxFlightTime = 8; // Default max flight time for domestic flights
-      let maxDutyTime = 14; // Default max duty time for domestic flights
-
-      // Adjust for international flights
-      if (flightType === 'international') {
-        maxFlightTime = 9; // International max flight time
-        maxDutyTime = 16;  // International max duty time
+      // Adjust maximum duty time based on crew rest facility and segments
+      if (flightType === 'domestic') {
+        if (crewRestFacility === 1) {
+          // Facility Type 1: Higher quality rest, higher duty time
+          if (segments === 1) maxDutyTime = 9;
+          else if (segments === 2) maxDutyTime = 10;
+          else if (segments === 3) maxDutyTime = 11;
+          else if (segments === 4) maxDutyTime = 12;
+          else if (segments === 5) maxDutyTime = 13;
+          else if (segments === 6) maxDutyTime = 14;
+          else if (segments === 7) maxDutyTime = 14;
+        } else if (crewRestFacility === 2) {
+          // Facility Type 2: Moderate quality rest, moderate duty time
+          if (segments === 1) maxDutyTime = 8;
+          else if (segments === 2) maxDutyTime = 9;
+          else if (segments === 3) maxDutyTime = 10;
+          else if (segments === 4) maxDutyTime = 11;
+          else if (segments === 5) maxDutyTime = 12;
+          else if (segments === 6) maxDutyTime = 13;
+          else if (segments === 7) maxDutyTime = 13;
+        } else if (crewRestFacility === 3) {
+          // Facility Type 3: No dedicated rest, lowest duty time
+          if (segments === 1) maxDutyTime = 7;
+          else if (segments === 2) maxDutyTime = 8;
+          else if (segments === 3) maxDutyTime = 9;
+          else if (segments === 4) maxDutyTime = 10;
+          else if (segments === 5) maxDutyTime = 11;
+          else if (segments === 6) maxDutyTime = 12;
+          else if (segments === 7) maxDutyTime = 12;
+        }
+      } else if (flightType === 'international') {
+        // Similar logic for international flights, but typically the times would be slightly longer
+        if (crewRestFacility === 1) {
+          if (segments === 1) maxDutyTime = 10;
+          else if (segments === 2) maxDutyTime = 11;
+          else if (segments === 3) maxDutyTime = 12;
+          else if (segments === 4) maxDutyTime = 13;
+          else if (segments === 5) maxDutyTime = 14;
+          else if (segments === 6) maxDutyTime = 15;
+          else if (segments === 7) maxDutyTime = 15;
+        }
+        // Other Facility Types can be adjusted similarly as above for international flights.
       }
 
-      // Calculate remaining time
-      let remainingFlightTime = maxFlightTime - flightHours;
-      let remainingDutyTime = maxDutyTime - flightHours;
-
+      // Display the result
       const result = `
         <h3>Flight Summary</h3>
         <p>Start Time: ${startTime}</p>
         <p>Flight Type: ${flightType.charAt(0).toUpperCase() + flightType.slice(1)}</p>
-        <p>Flight Hours: ${flightHours} hrs</p>
-        <p>Max Flight Time: ${maxFlightTime} hrs</p>
-        <p>Max Duty Time: ${maxDutyTime} hrs</p>
-        <p>Remaining Flight Time: ${remainingFlightTime} hrs</p>
-        <p>Remaining Duty Time: ${remainingDutyTime} hrs</p>
+        <p>Number of Pilots: ${pilotCrew}</p>
+        <p>Crew Rest Facility Type: ${crewRestFacility}</p>
+        <p>Number of Segments: ${segments}</p>
+        <p>Max Duty Time: ${maxDutyTime} hours</p>
       `;
 
       document.getElementById('result').innerHTML = result;
@@ -96,5 +150,3 @@
   </script>
 </body>
 </html>
-
-

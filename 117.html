@@ -85,8 +85,9 @@
 
   /* Toggle switch */
   .toggle-switch {
-    display: flex;
-    align-items: center;
+    position: relative;
+    width: 100%;
+    height: 44px;
     margin-bottom: 12px;
   }
 
@@ -95,8 +96,9 @@
   }
 
   .switch-label {
-    display: inline-block;
+    display: block;
     width: 100%;
+    height: 100%;
     background-color: var(--input-bg);
     border-radius: 30px;
     position: relative;
@@ -104,180 +106,13 @@
     user-select: none;
   }
 
-  .switch-label span {
-    display: block;
-    padding: 10px;
-    text-align: center;
-    transition: 0.3s;
-    color: var(--text-light);
-  }
-
-  .switch-label::after {
-    content: '';
+  .switch-text-left,
+  .switch-text-right {
     position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--text-light);
     width: 50%;
-    height: 100%;
-    background-color: var(--accent-color);
-    border-radius: 30px;
-    top: 0;
-    left: 0;
-    transition: 0.3s;
-  }
-
-  input:checked + .switch-label::after {
-    left: 50%;
-  }
-
-  input:checked + .switch-label span:first-child {
-    color: var(--text-light);
-  }
-
-  input:checked + .switch-label span:last-child {
-    color: var(--text-light);
-  }
-
-  @media (max-width: 480px) {
-    body { padding: 12px; }
-    h1 { font-size: 1.5rem; }
-    button { font-size: 1rem; }
-  }
-</style>
-</head>
-<body>
-
-<h1>Max FDP Calculator</h1>
-
-<div class="calculator-card">
-  <form id="fdpForm">
-
-    <!-- Modern toggle switch -->
-    <div class="toggle-switch">
-      <input type="checkbox" id="reportType" />
-      <label class="switch-label" for="reportType">
-        <span>Bid</span>
-        <span>Short Call Rsv</span>
-      </label>
-    </div>
-
-    <!-- Time Input -->
-    <label id="timeLabel" for="reportTime">Report Time</label>
-    <input type="time" id="reportTime" required>
-
-    <label for="segments">Number of Flight Segments</label>
-    <select id="segments">
-      <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-      <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
-    </select>
-
-    <label for="pilots">Number of Pilots</label>
-    <select id="pilots">
-      <option value="2">2 (Unaugmented)</option>
-      <option value="3">3 (Augmented)</option>
-      <option value="4">4 (Augmented)</option>
-    </select>
-
-    <div id="restFacilityWrapper" style="display:none;">
-      <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
-      <select id="restFacility">
-        <option value="1">Class 1</option>
-        <option value="2">Class 2</option>
-        <option value="3">Class 3</option>
-      </select>
-    </div>
-
-    <button type="submit">Calculate FDP</button>
-  </form>
-
-  <div class="result" id="result"></div>
-</div>
-
-<script>
-const tableB_unaugmented = [
-  { start: 0, end: 239, values: [9,9,9,9,9,9,9] },
-  { start: 240, end: 299, values: [10,10,10,10,9,9,9] },
-  { start: 300, end: 359, values: [12,12,12,12,11.5,11,10.5] },
-  { start: 360, end: 419, values: [13,13,12,12,11.5,11,10.5] },
-  { start: 420, end: 719, values: [14,14,13,13,12.5,12,11.5] },
-  { start: 720, end: 779, values: [13,13,13,13,12.5,12,11.5] },
-  { start: 780, end: 1019, values: [12,12,12,12,11.5,11,10.5] },
-  { start: 1020, end: 1319, values: [12,12,11,11,10,9,9] },
-  { start: 1320, end: 1379, values: [11,11,10,10,9,9,9] },
-  { start: 1380, end: 1439, values: [10,10,10,9,9,9,9] }
-];
-
-const tableB_augmented = {
-  3: { 1: { day: 13, night: 12 }, 2: { day: 12, night: 11 }, 3: { day: 11, night: 10 } },
-  4: { 1: { day: 17, night: 16 }, 2: { day: 16, night: 15 }, 3: { day: 15, night: 14 } }
-};
-
-function timeToMinutes(timeStr) {
-  const [h,m] = timeStr.split(':').map(Number);
-  return h*60 + m;
-}
-
-function getRowForMinutes(mins) {
-  return tableB_unaugmented.find(r => mins >= r.start && mins <= r.end);
-}
-
-function getDayNight(mins) {
-  return (mins >= 300 && mins <= 1199) ? 'day' : 'night';
-}
-
-// Show/hide rest facility dropdown
-const pilotsSelect = document.getElementById('pilots');
-const restWrapper = document.getElementById('restFacilityWrapper');
-pilotsSelect.addEventListener('change', () => {
-  const val = parseInt(pilotsSelect.value);
-  restWrapper.style.display = (val >= 3) ? 'block' : 'none';
-});
-
-// Toggle switch change
-const reportTypeCheckbox = document.getElementById('reportType');
-const timeLabel = document.getElementById('timeLabel');
-reportTypeCheckbox.addEventListener('change', () => {
-  timeLabel.textContent = reportTypeCheckbox.checked ? 'RAP Start Time' : 'Report Time';
-});
-
-document.getElementById('fdpForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const reportTime = document.getElementById('reportTime').value;
-  const segments = parseInt(document.getElementById('segments').value, 10);
-  const pilots = parseInt(document.getElementById('pilots').value, 10);
-  const rest = parseInt(document.getElementById('restFacility').value, 10);
-
-  const mins = timeToMinutes(reportTime);
-  const row = getRowForMinutes(mins);
-
-  if (!row) {
-    document.getElementById('result').innerHTML = `<p class="warning">Invalid report time</p>`;
-    return;
-  }
-
-  let maxFDP = 0, notes = [];
-  if (pilots === 2) {
-    maxFDP = row.values[Math.min(segments-1,row.values.length-1)];
-    notes.push(`Unaugmented FDP per Table B (§117.13), window ${reportTime}`);
-  } else {
-    const segKey = Math.min(segments,3);
-    const windowType = getDayNight(mins);
-    maxFDP = tableB_augmented[pilots][segKey][windowType];
-    notes.push(`Augmented FDP per Table B (§117.17), ${pilots} pilots, Class ${rest}, ${windowType}`);
-  }
-
-  const wocl = (mins >= 120 && mins <= 359) ? '<p class="warning">⚠ WOCL risk (§117.25)</p>' : '';
-
-  document.getElementById('result').innerHTML = `
-    <p><strong>Report Type:</strong> ${reportTypeCheckbox.checked ? 'Short Call Rsv' : 'Bid'}</p>
-    <p><strong>Time:</strong> ${reportTime}</p>
-    <p><strong>Pilots:</strong> ${pilots}</p>
-    <p><strong>Segments:</strong> ${segments}</p>
-    <p><strong>Max FDP:</strong> ${maxFDP} hrs</p>
-    ${wocl}
-    ${notes.map(n=>`<p class="note">${n}</p>`).join('')}
-  `;
-});
-</script>
-
-</body>
-</html>
+    te

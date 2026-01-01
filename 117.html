@@ -90,10 +90,24 @@
 <div class="result" id="result"></div>
 
 <script>
-  // FAR 117 Table A (Unaugmented)
-  const tableA = {
-    day: [9, 9, 9, 9, 9, 9, 9, 9],
-    night: [8, 8, 8, 8, 8, 8, 8, 8]
+  // FAR 117 FDP limits — TABLE B (§117.13 / §117.17)
+  // Single authoritative table for FDP
+  // Unaugmented (2 pilots) values are embedded per Table B
+  const tableB_FDP = {
+    unaugmented: {
+      day:   [9, 9, 9, 9, 8.5, 8, 7.5, 7.5],
+      night:[8, 8, 8, 8, 8,   8, 7.5, 7.5]
+    },
+    3: { // 3 pilots (augmented)
+      1: { day: 13, night: 12 },
+      2: { day: 12, night: 11 },
+      3: { day: 11, night: 10 }
+    },
+    4: { // 4 pilots (augmented)
+      1: { day: 17, night: 16 },
+      2: { day: 16, night: 15 },
+      3: { day: 15, night: 14 }
+    }
   };
 
   // FAR 117 Table B (Augmented)
@@ -133,17 +147,22 @@
     let notes = [];
 
     if (pilots === 2) {
-      // Unaugmented – Table A
-      maxFDP = tableA[window][Math.min(segments - 1, 7)];
-      if (segments > 7) notes.push('More than 7 segments requires operator-specific analysis.');
+      // FDP per Table B – Unaugmented (§117.13)
+      maxFDP = tableB_FDP.unaugmented[window][Math.min(segments - 1, 7)];
+      notes.push('FDP calculated per Table B (§117.13), unaugmented.');
     } else {
+      // FDP per Table B – Augmented (§117.17)
+      maxFDP = tableB_FDP[pilots][rest][window];
+      notes.push('FDP calculated per Table B (§117.17), augmented.');
+    }
+      
       // Augmented – Table B
       maxFDP = tableB[pilots][rest][window];
       notes.push('Augmented operation assumed per §117.17.');
     }
 
     const woclWarning = window === 'night'
-      ? '<p class="warning">⚠ FDP touches WOCL (0200–0559). Fatigue risk increased.</p>'
+      ? '<p class="warning">⚠ FDP occurs during the WOCL (0200–0559). This reduces allowable FDP per FAR 117.</p>'
       : '';
 
     document.getElementById('result').innerHTML = `
@@ -152,7 +171,7 @@
       <p><strong>Time Window:</strong> ${window === 'day' ? '0500–1959' : '2000–0459'}</p>
       <p><strong>Segments:</strong> ${segments}</p>
       <p><strong>Pilots:</strong> ${pilots}</p>
-      <p><strong>Max FDP:</strong> ${maxFDP} hours</p>
+      <p><strong>Maximum Allowable FDP:</strong> ${maxFDP} hours</p>
       ${woclWarning}
       ${notes.map(n => `<p class="note">${n}</p>`).join('')}
     `;

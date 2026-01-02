@@ -6,13 +6,11 @@
 <title>Max FDP Calculator</title>
 <style>
 body{font-family:Arial,sans-serif;background:#0e1a2b;color:#f5f5f5;padding:16px}
-h1{text-align:center;margin-bottom:14px}
+h1{text-align:center;margin-bottom:14px;font-size:24px}
 .card{background:#11243b;padding:16px;max-width:480px;margin:auto;border-radius:10px}
 label{display:block;margin-top:10px;font-weight:bold}
 input,select{width:100%;padding:8px;margin-top:4px;border-radius:6px;border:1px solid #4a90e2;background:#1a2a44;color:#fff}
 button{margin-top:16px;width:100%;padding:10px;border:none;border-radius:6px;background:#1fa2ff;color:#fff;font-size:16px;cursor:pointer}
-
-/* ===== TOGGLE ===== */
 .toggle{position:relative;height:44px;margin-bottom:14px}
 .toggle input{display:none}
 .toggle-label{display:block;height:100%;background:#1a2a44;border-radius:24px;position:relative;cursor:pointer}
@@ -23,17 +21,15 @@ button{margin-top:16px;width:100%;padding:10px;border:none;border-radius:6px;bac
 input:checked + .toggle-label .toggle-knob{left:50%}
 input:checked + .toggle-label .left{opacity:0.35}
 input:checked + .toggle-label .right{opacity:1}
-
-/* ===== RESULTS ===== */
 .result{margin-top:18px;padding:14px;background:rgba(255,255,255,.06);border-radius:10px}
 .result-main{font-size:22px;font-weight:bold;margin-bottom:8px}
 .result-sub{font-size:14px;opacity:.9;margin-top:4px}
 .result-breakdown{margin-top:10px;padding:10px;background:rgba(255,255,255,.12);border-radius:8px;font-size:14px}
 .limit-highlight{color:#1fa2ff;font-weight:bold}
-.footer{margin-top:14px;font-size:12px;opacity:.8;text-align:center}
-.disabled{opacity:0.4;pointer-events:none}
+.disabled{opacity:.4;pointer-events:none}
 .helper{font-size:12px;opacity:.75;margin-top:4px}
-.fade{transition:opacity .25s ease,max-height .25s ease}
+.fade{transition:opacity .25s ease,max-height .25s ease;overflow:hidden;max-height:500px}
+.hidden{display:none}
 </style>
 </head>
 <body>
@@ -45,8 +41,8 @@ input:checked + .toggle-label .right{opacity:1}
   <div class="toggle">
     <input type="checkbox" id="reserveToggle">
     <label class="toggle-label" for="reserveToggle">
-      <span class="left">Bid</span>
-      <span class="right">Reserve</span>
+      <span class="left">Bid/LCR</span>
+      <span class="right">SCR</span>
       <div class="toggle-knob"></div>
     </label>
   </div>
@@ -71,7 +67,7 @@ input:checked + .toggle-label .right{opacity:1}
     </select>
   </div>
 
-  <div id="restWrapper" class="fade hidden">
+  <div id="restWrapper" class="fade">
     <label>Crew Rest Class</label>
     <div class="helper">Used only for augmented (3–4 pilot) crews</div>
     <select id="restClass">
@@ -86,12 +82,11 @@ input:checked + .toggle-label .right{opacity:1}
 
 <div id="result" class="result"></div>
 <div id="breakdown" class="result-breakdown hidden"></div>
-<div class="footer">FAA References: 14 CFR §117.13, §117.17 — Tables B & C</div>
 </div>
 
 <script>
 function timeToMinutes(t){const[a,b]=t.split(':').map(Number);return a*60+b}
-function minutesToTimeAMPM(m){const h=Math.floor(m/60)%24, min=m%60;const ampm=h>=12?'PM':'AM';const hh=h%12||12;return `${hh}:${String(min).padStart(2,'0')} ${ampm}`}
+function minutesToTimeAMPM(m){const h=Math.floor(m/60)%24,min=m%60,ampm=h>=12?'PM':'AM',hh=h%12||12;return `${hh}:${String(min).padStart(2,'0')} ${ampm}`}
 
 const tableB=[[0,239,[9,9,9,9,9,9,9]],[240,299,[10,10,10,10,9,9,9]],[300,359,[12,12,12,12,11.5,11,10.5]],[360,419,[13,13,12,12,11.5,11,10.5]],[420,719,[14,14,13,13,12.5,12,11.5]],[720,779,[13,13,13,13,12.5,12,11.5]],[780,1019,[12,12,12,12,11.5,11,10.5]],[1020,1319,[12,12,11,11,10,9,9]],[1320,1379,[11,11,10,10,9,9,9]],[1380,1439,[10,10,10,9,9,9,9]]];
 const tableC=[[0,359,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}],[360,419,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[420,779,{1:{3:17,4:19},2:{3:16.5,4:18},3:{3:15,4:15.5}}],[780,1019,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[1020,1439,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}]]
@@ -105,12 +100,13 @@ const breakdownDiv=document.getElementById('breakdown');
 
 function updateInputStates(){
   const isTwo=pilotsSel.value==='2';
-  restWrap.classList.toggle('disabled',isTwo);
-  restWrap.querySelector('select').disabled=isTwo;
-  segmentsWrap.classList.toggle('disabled',!isTwo);
-  segmentsWrap.querySelector('select').disabled=!isTwo;
-  restWrap.style.opacity=isTwo?0.4:1;
-  segmentsWrap.style.opacity=!isTwo?0.4:1;
+  const isAugmented=pilotsSel.value==='3'||pilotsSel.value==='4';
+  // Smoothly hide/show using fade class
+  if(isTwo){segmentsWrap.style.maxHeight='500px'; segmentsWrap.style.opacity='1'; segmentsWrap.querySelector('select').disabled=false;}
+  else{segmentsWrap.style.maxHeight='0'; segmentsWrap.style.opacity='0'; segmentsWrap.querySelector('select').disabled=true;}
+
+  if(isAugmented){restWrap.style.maxHeight='500px'; restWrap.style.opacity='1'; restWrap.querySelector('select').disabled=false;}
+  else{restWrap.style.maxHeight='0'; restWrap.style.opacity='0'; restWrap.querySelector('select').disabled=true;}
 }
 pilotsSel.addEventListener('change',updateInputStates);
 updateInputStates();
@@ -120,6 +116,7 @@ reserveToggle.addEventListener('change',()=>{timeLabel.textContent=reserveToggle
 document.getElementById('fdpForm').addEventListener('submit',e=>{
  e.preventDefault();
  const reportTime=document.getElementById('reportTime').value;
+ if(!reportTime)return;
  const m=timeToMinutes(reportTime);
  const p=Number(pilotsSel.value);
  const segs=Number(document.getElementById('segments').value);
@@ -152,14 +149,13 @@ document.getElementById('fdpForm').addEventListener('submit',e=>{
    }
  }
 
-// calculate end time in AM/PM
 const startM=timeToMinutes(reportTime);
 const endM=startM+combinedLimit*60;
 const endTime=minutesToTimeAMPM(endM);
 
 let preface=isReserve?'RAP+FDP Limit:':'FDP Limit:';
 
-document.getElementById('result').innerHTML=`<div class='result-main'>${preface} ${combinedLimit} hrs (${limitSource})<br>End Time: ${endTime}</div><div class='result-sub'>Base Max FDP: ${baseFDP} hrs</div>`;
+document.getElementById('result').innerHTML=`<div class='result-main'>${preface} ${combinedLimit} hrs (${limitSource})<br>End Time: ${endTime}</div>`;
 
 if(isReserve){
    breakdownDiv.classList.remove('hidden');

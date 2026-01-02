@@ -12,7 +12,10 @@ body {
   color:#f5f5f5;
   padding:16px;
 }
-h1 { text-align:center; margin-bottom:12px; }
+h1 {
+  text-align:center;
+  margin-bottom:14px;
+}
 .card {
   background:#11243b;
   padding:16px;
@@ -32,10 +35,10 @@ input, select {
   border-radius:6px;
   border:1px solid #4a90e2;
   background:#1a2a44;
-  color:#f5f5f5;
+  color:#ffffff;
 }
 button {
-  margin-top:14px;
+  margin-top:16px;
   width:100%;
   padding:10px;
   border:none;
@@ -45,23 +48,24 @@ button {
   font-size:16px;
   cursor:pointer;
 }
-button:hover { background:#0d8ae6; }
-.result {
-  margin-top:16px;
-  padding:12px;
-  background:rgba(255,255,255,0.05);
-  border-radius:8px;
+button:hover {
+  background:#0d8ae6;
 }
-.hidden { display:none; }
 
-/* Toggle */
-.toggle { position:relative; height:42px; margin-bottom:12px; }
-.toggle input { display:none; }
+/* ---------- Toggle ---------- */
+.toggle {
+  position:relative;
+  height:44px;
+  margin-bottom:14px;
+}
+.toggle input {
+  display:none;
+}
 .toggle-label {
   display:block;
   height:100%;
   background:#1a2a44;
-  border-radius:25px;
+  border-radius:24px;
   position:relative;
   cursor:pointer;
 }
@@ -72,10 +76,14 @@ button:hover { background:#0d8ae6; }
   width:50%;
   text-align:center;
   font-weight:bold;
+  color:#ffffff;
   pointer-events:none;
 }
 .toggle-label .left { left:0; }
-.toggle-label .right { right:0; color:rgba(255,255,255,0.6); }
+.toggle-label .right {
+  right:0;
+  color:rgba(255,255,255,0.6);
+}
 .toggle-knob {
   position:absolute;
   top:2px;
@@ -83,12 +91,38 @@ button:hover { background:#0d8ae6; }
   width:calc(50% - 4px);
   height:calc(100% - 4px);
   background:#1fa2ff;
-  border-radius:25px;
+  border-radius:24px;
   transition:left 0.25s;
 }
-input:checked + .toggle-label .toggle-knob { left:50%; }
-input:checked + .toggle-label .left { color:rgba(255,255,255,0.6); }
-input:checked + .toggle-label .right { color:#fff; }
+input:checked + .toggle-label .toggle-knob {
+  left:50%;
+}
+input:checked + .toggle-label .left {
+  color:rgba(255,255,255,0.6);
+}
+input:checked + .toggle-label .right {
+  color:#ffffff;
+}
+
+/* ---------- Results ---------- */
+.result {
+  margin-top:18px;
+  padding:14px;
+  background:rgba(255,255,255,0.06);
+  border-radius:10px;
+}
+.result-main {
+  font-size:22px;
+  font-weight:bold;
+  margin-bottom:8px;
+}
+.result-sub {
+  font-size:14px;
+  opacity:0.9;
+  margin-top:4px;
+}
+
+.hidden { display:none; }
 </style>
 </head>
 
@@ -190,7 +224,6 @@ const timeLabel = document.getElementById('timeLabel');
 pilotsSel.addEventListener('change', ()=>{
   restWrap.classList.toggle('hidden', pilotsSel.value === '2');
 });
-
 reserveToggle.addEventListener('change', ()=>{
   timeLabel.textContent = reserveToggle.checked ? 'RAP Start Time' : 'Report Time';
 });
@@ -202,51 +235,4 @@ document.getElementById('fdpForm').addEventListener('submit', e=>{
   const mins = timeToMinutes(reportTime.value);
   const pilots = Number(pilotsSel.value);
   const segs = Number(document.getElementById('segments').value);
-  const isReserve = reserveToggle.checked;
-
-  let baseFDP = 0;
-  let combinedLimit = null;
-  let source = '';
-
-  if(pilots === 2){
-    baseFDP = lookupTableB(mins,segs);
-    source = 'Table B';
-
-    if(isReserve){
-      const fdpPlus4 = baseFDP + 4;
-      combinedLimit = Math.min(16, fdpPlus4);
-    }
-  } else {
-    const rest = Number(document.getElementById('restClass').value);
-    baseFDP = lookupTableC(mins,rest,pilots);
-    source = 'Table C';
-
-    if(isReserve){
-      combinedLimit = baseFDP + 4;
-    }
-  }
-
-  let output = `
-    <p><strong>Mode:</strong> ${isReserve ? 'Reserve' : 'Bid'}</p>
-    <p><strong>Base Max FDP (${source}):</strong> ${baseFDP} hrs</p>
-  `;
-
-  if(isReserve && pilots === 2){
-    output += `
-      <p><strong>FDP + 4:00:</strong> ${baseFDP + 4} hrs</p>
-      <p><strong>Combined RAP/FDP Limit:</strong> ${combinedLimit} hrs</p>
-    `;
-  }
-
-  if(isReserve && pilots > 2){
-    output += `
-      <p><strong>Combined RAP/FDP Limit:</strong> ${combinedLimit} hrs</p>
-    `;
-  }
-
-  document.getElementById('result').innerHTML = output;
-});
-</script>
-
-</body>
-</html>
+  const isReserve = reserveToggle.chec

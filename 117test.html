@@ -4,54 +4,80 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Max FDP Calculator</title>
-<style>
-body { font-family: Arial; background:#0e1a2b; color:#f5f5f5; padding:16px; }
-h1 { text-align:center; margin-bottom:16px; }
-.calculator-card { background:#11243b; padding:16px; max-width:480px; margin:auto; border-radius:10px; }
-label { display:block; margin-top:10px; font-weight:bold; }
-input, select { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #4a90e2; background:#1a2a44; color:#f5f5f5; }
-button { margin-top:12px; padding:10px; width:100%; background:#1fa2ff; color:#f5f5f5; border:none; border-radius:6px; cursor:pointer; }
-button:hover { background:#0d8ae6; }
-.result { margin-top:16px; padding:12px; background:rgba(255,255,255,0.05); border-radius:8px; }
-.warning { color:#ff6b6b; font-weight:bold; }
 
-/* Toggle switch */
-.toggle-switch { position: relative; height:44px; margin-bottom:12px; }
-.toggle-switch input { display:none; }
-.switch-label { display:block; width:100%; height:100%; background:#1a2a44; border-radius:30px; position:relative; cursor:pointer; }
-.switch-text-left, .switch-text-right { position:absolute; top:50%; transform:translateY(-50%); width:50%; text-align:center; pointer-events:none; font-weight:bold; }
-.switch-text-left { left:0; color:#f5f5f5; }
-.switch-text-right { right:0; color:rgba(245,245,245,0.5); }
-input:checked + .switch-label .switch-text-left { color:rgba(245,245,245,0.5); }
-input:checked + .switch-label .switch-text-right { color:#f5f5f5; }
-.switch-knob { position:absolute; top:2px; left:2px; width:calc(50%-4px); height:calc(100%-4px); background:#1fa2ff; border-radius:30px; transition:left 0.3s; }
-input:checked + .switch-label .switch-knob { left:50%; }
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#0e1a2b;
+  color:#f5f5f5;
+  padding:16px;
+}
+h1 {
+  text-align:center;
+  margin-bottom:16px;
+}
+.card {
+  background:#11243b;
+  padding:16px;
+  max-width:480px;
+  margin:auto;
+  border-radius:10px;
+}
+label {
+  display:block;
+  margin-top:10px;
+  font-weight:bold;
+}
+input, select {
+  width:100%;
+  padding:8px;
+  margin-top:4px;
+  border-radius:6px;
+  border:1px solid #4a90e2;
+  background:#1a2a44;
+  color:#f5f5f5;
+}
+button {
+  margin-top:14px;
+  width:100%;
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  background:#1fa2ff;
+  color:white;
+  font-size:16px;
+  cursor:pointer;
+}
+button:hover {
+  background:#0d8ae6;
+}
+.result {
+  margin-top:16px;
+  padding:12px;
+  background:rgba(255,255,255,0.05);
+  border-radius:8px;
+}
+.hidden {
+  display:none;
+}
 </style>
 </head>
+
 <body>
 
 <h1>Max FDP Calculator</h1>
 
-<div class="calculator-card">
+<div class="card">
 <form id="fdpForm">
 
-  <!-- Bid vs Short Call toggle -->
-  <div class="toggle-switch">
-    <input type="checkbox" id="reportType">
-    <label class="switch-label" for="reportType">
-      <span class="switch-text-left">Bid</span>
-      <span class="switch-text-right">Short Call Rsv</span>
-      <span class="switch-knob"></span>
-    </label>
-  </div>
-
-  <label id="timeLabel" for="reportTime">Report Time</label>
+  <label for="reportTime">Report Time</label>
   <input type="time" id="reportTime" required>
 
-  <label for="segments">Number of Flight Segments</label>
+  <label for="segments">Flight Segments</label>
   <select id="segments">
     <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-    <option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option>
+    <option value="4">4</option><option value="5">5</option>
+    <option value="6">6</option><option value="7">7</option>
   </select>
 
   <label for="pilots">Number of Pilots</label>
@@ -61,105 +87,99 @@ input:checked + .switch-label .switch-knob { left:50%; }
     <option value="4">4 (Augmented)</option>
   </select>
 
-  <!-- Show only for augmented -->
-  <div id="restFacilityWrapper" style="display:none;">
-    <label for="restFacility">Crew Rest Facility</label>
-    <select id="restFacility">
+  <div id="restWrapper" class="hidden">
+    <label for="restClass">Crew Rest Facility Class</label>
+    <select id="restClass">
       <option value="1">Class 1</option>
       <option value="2">Class 2</option>
       <option value="3">Class 3</option>
     </select>
   </div>
 
-  <button type="submit">Calculate FDP</button>
+  <button type="submit">Calculate</button>
 </form>
 
-<div class="result" id="result"></div>
+<div id="result" class="result"></div>
 </div>
 
 <script>
-// ---------- Table B (Unaugmented 2-pilot) ----------
+// ---------- Helpers ----------
+function timeToMinutes(t){
+  const [h,m] = t.split(':').map(Number);
+  return h * 60 + m;
+}
+
+// ---------- TABLE B (2 pilots, unaugmented) ----------
 const tableB = [
-  { start:0, end:239, values:[9,9,9,9,9,9,9] },
-  { start:240, end:299, values:[10,10,10,10,9,9,9] },
-  { start:300, end:359, values:[12,12,12,12,11.5,11,10.5] },
-  { start:360, end:419, values:[13,13,12,12,11.5,11,10.5] },
-  { start:420, end:719, values:[14,14,13,13,12.5,12,11.5] },
-  { start:720, end:779, values:[13,13,13,13,12.5,12,11.5] },
-  { start:780, end:1019, values:[12,12,12,12,11.5,11,10.5] },
-  { start:1020, end:1319, values:[12,12,11,11,10,9,9] },
-  { start:1320, end:1379, values:[11,11,10,10,9,9,9] },
-  { start:1380, end:1439, values:[10,10,10,9,9,9,9] }
+  {start:0, end:239, vals:[9,9,9,9,9,9,9]},
+  {start:240, end:299, vals:[10,10,10,10,9,9,9]},
+  {start:300, end:359, vals:[12,12,12,12,11.5,11,10.5]},
+  {start:360, end:419, vals:[13,13,12,12,11.5,11,10.5]},
+  {start:420, end:719, vals:[14,14,13,13,12.5,12,11.5]},
+  {start:720, end:779, vals:[13,13,13,13,12.5,12,11.5]},
+  {start:780, end:1019, vals:[12,12,12,12,11.5,11,10.5]},
+  {start:1020, end:1319, vals:[12,12,11,11,10,9,9]},
+  {start:1320, end:1379, vals:[11,11,10,10,9,9,9]},
+  {start:1380, end:1439, vals:[10,10,10,9,9,9,9]}
 ];
 
-// ---------- Table C (Augmented 3-4 pilots, full) ----------
+// ---------- TABLE C (3/4 pilots, EXACT per user) ----------
 const tableC = [
-  { start:0, end:359, values:{class1:{3:15,4:17}, class2:{3:14,4:15.5}, class3:{3:13,4:13.5}} },
-  { start:360, end:419, values:{class1:{3:16,4:18.5}, class2:{3:15,4:16.5}, class3:{3:14,4:14.5}} },
-  { start:420, end:779, values:{class1:{3:17,4:19}, class2:{3:16.5,4:18}, class3:{3:15,4:15.5}} },
-  { start:780, end:1019, values:{class1:{3:16,4:18.5}, class2:{3:15,4:16.5}, class3:{3:14,4:14.5}} },
-  { start:1020, end:1439, values:{class1:{3:15,4:17}, class2:{3:14,4:15.5}, class3:{3:13,4:13.5}} }
+  { start:0, end:359,
+    c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5} },
+  { start:360, end:419,
+    c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5} },
+  { start:420, end:779,
+    c1:{3:17,4:19}, c2:{3:16.5,4:18}, c3:{3:15,4:15.5} },
+  { start:780, end:1019,
+    c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5} },
+  { start:1020, end:1439,
+    c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5} }
 ];
 
-// ---------- Helper Functions ----------
-function timeToMins(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
-
-function lookupTableB(mins, seg){
-  const row = tableB.find(r=>mins>=r.start && mins<=r.end);
-  if(!row) return 0;
-  return row.values[Math.min(seg-1,row.values.length-1)];
+// ---------- Lookups ----------
+function lookupTableB(mins, segs){
+  const row = tableB.find(r => mins >= r.start && mins <= r.end);
+  return row ? row.vals[Math.min(segs-1, row.vals.length-1)] : 0;
 }
 
 function lookupTableC(mins, restClass, pilots){
-  const row = tableC.find(r=>mins>=r.start && mins<=r.end);
+  const row = tableC.find(r => mins >= r.start && mins <= r.end);
   if(!row) return 0;
-  return row.values['class'+restClass][pilots] || 0;
+  return row['c'+restClass][pilots];
 }
 
-// ---------- Show/hide rest for augmented ----------
+// ---------- UI Logic ----------
 const pilotsSelect = document.getElementById('pilots');
-const restWrapper = document.getElementById('restFacilityWrapper');
-pilotsSelect.addEventListener('change', ()=>{
-  restWrapper.style.display = (parseInt(pilotsSelect.value,10) > 2) ? 'block' : 'none';
+const restWrapper = document.getElementById('restWrapper');
+
+pilotsSelect.addEventListener('change', () => {
+  restWrapper.classList.toggle('hidden', pilotsSelect.value === '2');
 });
 
-// ---------- Bid / Short Call toggle ----------
-const rptCheckbox = document.getElementById('reportType');
-const timeLabel = document.getElementById('timeLabel');
-rptCheckbox.addEventListener('change', ()=> {
-  timeLabel.textContent = rptCheckbox.checked ? 'RAP Start Time' : 'Report Time';
-});
-
-// ---------- Calculate FDP ----------
-document.getElementById('fdpForm').addEventListener('submit', function(e){
+// ---------- Calculate ----------
+document.getElementById('fdpForm').addEventListener('submit', e => {
   e.preventDefault();
-  const reportTime = document.getElementById('reportTime').value;
-  const segments = parseInt(document.getElementById('segments').value,10);
-  const pilots = parseInt(document.getElementById('pilots').value,10);
-  const mins = timeToMins(reportTime);
+
+  const mins = timeToMinutes(reportTime.value);
+  const pilots = Number(pilotsSelect.value);
+  const segs = Number(document.getElementById('segments').value);
 
   let maxFDP = 0;
-  let sourceTable = '';
+  let source = '';
 
-  if(pilots===2){
-    maxFDP = lookupTableB(mins,segments);
-    sourceTable='Table B (Unaugmented)';
+  if (pilots === 2) {
+    maxFDP = lookupTableB(mins, segs);
+    source = 'Table B';
   } else {
-    const restClass = parseInt(document.getElementById('restFacility').value,10);
-    maxFDP = lookupTableC(mins,restClass,pilots);
-    sourceTable='Table C (Augmented)';
+    const restClass = Number(document.getElementById('restClass').value);
+    maxFDP = lookupTableC(mins, restClass, pilots);
+    source = 'Table C';
   }
 
-  const wocl = (mins>=120 && mins<=359) ? '<p class="warning">⚠ WOCL (0200‑0559)</p>' : '';
-
-  document.getElementById('result').innerHTML=`
-    <p><strong>Report Type:</strong> ${rptCheckbox.checked ? 'Short Call Rsv':'Bid'}</p>
-    <p><strong>Time:</strong> ${reportTime}</p>
-    <p><strong>Pilots:</strong> ${pilots}</p>
-    <p><strong>Rest Facility:</strong> ${pilots>2 ? 'Class '+document.getElementById('restFacility').value : '—'}</p>
-    <p><strong>Segments:</strong> ${segments}</p>
-    <p><strong>Max FDP (${sourceTable}):</strong> ${maxFDP} hrs</p>
-    ${wocl}
+  document.getElementById('result').innerHTML = `
+    <p><strong>Max FDP:</strong> ${maxFDP} hours</p>
+    <p><strong>Applied Table:</strong> ${source}</p>
   `;
 });
 </script>

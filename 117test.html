@@ -14,7 +14,7 @@ body {
 }
 h1 {
   text-align:center;
-  margin-bottom:16px;
+  margin-bottom:12px;
 }
 .card {
   background:#11243b;
@@ -57,9 +57,47 @@ button:hover {
   background:rgba(255,255,255,0.05);
   border-radius:8px;
 }
-.hidden {
-  display:none;
+.hidden { display:none; }
+
+/* Toggle switch */
+.toggle {
+  position: relative;
+  height:42px;
+  margin-bottom:12px;
 }
+.toggle input { display:none; }
+.toggle-label {
+  display:block;
+  height:100%;
+  background:#1a2a44;
+  border-radius:25px;
+  position:relative;
+  cursor:pointer;
+}
+.toggle-label span {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:50%;
+  text-align:center;
+  font-weight:bold;
+  pointer-events:none;
+}
+.toggle-label .left { left:0; }
+.toggle-label .right { right:0; color:rgba(255,255,255,0.6); }
+.toggle-knob {
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:calc(50% - 4px);
+  height:calc(100% - 4px);
+  background:#1fa2ff;
+  border-radius:25px;
+  transition:left 0.25s;
+}
+input:checked + .toggle-label .toggle-knob { left:50%; }
+input:checked + .toggle-label .left { color:rgba(255,255,255,0.6); }
+input:checked + .toggle-label .right { color:white; }
 </style>
 </head>
 
@@ -69,6 +107,16 @@ button:hover {
 
 <div class="card">
 <form id="fdpForm">
+
+  <!-- Bid / Reserve Toggle -->
+  <div class="toggle">
+    <input type="checkbox" id="reserveToggle">
+    <label class="toggle-label" for="reserveToggle">
+      <span class="left">Bid</span>
+      <span class="right">Reserve</span>
+      <div class="toggle-knob"></div>
+    </label>
+  </div>
 
   <label for="reportTime">Report Time</label>
   <input type="time" id="reportTime" required>
@@ -109,66 +157,60 @@ function timeToMinutes(t){
   return h * 60 + m;
 }
 
-// ---------- TABLE B (2 pilots, unaugmented) ----------
+// ---------- TABLE B ----------
 const tableB = [
-  {start:0, end:239, vals:[9,9,9,9,9,9,9]},
-  {start:240, end:299, vals:[10,10,10,10,9,9,9]},
-  {start:300, end:359, vals:[12,12,12,12,11.5,11,10.5]},
-  {start:360, end:419, vals:[13,13,12,12,11.5,11,10.5]},
-  {start:420, end:719, vals:[14,14,13,13,12.5,12,11.5]},
-  {start:720, end:779, vals:[13,13,13,13,12.5,12,11.5]},
-  {start:780, end:1019, vals:[12,12,12,12,11.5,11,10.5]},
-  {start:1020, end:1319, vals:[12,12,11,11,10,9,9]},
-  {start:1320, end:1379, vals:[11,11,10,10,9,9,9]},
-  {start:1380, end:1439, vals:[10,10,10,9,9,9,9]}
+  {start:0,end:239,vals:[9,9,9,9,9,9,9]},
+  {start:240,end:299,vals:[10,10,10,10,9,9,9]},
+  {start:300,end:359,vals:[12,12,12,12,11.5,11,10.5]},
+  {start:360,end:419,vals:[13,13,12,12,11.5,11,10.5]},
+  {start:420,end:719,vals:[14,14,13,13,12.5,12,11.5]},
+  {start:720,end:779,vals:[13,13,13,13,12.5,12,11.5]},
+  {start:780,end:1019,vals:[12,12,12,12,11.5,11,10.5]},
+  {start:1020,end:1319,vals:[12,12,11,11,10,9,9]},
+  {start:1320,end:1379,vals:[11,11,10,10,9,9,9]},
+  {start:1380,end:1439,vals:[10,10,10,9,9,9,9]}
 ];
 
-// ---------- TABLE C (3/4 pilots, EXACT per user) ----------
+// ---------- TABLE C (authoritative) ----------
 const tableC = [
-  { start:0, end:359,
-    c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5} },
-  { start:360, end:419,
-    c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5} },
-  { start:420, end:779,
-    c1:{3:17,4:19}, c2:{3:16.5,4:18}, c3:{3:15,4:15.5} },
-  { start:780, end:1019,
-    c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5} },
-  { start:1020, end:1439,
-    c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5} }
+  {start:0,end:359, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}},
+  {start:360,end:419, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
+  {start:420,end:779, c1:{3:17,4:19}, c2:{3:16.5,4:18}, c3:{3:15,4:15.5}},
+  {start:780,end:1019, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
+  {start:1020,end:1439, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}}
 ];
 
 // ---------- Lookups ----------
 function lookupTableB(mins, segs){
-  const row = tableB.find(r => mins >= r.start && mins <= r.end);
-  return row ? row.vals[Math.min(segs-1, row.vals.length-1)] : 0;
+  const row = tableB.find(r => mins>=r.start && mins<=r.end);
+  return row ? row.vals[Math.min(segs-1,row.vals.length-1)] : 0;
 }
-
 function lookupTableC(mins, restClass, pilots){
-  const row = tableC.find(r => mins >= r.start && mins <= r.end);
-  if(!row) return 0;
-  return row['c'+restClass][pilots];
+  const row = tableC.find(r => mins>=r.start && mins<=r.end);
+  return row ? row['c'+restClass][pilots] : 0;
 }
 
-// ---------- UI Logic ----------
+// ---------- UI ----------
 const pilotsSelect = document.getElementById('pilots');
 const restWrapper = document.getElementById('restWrapper');
 
-pilotsSelect.addEventListener('change', () => {
+pilotsSelect.addEventListener('change', ()=>{
   restWrapper.classList.toggle('hidden', pilotsSelect.value === '2');
 });
 
 // ---------- Calculate ----------
-document.getElementById('fdpForm').addEventListener('submit', e => {
+document.getElementById('fdpForm').addEventListener('submit', e=>{
   e.preventDefault();
 
   const mins = timeToMinutes(reportTime.value);
   const pilots = Number(pilotsSelect.value);
   const segs = Number(document.getElementById('segments').value);
+  const isReserve = document.getElementById('reserveToggle').checked;
 
   let maxFDP = 0;
   let source = '';
 
-  if (pilots === 2) {
+  if(pilots === 2){
     maxFDP = lookupTableB(mins, segs);
     source = 'Table B';
   } else {
@@ -177,7 +219,13 @@ document.getElementById('fdpForm').addEventListener('submit', e => {
     source = 'Table C';
   }
 
+  // ----- FUTURE RESERVE LOGIC -----
+  if(isReserve){
+    // placeholder – reserve-specific FDP adjustments go here
+  }
+
   document.getElementById('result').innerHTML = `
+    <p><strong>Mode:</strong> ${isReserve ? 'Reserve' : 'Bid'}</p>
     <p><strong>Max FDP:</strong> ${maxFDP} hours</p>
     <p><strong>Applied Table:</strong> ${source}</p>
   `;

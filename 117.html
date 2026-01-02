@@ -31,8 +31,6 @@ input:checked + .toggle-label .right{opacity:1}
 .result-breakdown{margin-top:10px;padding:10px;background:rgba(255,255,255,.12);border-radius:8px;font-size:14px}
 .limit-highlight{color:#1fa2ff;font-weight:bold}
 .footer{margin-top:14px;font-size:12px;opacity:.8;text-align:center}
-.timebar{margin-top:10px;height:10px;background:#1a2a44;border-radius:6px;overflow:hidden}
-.timebar-fill{height:100%;background:#1fa2ff;width:0%}
 .disabled{opacity:0.4;pointer-events:none}
 .helper{font-size:12px;opacity:.75;margin-top:4px}
 .fade{transition:opacity .25s ease,max-height .25s ease}
@@ -87,14 +85,13 @@ input:checked + .toggle-label .right{opacity:1}
 </form>
 
 <div id="result" class="result"></div>
-<div class="timebar hidden" id="timebar"><div class="timebar-fill" id="timebarFill"></div></div>
 <div id="breakdown" class="result-breakdown hidden"></div>
-<button id="shareBtn" class="hidden">Share / Export</button>
 <div class="footer">FAA References: 14 CFR §117.13, §117.17 — Tables B & C</div>
 </div>
 
 <script>
 function timeToMinutes(t){const[a,b]=t.split(':').map(Number);return a*60+b}
+function minutesToTimeAMPM(m){const h=Math.floor(m/60)%24, min=m%60;const ampm=h>=12?'PM':'AM';const hh=h%12||12;return `${hh}:${String(min).padStart(2,'0')} ${ampm}`}
 
 const tableB=[[0,239,[9,9,9,9,9,9,9]],[240,299,[10,10,10,10,9,9,9]],[300,359,[12,12,12,12,11.5,11,10.5]],[360,419,[13,13,12,12,11.5,11,10.5]],[420,719,[14,14,13,13,12.5,12,11.5]],[720,779,[13,13,13,13,12.5,12,11.5]],[780,1019,[12,12,12,12,11.5,11,10.5]],[1020,1319,[12,12,11,11,10,9,9]],[1320,1379,[11,11,10,10,9,9,9]],[1380,1439,[10,10,10,9,9,9,9]]];
 const tableC=[[0,359,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}],[360,419,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[420,779,{1:{3:17,4:19},2:{3:16.5,4:18},3:{3:15,4:15.5}}],[780,1019,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[1020,1439,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}]]
@@ -115,7 +112,6 @@ function updateInputStates(){
   restWrap.style.opacity=isTwo?0.4:1;
   segmentsWrap.style.opacity=!isTwo?0.4:1;
 }
-
 pilotsSel.addEventListener('change',updateInputStates);
 updateInputStates();
 
@@ -156,15 +152,16 @@ document.getElementById('fdpForm').addEventListener('submit',e=>{
    }
  }
 
- let preface=isReserve?'RAP+FDP Limit:':'FDP Limit:';
- document.getElementById('result').innerHTML=`<div class='result-main'>${preface} ${combinedLimit} hrs (${limitSource})</div><div class='result-sub'>Base Max FDP: ${baseFDP} hrs</div>`;
+// calculate end time in AM/PM
+const startM=timeToMinutes(reportTime);
+const endM=startM+combinedLimit*60;
+const endTime=minutesToTimeAMPM(endM);
 
- const bar=document.getElementById('timebar');
- const fill=document.getElementById('timebarFill');
- bar.classList.remove('hidden');
- fill.style.width=Math.min((combinedLimit/20)*100,100)+'%';
+let preface=isReserve?'RAP+FDP Limit:':'FDP Limit:';
 
- if(isReserve){
+document.getElementById('result').innerHTML=`<div class='result-main'>${preface} ${combinedLimit} hrs (${limitSource})<br>End Time: ${endTime}</div><div class='result-sub'>Base Max FDP: ${baseFDP} hrs</div>`;
+
+if(isReserve){
    breakdownDiv.classList.remove('hidden');
    breakdownDiv.innerHTML=p===2
      ? `<strong>Reserve Breakdown:</strong><br>Table B +4: ${baseFDP+4} hrs<br>RAP+16: 16 hrs<br>FDP Start + Table B: ${baseFDP} hrs`

@@ -4,235 +4,88 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Max FDP Calculator</title>
-
 <style>
-body {
-  font-family: Arial, sans-serif;
-  background:#0e1a2b;
-  color:#f5f5f5;
-  padding:16px;
-}
-h1 {
-  text-align:center;
-  margin-bottom:14px;
-}
-.card {
-  background:#11243b;
-  padding:16px;
-  max-width:480px;
-  margin:auto;
-  border-radius:10px;
-}
-label {
-  display:block;
-  margin-top:10px;
-  font-weight:bold;
-}
-input, select {
-  width:100%;
-  padding:8px;
-  margin-top:4px;
-  border-radius:6px;
-  border:1px solid #4a90e2;
-  background:#1a2a44;
-  color:#ffffff;
-}
-button {
-  margin-top:16px;
-  width:100%;
-  padding:10px;
-  border:none;
-  border-radius:6px;
-  background:#1fa2ff;
-  color:white;
-  font-size:16px;
-  cursor:pointer;
-}
-button:hover {
-  background:#0d8ae6;
-}
-
-/* ---------- Toggle ---------- */
-.toggle {
-  position:relative;
-  height:44px;
-  margin-bottom:14px;
-}
-.toggle input {
-  display:none;
-}
-.toggle-label {
-  display:block;
-  height:100%;
-  background:#1a2a44;
-  border-radius:24px;
-  position:relative;
-  cursor:pointer;
-}
-.toggle-label span {
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:50%;
-  text-align:center;
-  font-weight:bold;
-  color:#ffffff;
-  pointer-events:none;
-}
-.toggle-label .left { left:0; }
-.toggle-label .right {
-  right:0;
-  color:rgba(255,255,255,0.6);
-}
-.toggle-knob {
-  position:absolute;
-  top:2px;
-  left:2px;
-  width:calc(50% - 4px);
-  height:calc(100% - 4px);
-  background:#1fa2ff;
-  border-radius:24px;
-  transition:left 0.25s;
-}
-input:checked + .toggle-label .toggle-knob {
-  left:50%;
-}
-input:checked + .toggle-label .left {
-  color:rgba(255,255,255,0.6);
-}
-input:checked + .toggle-label .right {
-  color:#ffffff;
-}
-
-/* ---------- Results ---------- */
-.result {
-  margin-top:18px;
-  padding:14px;
-  background:rgba(255,255,255,0.06);
-  border-radius:10px;
-}
-.result-main {
-  font-size:22px;
-  font-weight:bold;
-  margin-bottom:8px;
-}
-.result-sub {
-  font-size:14px;
-  opacity:0.9;
-  margin-top:4px;
-}
-
-.hidden { display:none; }
+body{font-family:Arial,sans-serif;background:#0e1a2b;color:#f5f5f5;padding:16px}
+h1{text-align:center;margin-bottom:14px}
+.card{background:#11243b;padding:16px;max-width:480px;margin:auto;border-radius:10px}
+label{display:block;margin-top:10px;font-weight:bold}
+input,select{width:100%;padding:8px;margin-top:4px;border-radius:6px;border:1px solid #4a90e2;background:#1a2a44;color:#fff}
+button{margin-top:16px;width:100%;padding:10px;border:none;border-radius:6px;background:#1fa2ff;color:#fff;font-size:16px;cursor:pointer}
+.toggle{position:relative;height:44px;margin-bottom:14px}
+.toggle input{display:none}
+.toggle-label{display:block;height:100%;background:#1a2a44;border-radius:24px;position:relative;cursor:pointer}
+.toggle-label span{position:absolute;top:50%;transform:translateY(-50%);width:50%;text-align:center;font-weight:bold;color:#fff}
+.toggle-label .left{left:0}
+.toggle-label .right{right:0;opacity:.7}
+.toggle-knob{position:absolute;top:2px;left:2px;width:calc(50% - 4px);height:calc(100% - 4px);background:#1fa2ff;border-radius:24px;transition:left .25s}
+input:checked+.toggle-label .toggle-knob{left:50%}
+input:checked+.toggle-label .left{opacity:.7}
+input:checked+.toggle-label .right{opacity:1}
+.result{margin-top:18px;padding:14px;background:rgba(255,255,255,.06);border-radius:10px}
+.result-main{font-size:22px;font-weight:bold;margin-bottom:8px}
+.result-sub{font-size:14px;opacity:.9;margin-top:4px}
+.hidden{display:none}
 </style>
 </head>
-
 <body>
-
 <h1>Max FDP Calculator</h1>
-
 <div class="card">
 <form id="fdpForm">
-
-  <!-- Bid / Reserve -->
-  <div class="toggle">
-    <input type="checkbox" id="reserveToggle">
-    <label class="toggle-label" for="reserveToggle">
-      <span class="left">Bid</span>
-      <span class="right">Reserve</span>
-      <div class="toggle-knob"></div>
-    </label>
-  </div>
-
-  <label id="timeLabel" for="reportTime">Report Time</label>
-  <input type="time" id="reportTime" required>
-
-  <label for="segments">Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-    <option value="4">4</option><option value="5">5</option>
-    <option value="6">6</option><option value="7">7</option>
-  </select>
-
-  <label for="pilots">Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2 (Unaugmented)</option>
-    <option value="3">3 (Augmented)</option>
-    <option value="4">4 (Augmented)</option>
-  </select>
-
-  <div id="restWrapper" class="hidden">
-    <label for="restClass">Crew Rest Facility Class</label>
-    <select id="restClass">
-      <option value="1">Class 1</option>
-      <option value="2">Class 2</option>
-      <option value="3">Class 3</option>
-    </select>
-  </div>
-
-  <button type="submit">Calculate</button>
+<div class="toggle">
+<input type="checkbox" id="reserveToggle">
+<label class="toggle-label" for="reserveToggle">
+<span class="left">Bid</span>
+<span class="right">Reserve</span>
+<div class="toggle-knob"></div>
+</label>
+</div>
+<label id="timeLabel">Report Time</label>
+<input type="time" id="reportTime" required>
+<label>Flight Segments</label>
+<select id="segments"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+<label>Number of Pilots</label>
+<select id="pilots"><option value="2">2</option><option value="3">3</option><option value="4">4</option></select>
+<div id="restWrapper" class="hidden">
+<label>Crew Rest Class</label>
+<select id="restClass"><option value="1">Class 1</option><option value="2">Class 2</option><option value="3">Class 3</option></select>
+</div>
+<button type="submit">Calculate</button>
 </form>
-
 <div id="result" class="result"></div>
 </div>
-
 <script>
-// ---------- Helpers ----------
-function timeToMinutes(t){
-  const [h,m] = t.split(':').map(Number);
-  return h*60 + m;
-}
-
-// ---------- TABLE B ----------
-const tableB = [
-  {start:0,end:239,vals:[9,9,9,9,9,9,9]},
-  {start:240,end:299,vals:[10,10,10,10,9,9,9]},
-  {start:300,end:359,vals:[12,12,12,12,11.5,11,10.5]},
-  {start:360,end:419,vals:[13,13,12,12,11.5,11,10.5]},
-  {start:420,end:719,vals:[14,14,13,13,12.5,12,11.5]},
-  {start:720,end:779,vals:[13,13,13,13,12.5,12,11.5]},
-  {start:780,end:1019,vals:[12,12,12,12,11.5,11,10.5]},
-  {start:1020,end:1319,vals:[12,12,11,11,10,9,9]},
-  {start:1320,end:1379,vals:[11,11,10,10,9,9,9]},
-  {start:1380,end:1439,vals:[10,10,10,9,9,9,9]}
-];
-
-// ---------- TABLE C ----------
-const tableC = [
-  {start:0,end:359, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}},
-  {start:360,end:419, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
-  {start:420,end:779, c1:{3:17,4:19}, c2:{3:16.5,4:18}, c3:{3:15,4:15.5}},
-  {start:780,end:1019, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
-  {start:1020,end:1439, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}}
-];
-
-// ---------- Lookups ----------
-function lookupTableB(mins,segs){
-  const r = tableB.find(x=>mins>=x.start && mins<=x.end);
-  return r ? r.vals[Math.min(segs-1,r.vals.length-1)] : 0;
-}
-function lookupTableC(mins,rest,pilots){
-  const r = tableC.find(x=>mins>=x.start && mins<=x.end);
-  return r ? r['c'+rest][pilots] : 0;
-}
-
-// ---------- UI ----------
-const pilotsSel = document.getElementById('pilots');
-const restWrap = document.getElementById('restWrapper');
-const reserveToggle = document.getElementById('reserveToggle');
-const timeLabel = document.getElementById('timeLabel');
-
-pilotsSel.addEventListener('change', ()=>{
-  restWrap.classList.toggle('hidden', pilotsSel.value === '2');
+function timeToMinutes(t){const[a,b]=t.split(':').map(Number);return a*60+b}
+const tableB=[[0,239,[9,9,9,9,9,9,9]],[240,299,[10,10,10,10,9,9,9]],[300,359,[12,12,12,12,11.5,11,10.5]],[360,419,[13,13,12,12,11.5,11,10.5]],[420,719,[14,14,13,13,12.5,12,11.5]],[720,779,[13,13,13,13,12.5,12,11.5]],[780,1019,[12,12,12,12,11.5,11,10.5]],[1020,1319,[12,12,11,11,10,9,9]],[1320,1379,[11,11,10,10,9,9,9]],[1380,1439,[10,10,10,9,9,9,9]]]
+const tableC=[[0,359,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}],[360,419,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[420,779,{1:{3:17,4:19},2:{3:16.5,4:18},3:{3:15,4:15.5}}],[780,1019,{1:{3:16,4:18.5},2:{3:15,4:16.5},3:{3:14,4:14.5}}],[1020,1439,{1:{3:15,4:17},2:{3:14,4:15.5},3:{3:13,4:13.5}}]]
+const pilotsSel=document.getElementById('pilots');
+const restWrap=document.getElementById('restWrapper');
+const reserveToggle=document.getElementById('reserveToggle');
+const timeLabel=document.getElementById('timeLabel');
+pilotsSel.addEventListener('change',()=>{restWrap.classList.toggle('hidden',pilotsSel.value==='2')});
+reserveToggle.addEventListener('change',()=>{timeLabel.textContent=reserveToggle.checked?'RAP Start Time':'Report Time'});
+document.getElementById('fdpForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const reportTime=document.getElementById('reportTime').value;
+ const m=timeToMinutes(reportTime);
+ const p=Number(pilotsSel.value);
+ const segs=Number(document.getElementById('segments').value);
+ const isReserve=reserveToggle.checked;
+ let baseFDP=0;
+ let combinedLimit=null;
+ if(p===2){
+   const r=tableB.find(x=>m>=x[0]&&m<=x[1]);
+   baseFDP=r?r[2][segs-1]:0;
+   if(isReserve){combinedLimit=Math.min(16,baseFDP+4)}
+ } else {
+   const rest=Number(document.getElementById('restClass').value);
+   const r=tableC.find(x=>m>=x[0]&&m<=x[1]);
+   baseFDP=r?r[2][rest][p]:0;
+   if(isReserve){combinedLimit=baseFDP+4}
+ }
+ let output=`<div class='result-main'>${combinedLimit??baseFDP} hrs</div><div class='result-sub'>Base Max FDP: ${baseFDP} hrs</div>`;
+ if(isReserve&&p===2){output+=`<div class='result-sub'>FDP + 4:00: ${baseFDP+4} hrs</div>`}
+ document.getElementById('result').innerHTML=output;
 });
-reserveToggle.addEventListener('change', ()=>{
-  timeLabel.textContent = reserveToggle.checked ? 'RAP Start Time' : 'Report Time';
-});
-
-// ---------- Calculate ----------
-document.getElementById('fdpForm').addEventListener('submit', e=>{
-  e.preventDefault();
-
-  const mins = timeToMinutes(reportTime.value);
-  const pilots = Number(pilotsSel.value);
-  const segs = Number(document.getElementById('segments').value);
-  const isReserve = reserveToggle.chec
+</script>
+</body>
+</html>

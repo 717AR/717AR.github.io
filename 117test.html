@@ -8,7 +8,7 @@
 body { font-family: Arial; background:#0e1a2b; color:#f5f5f5; padding:16px; }
 h1 { text-align:center; margin-bottom:16px; }
 .calculator-card { background:#11243b; padding:16px; max-width:480px; margin:auto; border-radius:10px; }
-label { display:block; margin-top:10px; }
+label { display:block; margin-top:10px; font-weight:bold; }
 input, select { width:100%; padding:8px; margin-top:4px; border-radius:6px; border:1px solid #4a90e2; background:#1a2a44; color:#f5f5f5; }
 button { margin-top:12px; padding:10px; width:100%; background:#1fa2ff; color:#f5f5f5; border:none; border-radius:6px; cursor:pointer; }
 button:hover { background:#0d8ae6; }
@@ -35,6 +35,7 @@ input:checked + .switch-label .switch-knob { left:50%; }
 <div class="calculator-card">
 <form id="fdpForm">
 
+  <!-- Bid vs Short Call toggle -->
   <div class="toggle-switch">
     <input type="checkbox" id="reportType">
     <label class="switch-label" for="reportType">
@@ -60,8 +61,9 @@ input:checked + .switch-label .switch-knob { left:50%; }
     <option value="4">4 (Augmented)</option>
   </select>
 
+  <!-- Show only for augmented -->
   <div id="restFacilityWrapper" style="display:none;">
-    <label for="restFacility">Crew Rest Facility (Augmented Only)</label>
+    <label for="restFacility">Crew Rest Facility</label>
     <select id="restFacility">
       <option value="1">Class 1</option>
       <option value="2">Class 2</option>
@@ -76,76 +78,87 @@ input:checked + .switch-label .switch-knob { left:50%; }
 </div>
 
 <script>
-// Tables
-const tableB_unaugmented = [
-  { start:0,end:239,values:[9,9,9,9,9,9,9]},
-  { start:240,end:299,values:[10,10,10,10,9,9,9]},
-  { start:300,end:359,values:[12,12,12,12,11.5,11,10.5]},
-  { start:360,end:419,values:[13,13,12,12,11.5,11,10.5]},
-  { start:420,end:719,values:[14,14,13,13,12.5,12,11.5]},
-  { start:720,end:779,values:[13,13,13,13,12.5,12,11.5]},
-  { start:780,end:1019,values:[12,12,12,12,11.5,11,10.5]},
-  { start:1020,end:1319,values:[12,12,11,11,10,9,9]},
-  { start:1320,end:1379,values:[11,11,10,10,9,9,9]},
-  { start:1380,end:1439,values:[10,10,10,9,9,9,9]}
+// ---------- Table B (Unaugmented 2-pilot) ----------
+const tableB = [
+  { start:0, end:239, values:[9,9,9,9,9,9,9] },
+  { start:240, end:299, values:[10,10,10,10,9,9,9] },
+  { start:300, end:359, values:[12,12,12,12,11.5,11,10.5] },
+  { start:360, end:419, values:[13,13,12,12,11.5,11,10.5] },
+  { start:420, end:719, values:[14,14,13,13,12.5,12,11.5] },
+  { start:720, end:779, values:[13,13,13,13,12.5,12,11.5] },
+  { start:780, end:1019, values:[12,12,12,12,11.5,11,10.5] },
+  { start:1020, end:1319, values:[12,12,11,11,10,9,9] },
+  { start:1320, end:1379, values:[11,11,10,10,9,9,9] },
+  { start:1380, end:1439, values:[10,10,10,9,9,9,9] }
 ];
 
-const tableB_augmented = {
-  3:{1:{day:13,night:12},2:{day:12,night:11},3:{day:11,night:10}},
-  4:{1:{day:17,night:16},2:{day:16,night:15},3:{day:15,night:14}}
-};
+// ---------- Table C (Augmented 3-4 pilots, full) ----------
+const tableC = [
+  { start:0, end:359, values:{class1:{3:15,4:17}, class2:{3:14,4:15.5}, class3:{3:13,4:13.5}} },
+  { start:360, end:419, values:{class1:{3:16,4:18.5}, class2:{3:15,4:16.5}, class3:{3:14,4:14.5}} },
+  { start:420, end:779, values:{class1:{3:17,4:19}, class2:{3:16.5,4:18}, class3:{3:15,4:15.5}} },
+  { start:780, end:1019, values:{class1:{3:16,4:18.5}, class2:{3:15,4:16.5}, class3:{3:14,4:14.5}} },
+  { start:1020, end:1439, values:{class1:{3:15,4:17}, class2:{3:14,4:15.5}, class3:{3:13,4:13.5}} }
+];
 
-// helpers
-function timeToMinutes(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
-function getRow(mins){ return tableB_unaugmented.find(r=>mins>=r.start && mins<=r.end); }
-function dayNight(mins){ return (mins>=300 && mins<=1199)?'day':'night'; }
+// ---------- Helper Functions ----------
+function timeToMins(t){ const [h,m]=t.split(':').map(Number); return h*60+m; }
 
-// toggle rest
+function lookupTableB(mins, seg){
+  const row = tableB.find(r=>mins>=r.start && mins<=r.end);
+  if(!row) return 0;
+  return row.values[Math.min(seg-1,row.values.length-1)];
+}
+
+function lookupTableC(mins, restClass, pilots){
+  const row = tableC.find(r=>mins>=r.start && mins<=r.end);
+  if(!row) return 0;
+  return row.values['class'+restClass][pilots] || 0;
+}
+
+// ---------- Show/hide rest for augmented ----------
 const pilotsSelect = document.getElementById('pilots');
 const restWrapper = document.getElementById('restFacilityWrapper');
-pilotsSelect.addEventListener('change',()=>{
-  const val = parseInt(pilotsSelect.value);
-  restWrapper.style.display = (val>=3)?'block':'none';
+pilotsSelect.addEventListener('change', ()=>{
+  restWrapper.style.display = (parseInt(pilotsSelect.value,10) > 2) ? 'block' : 'none';
 });
 
-// toggle label
-const reportTypeCheckbox = document.getElementById('reportType');
+// ---------- Bid / Short Call toggle ----------
+const rptCheckbox = document.getElementById('reportType');
 const timeLabel = document.getElementById('timeLabel');
-reportTypeCheckbox.addEventListener('change',()=>{
-  timeLabel.textContent = reportTypeCheckbox.checked?'RAP Start Time':'Report Time';
+rptCheckbox.addEventListener('change', ()=> {
+  timeLabel.textContent = rptCheckbox.checked ? 'RAP Start Time' : 'Report Time';
 });
 
-// calculate FDP
-document.getElementById('fdpForm').addEventListener('submit',function(e){
+// ---------- Calculate FDP ----------
+document.getElementById('fdpForm').addEventListener('submit', function(e){
   e.preventDefault();
   const reportTime = document.getElementById('reportTime').value;
-  const segments = parseInt(document.getElementById('segments').value);
-  const pilots = parseInt(document.getElementById('pilots').value);
-
-  const mins = timeToMinutes(reportTime);
-  const row = getRow(mins);
-  if(!row){ document.getElementById('result').innerHTML='<p class="warning">Invalid time</p>'; return; }
+  const segments = parseInt(document.getElementById('segments').value,10);
+  const pilots = parseInt(document.getElementById('pilots').value,10);
+  const mins = timeToMins(reportTime);
 
   let maxFDP = 0;
+  let sourceTable = '';
 
   if(pilots===2){
-    maxFDP = row.values[Math.min(segments-1,row.values.length-1)];
-  } else if(pilots===3 || pilots===4){
-    const rest = parseInt(document.getElementById('restFacility').value)||1;
-    const segKeys = Object.keys(tableB_augmented[pilots]).map(Number);
-    const maxSegKey = Math.max(...segKeys);
-    const segKey = Math.min(segments,maxSegKey);
-    const wn = dayNight(mins);
-    if(tableB_augmented[pilots][segKey]) maxFDP = tableB_augmented[pilots][segKey][wn]||0;
+    maxFDP = lookupTableB(mins,segments);
+    sourceTable='Table B (Unaugmented)';
+  } else {
+    const restClass = parseInt(document.getElementById('restFacility').value,10);
+    maxFDP = lookupTableC(mins,restClass,pilots);
+    sourceTable='Table C (Augmented)';
   }
 
-  const wocl = (mins>=120 && mins<=359)?'<p class="warning">⚠ WOCL risk (§117.25)</p>':'';
+  const wocl = (mins>=120 && mins<=359) ? '<p class="warning">⚠ WOCL (0200‑0559)</p>' : '';
+
   document.getElementById('result').innerHTML=`
-    <p><strong>Report Type:</strong> ${reportTypeCheckbox.checked?'Short Call Rsv':'Bid'}</p>
+    <p><strong>Report Type:</strong> ${rptCheckbox.checked ? 'Short Call Rsv':'Bid'}</p>
     <p><strong>Time:</strong> ${reportTime}</p>
     <p><strong>Pilots:</strong> ${pilots}</p>
+    <p><strong>Rest Facility:</strong> ${pilots>2 ? 'Class '+document.getElementById('restFacility').value : '—'}</p>
     <p><strong>Segments:</strong> ${segments}</p>
-    <p><strong>Max FDP:</strong> ${maxFDP} hrs</p>
+    <p><strong>Max FDP (${sourceTable}):</strong> ${maxFDP} hrs</p>
     ${wocl}
   `;
 });

@@ -96,17 +96,40 @@ input:checked + .toggle-label .right { opacity:1; }
   padding:14px;
   border-radius:10px;
 }
-.result-main { font-size:22px; font-weight:bold; }
+
+.limit-hours {
+  font-size:14px;
+  font-weight:bold;
+  opacity:.9;
+}
+
+.result-main {
+  font-size:22px;
+  font-weight:bold;
+  margin-top:4px;
+}
+
 .limit {
   margin-top:6px;
   font-size:14px;
   opacity:.9;
 }
+
 .highlight {
   margin-top:10px;
   padding:10px;
   border-left:4px solid #1fa2ff;
   background:rgba(31,162,255,.15);
+}
+
+details {
+  margin-top:10px;
+  font-size:13px;
+  opacity:.85;
+}
+summary {
+  cursor:pointer;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -118,7 +141,6 @@ input:checked + .toggle-label .right { opacity:1; }
 <div class="card">
 <form id="form">
 
-<!-- Slider -->
 <div class="toggle">
   <input type="checkbox" id="modeToggle">
   <label class="toggle-label" for="modeToggle">
@@ -128,17 +150,14 @@ input:checked + .toggle-label .right { opacity:1; }
   </label>
 </div>
 
-<!-- Bid/LCR -->
 <div id="bidBlock">
   <label>Report Time</label>
   <input type="time" id="bidReport">
 </div>
 
-<!-- SCR -->
 <div id="scrBlock" class="hidden">
   <label>RAP Start Time</label>
   <input type="time" id="rapTime">
-
   <label>Report Time (FDP)</label>
   <input type="time" id="fdpTime">
 </div>
@@ -191,7 +210,6 @@ pilotsSel.addEventListener('change', ()=>{
 const toMin=t=>{const[a,b]=t.split(':').map(Number);return a*60+b;}
 const toTime=m=>`${String(Math.floor((m%1440)/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 
-/* ---- Tables ---- */
 const ranges=[0,240,300,360,420,720,780,1020,1320,1380];
 
 const tableB=[
@@ -202,18 +220,9 @@ const tableB=[
 ];
 
 const tableC = {
-  1: { // Class 1
-    3:[15,16,17,18,19,18,17,17,16,15],
-    4:[17,18.5,19,20,21,20,19,19,18,17]
-  },
-  2: { // Class 2
-    3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],
-    4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]
-  },
-  3: { // Class 3
-    3:[13,14,15,16,17,16,15,15,14,13],
-    4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]
-  }
+  1:{3:[15,16,17,18,19,18,17,17,16,15],4:[17,18.5,19,20,21,20,19,19,18,17]},
+  2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]},
+  3:{3:[13,14,15,16,17,16,15,15,14,13],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]}
 };
 
 const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
@@ -224,47 +233,56 @@ document.getElementById('form').addEventListener('submit',e=>{
   const seg=+segments.value-1;
   const pilots=+pilotsSel.value;
   const rest=+document.getElementById('restClass').value;
-  let html='';
+  let html='', details='', limitHrs=0;
 
   if(!modeToggle.checked){
     const rpt=toMin(bidReport.value);
     const r=row(rpt);
-    const hrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
-    const end=rpt+hrs*60;
+    limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
+    const end=rpt+limitHrs*60;
+
+    details = `
+      Report Time + Table ${pilots===2?'B':'C'}.
+      Based on ${segments.value} segments and report time window,
+      the allowable FDP is ${limitHrs} hours.
+    `;
 
     html=`
-      <div class="result-main">Max FDP Ends: ${toTime(end)}</div>
-      <div class="limit">Report + Table ${pilots===2?'B':'C'} → ${toTime(end)}</div>
-      <div class="highlight">Controlling Limit: Table ${pilots===2?'B':'C'}</div>`;
+      <div class="limit-hours">Limit: ${limitHrs} hours</div>
+      <div class="result-main">Pumpkin Time: ${toTime(end)}</div>
+      <div class="highlight">Controlling Limit: Table ${pilots===2?'B':'C'}</div>
+      <details><summary>More info</summary>${details}</details>`;
   } else {
     const rap=toMin(rapTime.value);
     const fdp=toMin(fdpTime.value);
     const r=row(fdp);
 
+    let limits=[];
     if(pilots===2){
       const tb=tableB[r][seg];
-      const limits=[
-        {n:'RAP + 16',v:rap+960},
-        {n:'FDP + Table B',v:fdp+tb*60},
-        {n:'RAP + Table B + 4',v:rap+tb*60+240}
-      ].sort((a,b)=>a.v-b.v);
-
-      html=`
-        <div class="result-main">Max FDP Ends: ${toTime(limits[0].v)}</div>
-        ${limits.map(l=>`<div class="limit">${l.n} → ${toTime(l.v)}</div>`).join('')}
-        <div class="highlight">Controlling Limit: ${limits[0].n}</div>`;
+      limits=[
+        {n:'RAP + 16 hours',h:16,v:rap+960},
+        {n:'FDP + Table B',h:tb,v:fdp+tb*60},
+        {n:'RAP + Table B + 4',h:tb+4,v:rap+tb*60+240}
+      ];
     } else {
       const tc=tableC[rest][pilots][r];
-      const limits=[
-        {n:'FDP + Table C',v:fdp+tc*60},
-        {n:'RAP + Table C + 4',v:rap+tc*60+240}
-      ].sort((a,b)=>a.v-b.v);
-
-      html=`
-        <div class="result-main">Max FDP Ends: ${toTime(limits[0].v)}</div>
-        ${limits.map(l=>`<div class="limit">${l.n} → ${toTime(l.v)}</div>`).join('')}
-        <div class="highlight">Controlling Limit: ${limits[0].n}</div>`;
+      limits=[
+        {n:'FDP + Table C',h:tc,v:fdp+tc*60},
+        {n:'RAP + Table C + 4',h:tc+4,v:rap+tc*60+240}
+      ];
     }
+
+    limits.sort((a,b)=>a.v-b.v);
+    limitHrs=limits[0].h;
+
+    details = limits.map(l=>`${l.n} → ${l.h} hours`).join('<br>');
+
+    html=`
+      <div class="limit-hours">Limit: ${limitHrs} hours</div>
+      <div class="result-main">Pumpkin Time: ${toTime(limits[0].v)}</div>
+      <div class="highlight">Controlling Limit: ${limits[0].n}</div>
+      <details><summary>More info</summary>${details}</details>`;
   }
 
   output.innerHTML=html;

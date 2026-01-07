@@ -156,6 +156,15 @@ input:checked + .toggle-label .right { opacity:1; }
   <option value="4">4 (Augmented)</option>
 </select>
 
+<div id="restBlock" class="hidden">
+  <label>Crew Rest Facility Class</label>
+  <select id="restClass">
+    <option value="1">Class 1</option>
+    <option value="2">Class 2</option>
+    <option value="3">Class 3</option>
+  </select>
+</div>
+
 <button type="submit">Calculate</button>
 </form>
 
@@ -166,11 +175,17 @@ input:checked + .toggle-label .right { opacity:1; }
 const modeToggle = document.getElementById('modeToggle');
 const bidBlock = document.getElementById('bidBlock');
 const scrBlock = document.getElementById('scrBlock');
+const pilotsSel = document.getElementById('pilots');
+const restBlock = document.getElementById('restBlock');
 const output = document.getElementById('output');
 
 modeToggle.addEventListener('change', ()=>{
   bidBlock.classList.toggle('hidden', modeToggle.checked);
   scrBlock.classList.toggle('hidden', !modeToggle.checked);
+});
+
+pilotsSel.addEventListener('change', ()=>{
+  restBlock.classList.toggle('hidden', pilotsSel.value === '2');
 });
 
 const toMin=t=>{const[a,b]=t.split(':').map(Number);return a*60+b;}
@@ -186,9 +201,19 @@ const tableB=[
 [12,12,11,11,10,9,9],[11,11,10,10,9,9,9],[10,10,10,9,9,9,9]
 ];
 
-const tableC={
-3:[13,14,16,17,18,17,16,16,15,14],
-4:[15,16,18,19,20,19,18,18,17,16]
+const tableC = {
+  1: { // Class 1
+    3:[15,16,17,18,19,18,17,17,16,15],
+    4:[17,18.5,19,20,21,20,19,19,18,17]
+  },
+  2: { // Class 2
+    3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],
+    4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]
+  },
+  3: { // Class 3
+    3:[13,14,15,16,17,16,15,15,14,13],
+    4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]
+  }
 };
 
 const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
@@ -197,18 +222,19 @@ document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
 
   const seg=+segments.value-1;
-  const pilots=+document.getElementById('pilots').value;
+  const pilots=+pilotsSel.value;
+  const rest=+document.getElementById('restClass').value;
   let html='';
 
   if(!modeToggle.checked){
     const rpt=toMin(bidReport.value);
     const r=row(rpt);
-    const hrs= pilots===2 ? tableB[r][seg] : tableC[pilots][r];
+    const hrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
     const end=rpt+hrs*60;
 
     html=`
       <div class="result-main">Max FDP Ends: ${toTime(end)}</div>
-      <div class="limit">Limit: Report + Table ${pilots===2?'B':'C'} → ${toTime(end)}</div>
+      <div class="limit">Report + Table ${pilots===2?'B':'C'} → ${toTime(end)}</div>
       <div class="highlight">Controlling Limit: Table ${pilots===2?'B':'C'}</div>`;
   } else {
     const rap=toMin(rapTime.value);
@@ -228,7 +254,7 @@ document.getElementById('form').addEventListener('submit',e=>{
         ${limits.map(l=>`<div class="limit">${l.n} → ${toTime(l.v)}</div>`).join('')}
         <div class="highlight">Controlling Limit: ${limits[0].n}</div>`;
     } else {
-      const tc=tableC[pilots][r];
+      const tc=tableC[rest][pilots][r];
       const limits=[
         {n:'FDP + Table C',v:fdp+tc*60},
         {n:'RAP + Table C + 4',v:rap+tc*60+240}

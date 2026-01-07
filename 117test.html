@@ -47,7 +47,6 @@ button {
 }
 button:hover { background:#0d8ae6; }
 
-/* Toggle */
 .toggle {
   position:relative;
   height:44px;
@@ -92,8 +91,21 @@ input:checked + .toggle-label .right { opacity:1; }
   background:rgba(255,255,255,0.06);
   border-radius:10px;
 }
-.result-main { font-size:22px; font-weight:bold; }
-.result-sub { font-size:14px; margin-top:6px; opacity:0.9; }
+.result-main {
+  font-size:22px;
+  font-weight:bold;
+}
+.result-sub {
+  font-size:14px;
+  margin-top:6px;
+  opacity:0.9;
+}
+.highlight {
+  margin-top:10px;
+  padding:10px;
+  border-left:4px solid #1fa2ff;
+  background:rgba(31,162,255,0.15);
+}
 
 .hidden { display:none; }
 </style>
@@ -105,7 +117,6 @@ input:checked + .toggle-label .right { opacity:1; }
 <div class="card">
 <form id="fdpForm">
 
-  <!-- Bid/LCR vs SCR -->
   <div class="toggle">
     <input type="checkbox" id="reserveToggle">
     <label class="toggle-label" for="reserveToggle">
@@ -115,17 +126,16 @@ input:checked + .toggle-label .right { opacity:1; }
     </label>
   </div>
 
-  <label id="timeLabel" for="reportTime">Report Time</label>
+  <label id="timeLabel">Report Time</label>
   <input type="time" id="reportTime" required>
 
-  <!-- SCR FDP report -->
   <div id="fdpStartWrapper" class="hidden">
-    <label for="fdpStart">Report Time (FDP)</label>
+    <label>Report Time (FDP)</label>
     <input type="time" id="fdpStart">
   </div>
 
   <div id="segmentsWrapper">
-    <label for="segments">Flight Segments</label>
+    <label>Flight Segments</label>
     <select id="segments">
       <option value="1">1</option><option value="2">2</option>
       <option value="3">3</option><option value="4">4</option>
@@ -134,7 +144,7 @@ input:checked + .toggle-label .right { opacity:1; }
     </select>
   </div>
 
-  <label for="pilots">Number of Pilots</label>
+  <label>Number of Pilots</label>
   <select id="pilots">
     <option value="2">2 (Unaugmented)</option>
     <option value="3">3 (Augmented)</option>
@@ -142,7 +152,7 @@ input:checked + .toggle-label .right { opacity:1; }
   </select>
 
   <div id="restWrapper" class="hidden">
-    <label for="restClass">Crew Rest Facility Class</label>
+    <label>Crew Rest Facility Class</label>
     <select id="restClass">
       <option value="1">Class 1</option>
       <option value="2">Class 2</option>
@@ -157,119 +167,81 @@ input:checked + .toggle-label .right { opacity:1; }
 </div>
 
 <script>
-// Helpers
-function timeToMinutes(t){
+// helpers
+const toMin = t => {
   const [h,m] = t.split(':').map(Number);
-  return h*60 + m;
-}
-function minutesToHHMM(m){
-  const h = Math.floor(m/60)%24;
-  const mm = m%60;
-  return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-}
+  return h*60+m;
+};
+const toTime = m =>
+  `${String(Math.floor(m/60)%24).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 
-// Table B
+// Table B lookup
 const tableB = [
-  {start:0,end:239,vals:[9,9,9,9,9,9,9]},
-  {start:240,end:299,vals:[10,10,10,10,9,9,9]},
-  {start:300,end:359,vals:[12,12,12,12,11.5,11,10.5]},
-  {start:360,end:419,vals:[13,13,12,12,11.5,11,10.5]},
-  {start:420,end:719,vals:[14,14,13,13,12.5,12,11.5]},
-  {start:720,end:779,vals:[13,13,13,13,12.5,12,11.5]},
-  {start:780,end:1019,vals:[12,12,12,12,11.5,11,10.5]},
-  {start:1020,end:1319,vals:[12,12,11,11,10,9,9]},
-  {start:1320,end:1379,vals:[11,11,10,10,9,9,9]},
-  {start:1380,end:1439,vals:[10,10,10,9,9,9,9]}
+  {s:0,e:239,v:[9,9,9,9,9,9,9]},
+  {s:240,e:299,v:[10,10,10,10,9,9,9]},
+  {s:300,e:359,v:[12,12,12,12,11.5,11,10.5]},
+  {s:360,e:419,v:[13,13,12,12,11.5,11,10.5]},
+  {s:420,e:719,v:[14,14,13,13,12.5,12,11.5]},
+  {s:720,e:779,v:[13,13,13,13,12.5,12,11.5]},
+  {s:780,e:1019,v:[12,12,12,12,11.5,11,10.5]},
+  {s:1020,e:1319,v:[12,12,11,11,10,9,9]},
+  {s:1320,e:1379,v:[11,11,10,10,9,9,9]},
+  {s:1380,e:1439,v:[10,10,10,9,9,9,9]}
 ];
+const lookupB = (m,s) =>
+  tableB.find(r=>m>=r.s&&m<=r.e).v[s-1];
 
-// Table C unchanged
-const tableC = [
-  {start:0,end:359, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}},
-  {start:360,end:419, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
-  {start:420,end:779, c1:{3:17,4:19}, c2:{3:16.5,4:18}, c3:{3:15,4:15.5}},
-  {start:780,end:1019, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
-  {start:1020,end:1439, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}}
-];
+// UI
+reserveToggle.onchange = ()=>{
+  timeLabel.textContent = reserveToggle.checked ? 'RAP Start Time' : 'Report Time';
+  fdpStartWrapper.classList.toggle('hidden', !reserveToggle.checked);
+};
 
-function lookupTableB(mins,segs){
-  const r = tableB.find(x=>mins>=x.start && mins<=x.end);
-  return r ? r.vals[segs-1] : 0;
-}
-function lookupTableC(mins,rest,pilots){
-  const r = tableC.find(x=>mins>=x.start && mins<=x.end);
-  return r ? r['c'+rest][pilots] : 0;
-}
-
-// UI logic
-const pilotsSel = document.getElementById('pilots');
-const restWrap = document.getElementById('restWrapper');
-const segWrap = document.getElementById('segmentsWrapper');
-const reserveToggle = document.getElementById('reserveToggle');
-const timeLabel = document.getElementById('timeLabel');
-const fdpWrap = document.getElementById('fdpStartWrapper');
-
-function updateVisibility(){
-  const aug = pilotsSel.value !== '2';
-  restWrap.classList.toggle('hidden', !aug);
-  segWrap.classList.toggle('hidden', aug);
-}
-pilotsSel.addEventListener('change', updateVisibility);
-updateVisibility();
-
-reserveToggle.addEventListener('change', ()=>{
-  const scr = reserveToggle.checked;
-  timeLabel.textContent = scr ? 'RAP Start Time' : 'Report Time';
-  fdpWrap.classList.toggle('hidden', !scr);
-});
-
-// Calculate
-document.getElementById('fdpForm').addEventListener('submit', e=>{
+// calculate
+fdpForm.onsubmit = e=>{
   e.preventDefault();
-
-  const rapMins = timeToMinutes(reportTime.value);
-  const pilots = Number(pilotsSel.value);
-  const segs = Number(segments.value);
-  const rest = Number(restClass.value);
   const isSCR = reserveToggle.checked;
+  const pilots = Number(pilots.value);
+  const result = document.getElementById('result');
 
-  let html = '';
+  if(isSCR && pilots===2){
+    if(!fdpStart.value){
+      alert('Enter Report Time (FDP)');
+      return;
+    }
 
-  if(isSCR && pilots === 2){
-    const fdpStart = timeToMinutes(fdpStart.value);
-    const tb = lookupTableB(fdpStart, segs);
+    const rap = toMin(reportTime.value);
+    const fdp = toMin(fdpStart.value);
+    const segs = Number(segments.value);
+    const tb = lookupB(fdp,segs);
 
-    const opt1 = rapMins + 16*60;
-    const opt2 = fdpStart + tb*60;
-    const opt3 = rapMins + tb*60 + 4*60;
+    const limits = [
+      {label:'RAP + 16:00', val:rap+960},
+      {label:`FDP + Table B (${tb} hrs)`, val:fdp+tb*60},
+      {label:`RAP + Table B (${tb}) + 4:00`, val:rap+tb*60+240}
+    ];
 
-    const limit = Math.min(opt1,opt2,opt3);
+    limits.sort((a,b)=>a.val-b.val);
+    const ctrl = limits[0];
+    const duration = (ctrl.val - fdp)/60;
 
-    html = `
-      <div class="result-main">
-        Max FDP Ends: ${minutesToHHMM(limit)}
+    result.innerHTML = `
+      <div class="result-main">Max FDP Ends: ${toTime(ctrl.val)}</div>
+      <div class="result-sub">Total FDP Duration: ${duration.toFixed(1)} hrs</div>
+      <div class="highlight">
+        <strong>Controlling Limit:</strong><br>${ctrl.label}
       </div>
       <div class="result-sub">
-        RAP + 16: ${minutesToHHMM(opt1)}<br>
-        FDP + Table B (${tb}): ${minutesToHHMM(opt2)}<br>
-        RAP + Table B (${tb}) + 4: ${minutesToHHMM(opt3)}
+        Other Limits:<br>
+        ${limits.slice(1).map(l=>`${l.label} → ${toTime(l.val)}`).join('<br>')}
       </div>
     `;
   } else {
-    const mins = timeToMinutes(reportTime.value);
-    const max = pilots === 2
-      ? lookupTableB(mins,segs)
-      : lookupTableC(mins,rest,pilots);
-
-    html = `
-      <div class="result-main">Max FDP: ${max} hours</div>
-      <div class="result-sub">${pilots===2?'Table B':'Table C'} applied</div>
-    `;
+    result.innerHTML = `<div class="result-main">Bid/LCR unchanged</div>`;
   }
 
-  const result = document.getElementById('result');
   result.classList.remove('hidden');
-  result.innerHTML = html;
-});
+};
 </script>
 
 </body>

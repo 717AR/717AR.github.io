@@ -12,7 +12,293 @@ body {
   color:#f5f5f5;
   padding:16px;
 }
+h1 { text-align:center; }<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>FAR 117 FDP Calculator</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background:#0e1a2b;
+  color:#f5f5f5;
+  padding:16px;
+}
 h1 { text-align:center; }
+
+.card {
+  background:#11243b;
+  padding:16px;
+  max-width:520px;
+  margin:auto;
+  border-radius:12px;
+}
+
+label {
+  margin-top:10px;
+  display:block;
+  font-weight:bold;
+}
+
+input, select {
+  width:100%;
+  padding:8px;
+  border-radius:6px;
+  border:1px solid #4a90e2;
+  background:#1a2a44;
+  color:white;
+}
+
+button {
+  margin-top:16px;
+  width:100%;
+  padding:10px;
+  font-size:16px;
+  background:#1fa2ff;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+/* ---------- Slider ---------- */
+.toggle {
+  position:relative;
+  height:44px;
+  margin-bottom:16px;
+}
+.toggle input { display:none; }
+.toggle-label {
+  display:block;
+  height:100%;
+  background:#1a2a44;
+  border-radius:24px;
+  position:relative;
+  cursor:pointer;
+}
+.toggle-label span {
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  width:50%;
+  text-align:center;
+  font-weight:bold;
+}
+.toggle-label .left { left:0; }
+.toggle-label .right { right:0; opacity:.6; }
+.toggle-knob {
+  position:absolute;
+  top:2px;
+  left:2px;
+  width:calc(50% - 4px);
+  height:calc(100% - 4px);
+  background:#1fa2ff;
+  border-radius:24px;
+  transition:left .25s;
+}
+input:checked + .toggle-label .toggle-knob { left:50%; }
+input:checked + .toggle-label .left { opacity:.6; }
+input:checked + .toggle-label .right { opacity:1; }
+
+.hidden { display:none; }
+
+/* ---------- Results ---------- */
+.result {
+  margin-top:16px;
+  background:rgba(255,255,255,0.07);
+  padding:14px;
+  border-radius:10px;
+}
+
+/* now LARGE */
+.computed-limit {
+  font-size:22px;
+  font-weight:bold;
+}
+
+/* now SMALL */
+.pumpkin-time {
+  font-size:14px;
+  font-weight:bold;
+  opacity:.9;
+  margin-top:4px;
+}
+
+.highlight {
+  margin-top:10px;
+  padding:10px;
+  border-left:4px solid #1fa2ff;
+  background:rgba(31,162,255,.15);
+}
+
+details {
+  margin-top:10px;
+  font-size:13px;
+  opacity:.85;
+}
+summary {
+  cursor:pointer;
+  font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<h1>Max FDP Calculator</h1>
+
+<div class="card">
+<form id="form">
+
+<div class="toggle">
+  <input type="checkbox" id="modeToggle">
+  <label class="toggle-label" for="modeToggle">
+    <span class="left">Bid / LCR</span>
+    <span class="right">SCR</span>
+    <div class="toggle-knob"></div>
+  </label>
+</div>
+
+<div id="bidBlock">
+  <label>Report Time</label>
+  <input type="time" id="bidReport">
+</div>
+
+<div id="scrBlock" class="hidden">
+  <label>RAP Start Time</label>
+  <input type="time" id="rapTime">
+  <label>Report Time (FDP)</label>
+  <input type="time" id="fdpTime">
+</div>
+
+<label>Flight Segments</label>
+<select id="segments">
+  <option>1</option><option>2</option><option>3</option>
+  <option>4</option><option>5</option><option>6</option><option>7</option>
+</select>
+
+<label>Number of Pilots</label>
+<select id="pilots">
+  <option value="2">2 (Unaugmented)</option>
+  <option value="3">3 (Augmented)</option>
+  <option value="4">4 (Augmented)</option>
+</select>
+
+<div id="restBlock" class="hidden">
+  <label>Crew Rest Facility Class</label>
+  <select id="restClass">
+    <option value="1">Class 1</option>
+    <option value="2">Class 2</option>
+    <option value="3">Class 3</option>
+  </select>
+</div>
+
+<button type="submit">Calculate</button>
+</form>
+
+<div id="output" class="result hidden"></div>
+</div>
+
+<script>
+const modeToggle = document.getElementById('modeToggle');
+const bidBlock = document.getElementById('bidBlock');
+const scrBlock = document.getElementById('scrBlock');
+const pilotsSel = document.getElementById('pilots');
+const restBlock = document.getElementById('restBlock');
+const output = document.getElementById('output');
+
+modeToggle.addEventListener('change', ()=>{
+  bidBlock.classList.toggle('hidden', modeToggle.checked);
+  scrBlock.classList.toggle('hidden', !modeToggle.checked);
+});
+
+pilotsSel.addEventListener('change', ()=>{
+  restBlock.classList.toggle('hidden', pilotsSel.value === '2');
+});
+
+const toMin=t=>{const[a,b]=t.split(':').map(Number);return a*60+b;}
+const toTime=m=>`${String(Math.floor((m%1440)/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+
+const ranges=[0,240,300,360,420,720,780,1020,1320,1380];
+
+const tableB=[
+[9,9,9,9,9,9,9],[10,10,10,10,9,9,9],[12,12,12,12,11.5,11,10.5],
+[13,13,12,12,11.5,11,10.5],[14,14,13,13,12.5,12,11.5],
+[13,13,13,13,12.5,12,11.5],[12,12,12,12,11.5,11,10.5],
+[12,12,11,11,10,9,9],[11,11,10,10,9,9,9],[10,10,10,9,9,9,9]
+];
+
+const tableC = {
+  1:{3:[15,16,17,18,19,18,17,17,16,15],4:[17,18.5,19,20,21,20,19,19,18,17]},
+  2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]},
+  3:{3:[13,14,15,16,17,16,15,15,14,13],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]}
+};
+
+const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
+
+document.getElementById('form').addEventListener('submit',e=>{
+  e.preventDefault();
+
+  const seg=+segments.value-1;
+  const pilots=+pilotsSel.value;
+  const rest=+document.getElementById('restClass').value;
+  let html='', details='', limitHrs=0;
+
+  if(!modeToggle.checked){
+    const rpt=toMin(bidReport.value);
+    const r=row(rpt);
+    limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
+    const end=rpt+limitHrs*60;
+
+    details = `Report Time + Table ${pilots===2?'B':'C'} based on segments and report window.`;
+
+    html=`
+      <div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+      <div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
+      <div class="highlight">Controlling Limit: Table ${pilots===2?'B':'C'}</div>
+      <details><summary>More info</summary>${details}</details>`;
+  } else {
+    const rap=toMin(rapTime.value);
+    const fdp=toMin(fdpTime.value);
+    const r=row(fdp);
+
+    let limits=[];
+    if(pilots===2){
+      const tb=tableB[r][seg];
+      limits=[
+        {n:'RAP + 16 hours',h:16,v:rap+960},
+        {n:'FDP + Table B',h:tb,v:fdp+tb*60},
+        {n:'RAP + Table B + 4',h:tb+4,v:rap+tb*60+240}
+      ];
+    } else {
+      const tc=tableC[rest][pilots][r];
+      limits=[
+        {n:'FDP + Table C',h:tc,v:fdp+tc*60},
+        {n:'RAP + Table C + 4',h:tc+4,v:rap+tc*60+240}
+      ];
+    }
+
+    limits.sort((a,b)=>a.v-b.v);
+    limitHrs=limits[0].h;
+
+    details = limits.map(l=>`${l.n} → ${l.h} hours`).join('<br>');
+
+    html=`
+      <div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+      <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
+      <div class="highlight">Controlling Limit: ${limits[0].n}</div>
+      <details><summary>More info</summary>${details}</details>`;
+  }
+
+  output.innerHTML=html;
+  output.classList.remove('hidden');
+});
+</script>
+
+</body>
+</html>
+
 
 .card {
   background:#11243b;

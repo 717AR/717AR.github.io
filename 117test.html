@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Max FDP Calculator</title>
+<title>117 Calculator</title>
 
 <style>
 body {
@@ -58,9 +58,7 @@ button:hover {
   height:44px;
   margin-bottom:14px;
 }
-.toggle input {
-  display:none;
-}
+.toggle input { display:none; }
 .toggle-label {
   display:block;
   height:100%;
@@ -76,14 +74,11 @@ button:hover {
   width:50%;
   text-align:center;
   font-weight:bold;
-  color:#ffffff;
   pointer-events:none;
 }
 .toggle-label .left { left:0; }
-.toggle-label .right {
-  right:0;
-  color:rgba(255,255,255,0.6);
-}
+.toggle-label .right { right:0; opacity:0.6; }
+
 .toggle-knob {
   position:absolute;
   top:2px;
@@ -94,15 +89,9 @@ button:hover {
   border-radius:24px;
   transition:left 0.25s;
 }
-input:checked + .toggle-label .toggle-knob {
-  left:50%;
-}
-input:checked + .toggle-label .left {
-  color:rgba(255,255,255,0.6);
-}
-input:checked + .toggle-label .right {
-  color:#ffffff;
-}
+input:checked + .toggle-label .toggle-knob { left:50%; }
+input:checked + .toggle-label .left { opacity:0.6; }
+input:checked + .toggle-label .right { opacity:1; }
 
 /* ---------- Results ---------- */
 .result {
@@ -114,12 +103,11 @@ input:checked + .toggle-label .right {
 .result-main {
   font-size:22px;
   font-weight:bold;
-  margin-bottom:8px;
 }
 .result-sub {
   font-size:14px;
+  margin-top:6px;
   opacity:0.9;
-  margin-top:4px;
 }
 
 .hidden { display:none; }
@@ -133,12 +121,12 @@ input:checked + .toggle-label .right {
 <div class="card">
 <form id="fdpForm">
 
-  <!-- Bid / Reserve -->
+  <!-- Bid / LCR vs SCR -->
   <div class="toggle">
     <input type="checkbox" id="reserveToggle">
     <label class="toggle-label" for="reserveToggle">
-      <span class="left">Bid</span>
-      <span class="right">Reserve</span>
+      <span class="left">Bid / LCR</span>
+      <span class="right">SCR</span>
       <div class="toggle-knob"></div>
     </label>
   </div>
@@ -146,12 +134,15 @@ input:checked + .toggle-label .right {
   <label id="timeLabel" for="reportTime">Report Time</label>
   <input type="time" id="reportTime" required>
 
-  <label for="segments">Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-    <option value="4">4</option><option value="5">5</option>
-    <option value="6">6</option><option value="7">7</option>
-  </select>
+  <div id="segmentsWrapper">
+    <label for="segments">Flight Segments</label>
+    <select id="segments">
+      <option value="1">1</option><option value="2">2</option>
+      <option value="3">3</option><option value="4">4</option>
+      <option value="5">5</option><option value="6">6</option>
+      <option value="7">7</option>
+    </select>
+  </div>
 
   <label for="pilots">Number of Pilots</label>
   <select id="pilots">
@@ -172,7 +163,7 @@ input:checked + .toggle-label .right {
   <button type="submit">Calculate</button>
 </form>
 
-<div id="result" class="result"></div>
+<div id="result" class="result hidden"></div>
 </div>
 
 <script>
@@ -208,7 +199,7 @@ const tableC = [
 // ---------- Lookups ----------
 function lookupTableB(mins,segs){
   const r = tableB.find(x=>mins>=x.start && mins<=x.end);
-  return r ? r.vals[Math.min(segs-1,r.vals.length-1)] : 0;
+  return r ? r.vals[segs-1] : 0;
 }
 function lookupTableC(mins,rest,pilots){
   const r = tableC.find(x=>mins>=x.start && mins<=x.end);
@@ -218,14 +209,22 @@ function lookupTableC(mins,rest,pilots){
 // ---------- UI ----------
 const pilotsSel = document.getElementById('pilots');
 const restWrap = document.getElementById('restWrapper');
+const segWrap = document.getElementById('segmentsWrapper');
 const reserveToggle = document.getElementById('reserveToggle');
 const timeLabel = document.getElementById('timeLabel');
 
-pilotsSel.addEventListener('change', ()=>{
-  restWrap.classList.toggle('hidden', pilotsSel.value === '2');
-});
+function updateVisibility(){
+  const aug = pilotsSel.value !== '2';
+  restWrap.classList.toggle('hidden', !aug);
+  segWrap.classList.toggle('hidden', aug);
+}
+pilotsSel.addEventListener('change', updateVisibility);
+updateVisibility();
+
 reserveToggle.addEventListener('change', ()=>{
-  timeLabel.textContent = reserveToggle.checked ? 'RAP Start Time' : 'Report Time';
+  timeLabel.textContent = reserveToggle.checked
+    ? 'SCR Start Time'
+    : 'Report Time';
 });
 
 // ---------- Calculate ----------
@@ -235,4 +234,20 @@ document.getElementById('fdpForm').addEventListener('submit', e=>{
   const mins = timeToMinutes(reportTime.value);
   const pilots = Number(pilotsSel.value);
   const segs = Number(document.getElementById('segments').value);
-  const isReserve = reserveToggle.chec
+  const rest = Number(document.getElementById('restClass').value);
+
+  let maxFDP = pilots === 2
+    ? lookupTableB(mins, segs)
+    : lookupTableC(mins, rest, pilots);
+
+  const result = document.getElementById('result');
+  result.classList.remove('hidden');
+  result.innerHTML = `
+    <div class="result-main">Max FDP: ${maxFDP} hours</div>
+    <div class="result-sub">${pilots === 2 ? 'Table B' : 'Table C'} applied</div>
+  `;
+});
+</script>
+
+</body>
+</html>

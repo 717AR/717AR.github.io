@@ -12,10 +12,7 @@ body {
   color:#f5f5f5;
   padding:16px;
 }
-h1 {
-  text-align:center;
-  margin-bottom:14px;
-}
+h1 { text-align:center; margin-bottom:14px; }
 .card {
   background:#11243b;
   padding:16px;
@@ -48,11 +45,9 @@ button {
   font-size:16px;
   cursor:pointer;
 }
-button:hover {
-  background:#0d8ae6;
-}
+button:hover { background:#0d8ae6; }
 
-/* ---------- Toggle ---------- */
+/* Toggle */
 .toggle {
   position:relative;
   height:44px;
@@ -74,11 +69,9 @@ button:hover {
   width:50%;
   text-align:center;
   font-weight:bold;
-  pointer-events:none;
 }
 .toggle-label .left { left:0; }
 .toggle-label .right { right:0; opacity:0.6; }
-
 .toggle-knob {
   position:absolute;
   top:2px;
@@ -93,35 +86,26 @@ input:checked + .toggle-label .toggle-knob { left:50%; }
 input:checked + .toggle-label .left { opacity:0.6; }
 input:checked + .toggle-label .right { opacity:1; }
 
-/* ---------- Results ---------- */
 .result {
   margin-top:18px;
   padding:14px;
   background:rgba(255,255,255,0.06);
   border-radius:10px;
 }
-.result-main {
-  font-size:22px;
-  font-weight:bold;
-}
-.result-sub {
-  font-size:14px;
-  margin-top:6px;
-  opacity:0.9;
-}
+.result-main { font-size:22px; font-weight:bold; }
+.result-sub { font-size:14px; margin-top:6px; opacity:0.9; }
 
 .hidden { display:none; }
 </style>
 </head>
 
 <body>
-
 <h1>Max FDP Calculator</h1>
 
 <div class="card">
 <form id="fdpForm">
 
-  <!-- Bid / LCR vs SCR -->
+  <!-- Bid/LCR vs SCR -->
   <div class="toggle">
     <input type="checkbox" id="reserveToggle">
     <label class="toggle-label" for="reserveToggle">
@@ -133,6 +117,12 @@ input:checked + .toggle-label .right { opacity:1; }
 
   <label id="timeLabel" for="reportTime">Report Time</label>
   <input type="time" id="reportTime" required>
+
+  <!-- SCR FDP report -->
+  <div id="fdpStartWrapper" class="hidden">
+    <label for="fdpStart">Report Time (FDP)</label>
+    <input type="time" id="fdpStart">
+  </div>
 
   <div id="segmentsWrapper">
     <label for="segments">Flight Segments</label>
@@ -167,13 +157,18 @@ input:checked + .toggle-label .right { opacity:1; }
 </div>
 
 <script>
-// ---------- Helpers ----------
+// Helpers
 function timeToMinutes(t){
   const [h,m] = t.split(':').map(Number);
   return h*60 + m;
 }
+function minutesToHHMM(m){
+  const h = Math.floor(m/60)%24;
+  const mm = m%60;
+  return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+}
 
-// ---------- TABLE B ----------
+// Table B
 const tableB = [
   {start:0,end:239,vals:[9,9,9,9,9,9,9]},
   {start:240,end:299,vals:[10,10,10,10,9,9,9]},
@@ -187,7 +182,7 @@ const tableB = [
   {start:1380,end:1439,vals:[10,10,10,9,9,9,9]}
 ];
 
-// ---------- TABLE C ----------
+// Table C unchanged
 const tableC = [
   {start:0,end:359, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}},
   {start:360,end:419, c1:{3:16,4:18.5}, c2:{3:15,4:16.5}, c3:{3:14,4:14.5}},
@@ -196,7 +191,6 @@ const tableC = [
   {start:1020,end:1439, c1:{3:15,4:17}, c2:{3:14,4:15.5}, c3:{3:13,4:13.5}}
 ];
 
-// ---------- Lookups ----------
 function lookupTableB(mins,segs){
   const r = tableB.find(x=>mins>=x.start && mins<=x.end);
   return r ? r.vals[segs-1] : 0;
@@ -206,12 +200,13 @@ function lookupTableC(mins,rest,pilots){
   return r ? r['c'+rest][pilots] : 0;
 }
 
-// ---------- UI ----------
+// UI logic
 const pilotsSel = document.getElementById('pilots');
 const restWrap = document.getElementById('restWrapper');
 const segWrap = document.getElementById('segmentsWrapper');
 const reserveToggle = document.getElementById('reserveToggle');
 const timeLabel = document.getElementById('timeLabel');
+const fdpWrap = document.getElementById('fdpStartWrapper');
 
 function updateVisibility(){
   const aug = pilotsSel.value !== '2';
@@ -222,30 +217,58 @@ pilotsSel.addEventListener('change', updateVisibility);
 updateVisibility();
 
 reserveToggle.addEventListener('change', ()=>{
-  timeLabel.textContent = reserveToggle.checked
-    ? 'SCR Start Time'
-    : 'Report Time';
+  const scr = reserveToggle.checked;
+  timeLabel.textContent = scr ? 'RAP Start Time' : 'Report Time';
+  fdpWrap.classList.toggle('hidden', !scr);
 });
 
-// ---------- Calculate ----------
+// Calculate
 document.getElementById('fdpForm').addEventListener('submit', e=>{
   e.preventDefault();
 
-  const mins = timeToMinutes(reportTime.value);
+  const rapMins = timeToMinutes(reportTime.value);
   const pilots = Number(pilotsSel.value);
-  const segs = Number(document.getElementById('segments').value);
-  const rest = Number(document.getElementById('restClass').value);
+  const segs = Number(segments.value);
+  const rest = Number(restClass.value);
+  const isSCR = reserveToggle.checked;
 
-  let maxFDP = pilots === 2
-    ? lookupTableB(mins, segs)
-    : lookupTableC(mins, rest, pilots);
+  let html = '';
+
+  if(isSCR && pilots === 2){
+    const fdpStart = timeToMinutes(fdpStart.value);
+    const tb = lookupTableB(fdpStart, segs);
+
+    const opt1 = rapMins + 16*60;
+    const opt2 = fdpStart + tb*60;
+    const opt3 = rapMins + tb*60 + 4*60;
+
+    const limit = Math.min(opt1,opt2,opt3);
+
+    html = `
+      <div class="result-main">
+        Max FDP Ends: ${minutesToHHMM(limit)}
+      </div>
+      <div class="result-sub">
+        RAP + 16: ${minutesToHHMM(opt1)}<br>
+        FDP + Table B (${tb}): ${minutesToHHMM(opt2)}<br>
+        RAP + Table B (${tb}) + 4: ${minutesToHHMM(opt3)}
+      </div>
+    `;
+  } else {
+    const mins = timeToMinutes(reportTime.value);
+    const max = pilots === 2
+      ? lookupTableB(mins,segs)
+      : lookupTableC(mins,rest,pilots);
+
+    html = `
+      <div class="result-main">Max FDP: ${max} hours</div>
+      <div class="result-sub">${pilots===2?'Table B':'Table C'} applied</div>
+    `;
+  }
 
   const result = document.getElementById('result');
   result.classList.remove('hidden');
-  result.innerHTML = `
-    <div class="result-main">Max FDP: ${maxFDP} hours</div>
-    <div class="result-sub">${pilots === 2 ? 'Table B' : 'Table C'} applied</div>
-  `;
+  result.innerHTML = html;
 });
 </script>
 

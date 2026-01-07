@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>117 Max FDP Calculator</title>
+<title>FAR 117 FDP Calculator</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
@@ -12,108 +12,47 @@ body {
   color:#f5f5f5;
   padding:16px;
 }
-h1 {
-  text-align:center;
-  margin-bottom:14px;
-}
 .card {
   background:#11243b;
   padding:16px;
-  max-width:480px;
+  max-width:520px;
   margin:auto;
-  border-radius:10px;
+  border-radius:12px;
 }
 label {
-  display:block;
   margin-top:10px;
+  display:block;
   font-weight:bold;
 }
 input, select {
   width:100%;
   padding:8px;
-  margin-top:4px;
   border-radius:6px;
   border:1px solid #4a90e2;
   background:#1a2a44;
-  color:#ffffff;
+  color:white;
 }
 button {
   margin-top:16px;
   width:100%;
   padding:10px;
+  font-size:16px;
+  background:#1fa2ff;
   border:none;
   border-radius:6px;
-  background:#1fa2ff;
-  color:white;
-  font-size:16px;
   cursor:pointer;
 }
-button:hover {
-  background:#0d8ae6;
-}
+.hidden { display:none; }
 
-/* Toggle */
-.toggle {
-  position:relative;
-  height:44px;
-  margin-bottom:14px;
-}
-.toggle input {
-  display:none;
-}
-.toggle-label {
-  display:block;
-  height:100%;
-  background:#1a2a44;
-  border-radius:24px;
-  position:relative;
-  cursor:pointer;
-}
-.toggle-label span {
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  width:50%;
-  text-align:center;
-  font-weight:bold;
-}
-.toggle-label .left { left:0; }
-.toggle-label .right { right:0; opacity:0.6; }
-.toggle-knob {
-  position:absolute;
-  top:2px;
-  left:2px;
-  width:calc(50% - 4px);
-  height:calc(100% - 4px);
-  background:#1fa2ff;
-  border-radius:24px;
-  transition:left 0.25s;
-}
-input:checked + .toggle-label .toggle-knob {
-  left:50%;
-}
-input:checked + .toggle-label .left {
-  opacity:0.6;
-}
-input:checked + .toggle-label .right {
-  opacity:1;
-}
-
-/* Results */
 .result {
-  margin-top:18px;
+  margin-top:16px;
+  background:rgba(255,255,255,0.07);
   padding:14px;
-  background:rgba(255,255,255,0.06);
   border-radius:10px;
 }
 .result-main {
   font-size:22px;
   font-weight:bold;
-}
-.result-sub {
-  font-size:14px;
-  margin-top:6px;
-  opacity:0.9;
 }
 .highlight {
   margin-top:10px;
@@ -121,163 +60,174 @@ input:checked + .toggle-label .right {
   border-left:4px solid #1fa2ff;
   background:rgba(31,162,255,0.15);
 }
-
-.hidden { display:none; }
 </style>
 </head>
 
 <body>
 
-<h1>Max FDP Calculator</h1>
-
 <div class="card">
-<form id="fdpForm">
+<h2 style="text-align:center;">Max FDP Calculator</h2>
 
-  <!-- Mode Toggle -->
-  <div class="toggle">
-    <input type="checkbox" id="modeToggle">
-    <label class="toggle-label" for="modeToggle">
-      <span class="left">Bid / LCR</span>
-      <span class="right">SCR</span>
-      <div class="toggle-knob"></div>
-    </label>
-  </div>
+<form id="form">
 
-  <!-- RAP / Report -->
-  <label id="rapLabel">Report Time</label>
-  <input type="time" id="rapTime" required>
-
-  <!-- FDP start (SCR only) -->
-  <div id="fdpStartWrapper" class="hidden">
-    <label>Report Time (FDP)</label>
-    <input type="time" id="fdpStart">
-  </div>
-
-  <!-- Segments -->
-  <label>Flight Segments</label>
-  <select id="segments">
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    <option value="6">6</option>
-    <option value="7">7</option>
+<label>
+  Mode
+  <select id="mode">
+    <option value="bid">Bid / LCR</option>
+    <option value="scr">SCR</option>
   </select>
+</label>
 
-  <!-- Pilots -->
-  <label>Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2 (Unaugmented)</option>
-    <option value="3">3 (Augmented)</option>
-    <option value="4">4 (Augmented)</option>
-  </select>
+<label id="rapLabel">Report Time</label>
+<input type="time" id="rapTime" required>
 
-  <button type="submit">Calculate</button>
+<div id="fdpBlock" class="hidden">
+  <label>Report Time (FDP)</label>
+  <input type="time" id="fdpTime">
+</div>
+
+<label>Flight Segments</label>
+<select id="segments">
+  <option>1</option><option>2</option><option>3</option>
+  <option>4</option><option>5</option><option>6</option><option>7</option>
+</select>
+
+<label>Number of Pilots</label>
+<select id="pilots">
+  <option value="2">2 (Unaugmented)</option>
+  <option value="3">3 (Augmented)</option>
+  <option value="4">4 (Augmented)</option>
+</select>
+
+<button type="submit">Calculate</button>
 </form>
 
-<div id="result" class="result hidden"></div>
+<div id="output" class="result hidden"></div>
 </div>
 
 <script>
-// ---------- DOM ----------
-const form = document.getElementById('fdpForm');
-const modeToggle = document.getElementById('modeToggle');
+const form = document.getElementById('form');
+const mode = document.getElementById('mode');
 const rapLabel = document.getElementById('rapLabel');
 const rapTime = document.getElementById('rapTime');
-const fdpStartWrapper = document.getElementById('fdpStartWrapper');
-const fdpStart = document.getElementById('fdpStart');
+const fdpBlock = document.getElementById('fdpBlock');
+const fdpTime = document.getElementById('fdpTime');
 const segments = document.getElementById('segments');
 const pilots = document.getElementById('pilots');
-const result = document.getElementById('result');
+const output = document.getElementById('output');
 
-// ---------- Helpers ----------
-function toMinutes(t){
-  const [h,m] = t.split(':').map(Number);
-  return h*60 + m;
-}
-function toHHMM(m){
-  const h = Math.floor(m/60)%24;
-  const mm = m%60;
-  return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-}
-
-// ---------- Table B ----------
-const tableB = [
-  {s:0,e:239,v:[9,9,9,9,9,9,9]},
-  {s:240,e:299,v:[10,10,10,10,9,9,9]},
-  {s:300,e:359,v:[12,12,12,12,11.5,11,10.5]},
-  {s:360,e:419,v:[13,13,12,12,11.5,11,10.5]},
-  {s:420,e:719,v:[14,14,13,13,12.5,12,11.5]},
-  {s:720,e:779,v:[13,13,13,13,12.5,12,11.5]},
-  {s:780,e:1019,v:[12,12,12,12,11.5,11,10.5]},
-  {s:1020,e:1319,v:[12,12,11,11,10,9,9]},
-  {s:1320,e:1379,v:[11,11,10,10,9,9,9]},
-  {s:1380,e:1439,v:[10,10,10,9,9,9,9]}
-];
-function lookupTableB(mins,segs){
-  return tableB.find(r=>mins>=r.s && mins<=r.e).v[segs-1];
-}
-
-// ---------- UI ----------
-modeToggle.addEventListener('change', ()=>{
-  const isSCR = modeToggle.checked;
+mode.addEventListener('change', ()=>{
+  const isSCR = mode.value === 'scr';
   rapLabel.textContent = isSCR ? 'RAP Start Time' : 'Report Time';
-  fdpStartWrapper.classList.toggle('hidden', !isSCR);
+  fdpBlock.classList.toggle('hidden', !isSCR);
 });
 
-// ---------- Calculate ----------
-form.addEventListener('submit', e=>{
+function toMin(t){
+  const [h,m]=t.split(':').map(Number);
+  return h*60+m;
+}
+function toTime(m){
+  m%=1440;
+  return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+}
+
+/* TABLE B */
+const tableB = [
+  [9,9,9,9,9,9,9],
+  [10,10,10,10,9,9,9],
+  [12,12,12,12,11.5,11,10.5],
+  [13,13,12,12,11.5,11,10.5],
+  [14,14,13,13,12.5,12,11.5],
+  [13,13,13,13,12.5,12,11.5],
+  [12,12,12,12,11.5,11,10.5],
+  [12,12,11,11,10,9,9],
+  [11,11,10,10,9,9,9],
+  [10,10,10,9,9,9,9]
+];
+const tableBRanges=[0,240,300,360,420,720,780,1020,1320,1380];
+
+function tableBlookup(start,segs){
+  let idx=tableBRanges.findIndex((v,i)=>start>=v && start<(tableBRanges[i+1]||1440));
+  return tableB[idx][segs-1];
+}
+
+/* TABLE C (117.17) */
+const tableC = {
+  3:[
+    [13,13,13,13,13,13,13],
+    [14,14,14,14,13.5,13,13],
+    [16,16,16,16,15.5,15,14.5],
+    [17,17,16,16,15.5,15,14.5],
+    [18,18,17,17,16.5,16,15.5],
+    [17,17,17,17,16.5,16,15.5],
+    [16,16,16,16,15.5,15,14.5],
+    [16,16,15,15,14,13,13],
+    [15,15,14,14,13,13,13],
+    [14,14,14,13,13,13,13]
+  ],
+  4:[
+    [15,15,15,15,15,15,15],
+    [16,16,16,16,15.5,15,15],
+    [18,18,18,18,17.5,17,16.5],
+    [19,19,18,18,17.5,17,16.5],
+    [20,20,19,19,18.5,18,17.5],
+    [19,19,19,19,18.5,18,17.5],
+    [18,18,18,18,17.5,17,16.5],
+    [18,18,17,17,16,15,15],
+    [17,17,16,16,15,15,15],
+    [16,16,16,15,15,15,15]
+  ]
+};
+
+function tableClookup(start,segs,p){
+  let idx=tableBRanges.findIndex((v,i)=>start>=v && start<(tableBRanges[i+1]||1440));
+  return tableC[p][idx][segs-1];
+}
+
+form.addEventListener('submit',e=>{
   e.preventDefault();
+  const seg=+segments.value;
+  const p=+pilots.value;
+  const rap=toMin(rapTime.value);
 
-  const isSCR = modeToggle.checked;
-  const pilotCount = Number(pilots.value);
+  let html='';
 
-  // SCR + Unaugmented
-  if(isSCR && pilotCount === 2){
-    if(!fdpStart.value){
-      alert('Please enter Report Time (FDP)');
-      return;
-    }
-
-    const rap = toMinutes(rapTime.value);
-    const fdp = toMinutes(fdpStart.value);
-    const tb = lookupTableB(fdp, Number(segments.value));
-
-    const limits = [
-      {label:'RAP + 16:00', end: rap + 16*60},
-      {label:`FDP + Table B (${tb} hrs)`, end: fdp + tb*60},
-      {label:`RAP + Table B (${tb}) + 4:00`, end: rap + tb*60 + 4*60}
-    ];
-
-    limits.sort((a,b)=>a.end - b.end);
-    const controlling = limits[0];
-    const duration = ((controlling.end - fdp)/60).toFixed(1);
-
-    result.innerHTML = `
-      <div class="result-main">Max FDP Ends: ${toHHMM(controlling.end)}</div>
-      <div class="result-sub">Total FDP Duration: ${duration} hrs</div>
-
-      <div class="highlight">
-        <strong>Controlling Limit:</strong><br>
-        ${controlling.label}
-      </div>
-
-      <div class="result-sub">
-        Other Limits:<br>
-        ${limits.slice(1).map(l=>`${l.label} → ${toHHMM(l.end)}`).join('<br>')}
-      </div>
-    `;
-  } else {
-    result.innerHTML = `
-      <div class="result-main">SCR logic applies to 2-pilot crews only</div>
-      <div class="result-sub">
-        Bid / LCR calculations remain unchanged.
-      </div>
-    `;
+  if(mode.value==='bid'){
+    const tb=tableBlookup(rap,seg);
+    const end=rap+tb*60;
+    html=`
+      <div class="result-main">Max FDP Ends: ${toTime(end)}</div>
+      <div>Total FDP: ${tb} hrs</div>
+      <div class="highlight">Table B applied</div>`;
   }
-  
-  result.classList.remove('hidden');
+
+  if(mode.value==='scr'){
+    const fdp=toMin(fdpTime.value);
+
+    if(p===2){
+      const tb=tableBlookup(fdp,seg);
+      const limits=[
+        {n:'RAP + 16',v:rap+960},
+        {n:'FDP + Table B',v:fdp+tb*60},
+        {n:'RAP + Table B + 4',v:rap+tb*60+240}
+      ].sort((a,b)=>a.v-b.v);
+
+      html=`
+        <div class="result-main">Max FDP Ends: ${toTime(limits[0].v)}</div>
+        <div>Total FDP: ${((limits[0].v-fdp)/60).toFixed(1)} hrs</div>
+        <div class="highlight">Controlling: ${limits[0].n}</div>`;
+    } else {
+      const tc=tableClookup(fdp,seg,p);
+      const end=fdp+tc*60;
+      html=`
+        <div class="result-main">Max FDP Ends: ${toTime(end)}</div>
+        <div>Total FDP: ${tc} hrs</div>
+        <div class="highlight">Table C (${p} pilots) applied</div>`;
+    }
+  }
+
+  output.innerHTML=html;
+  output.classList.remove('hidden');
 });
 </script>
 

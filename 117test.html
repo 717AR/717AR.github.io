@@ -97,6 +97,11 @@ input:checked + .toggle-label .right { opacity:1; }
   border-radius:10px;
 }
 .result-main { font-size:22px; font-weight:bold; }
+.limit {
+  margin-top:6px;
+  font-size:14px;
+  opacity:.9;
+}
 .highlight {
   margin-top:10px;
   padding:10px;
@@ -203,8 +208,8 @@ document.getElementById('form').addEventListener('submit',e=>{
 
     html=`
       <div class="result-main">Max FDP Ends: ${toTime(end)}</div>
-      <div>Total FDP: ${hrs} hrs</div>
-      <div class="highlight">Table ${pilots===2?'B':'C'} applied</div>`;
+      <div class="limit">Limit: Report + Table ${pilots===2?'B':'C'} → ${toTime(end)}</div>
+      <div class="highlight">Controlling Limit: Table ${pilots===2?'B':'C'}</div>`;
   } else {
     const rap=toMin(rapTime.value);
     const fdp=toMin(fdpTime.value);
@@ -220,7 +225,7 @@ document.getElementById('form').addEventListener('submit',e=>{
 
       html=`
         <div class="result-main">Max FDP Ends: ${toTime(limits[0].v)}</div>
-        <div>Total FDP: ${((limits[0].v-fdp)/60).toFixed(1)} hrs</div>
+        ${limits.map(l=>`<div class="limit">${l.n} → ${toTime(l.v)}</div>`).join('')}
         <div class="highlight">Controlling Limit: ${limits[0].n}</div>`;
     } else {
       const tc=tableC[pilots][r];
@@ -231,7 +236,7 @@ document.getElementById('form').addEventListener('submit',e=>{
 
       html=`
         <div class="result-main">Max FDP Ends: ${toTime(limits[0].v)}</div>
-        <div>Total FDP: ${((limits[0].v-fdp)/60).toFixed(1)} hrs</div>
+        ${limits.map(l=>`<div class="limit">${l.n} → ${toTime(l.v)}</div>`).join('')}
         <div class="highlight">Controlling Limit: ${limits[0].n}</div>`;
     }
   }

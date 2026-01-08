@@ -24,17 +24,18 @@ h1 { text-align:center; }
 
 label {
   margin-top:10px;
-  display:block;
+  display:inline-block;
+  width:150px;
   font-weight:bold;
 }
 
 input, select {
-  padding:8px;
+  padding:6px 8px;
   border-radius:6px;
   border:1px solid #4a90e2;
   background:#1a2a44;
   color:white;
-  margin-left:8px;
+  width:calc(100% - 160px);
 }
 
 button {
@@ -184,7 +185,7 @@ summary {
 </select>
 
 <div id="restBlock" class="hidden">
-  <label>Crew Rest Facility Class</label>
+  <label>Crew Rest Facility</label>
   <select id="restClass">
     <option value="1">Class 1</option>
     <option value="2">Class 2</option>
@@ -306,7 +307,7 @@ Controlling limit: ${limits.sort((a,b)=>a.v-b.v)[0].n}
 `;
       limitHrs=limits[0].h;
     }
-          
+
     limits.sort((a,b)=>a.v-b.v);
     html=`
 <div class="computed-limit">Limit: ${limitHrs} hrs</div>

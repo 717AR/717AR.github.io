@@ -307,12 +307,13 @@ ${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
-Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
-The FDP is limited by the earliest of the following:<br><br>
-${tb+4} hrs → Table B + 4 hours, from RAP → ${toTime(rap+(tb+4)*60)}<br>
-16 hrs → 16 hours from RAP → ${toTime(rap+16*60)}<br>
+Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.<br><br>
+Duty time is limited by the earliest of the following:<br><br>
+RAP Start + Table B + 4 hours → ${tb+4} hrs ${toTime(rap+(tb+4)*60)}<br>
+RAP Start + 16 hours → 16 hrs ${toTime(rap+16*60)}<br>
 ${fdp!==null ? `${tb} hrs → Table B from FDP → ${toTime(fdp+tb*60)}<br>` : ''}
-${notes}<br><em>Controlling limit:</em> ${controlling.name}
+PWA Limit (Not yet programmed)
+${notes}<br><em>Today's limit:</em> ${controlling.name}
 `;
     } else {
       const tc=tableC[rest][pilots][r];
@@ -324,13 +325,16 @@ ${notes}<br><em>Controlling limit:</em> ${controlling.name}
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
-Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
-The FDP is limited by the earliest of the following:<br><br>
-${tc+4} hrs → Table C + 4 hours, from RAP → ${toTime(rap+(tc+4)*60)}<br>
-${fdp!==null ? `${tc} hrs → Table C from FDP report → ${toTime(fdp+tc*60)}<br>` : ''}
+	  <br>
+	  <em>Note:</em> Flight segments are not a factor in augmented operations calculations<br>
+Three “clocks” limit the length of duty for a short-call reserve in augmented operations (3- or 4-pilot crews).<br><br>
+Limit is the earliest of the following:<br><br>
+RAP Start + Table C + 4 hours → ${tc+4} hrs ${toTime(rap+(tc+4)*60)}<br>
+FDP Report + Table C from FDP report → ${fdp!==null ? `${tc} hrs → ${toTime(fdp+tc*60)}<br>` : ''}
+PWA(TBA)<br>
 ${notes}<br>
-<em>Controlling limit:</em> ${controlling.name}<br>
-<em>Note:</em> Flight segments are not used in augmented operations.
+<em>Today's Controlling limit:</em> ${controlling.name}<br>
+
 `;
     }
 

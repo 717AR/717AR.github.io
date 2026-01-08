@@ -48,7 +48,7 @@ button {
   cursor:pointer;
 }
 
-/* ---------- Slider ---------- */
+/* ---------- Slider (Readable) ---------- */
 .toggle {
   position:relative;
   height:44px;
@@ -72,6 +72,7 @@ button {
   width:50%;
   text-align:center;
   font-weight:bold;
+  z-index:2;
   color:#ffffff;
 }
 
@@ -87,16 +88,25 @@ button {
   background:#1fa2ff;
   border-radius:24px;
   transition:left .25s;
+  z-index:1;
 }
 
-/* Selected / unselected label clarity */
-.toggle input:not(:checked) + .toggle-label .left { opacity:1; }
-.toggle input:not(:checked) + .toggle-label .right { opacity:.5; }
+/* Bid / LCR selected */
+.toggle input:not(:checked) + .toggle-label .left {
+  color:#0e1a2b;
+}
+.toggle input:not(:checked) + .toggle-label .right {
+  color:#ffffff;
+}
 
-.toggle input:checked + .toggle-label .left { opacity:.5; }
-.toggle input:checked + .toggle-label .right { opacity:1; }
-
+/* SCR selected */
 .toggle input:checked + .toggle-label .toggle-knob { left:50%; }
+.toggle input:checked + .toggle-label .right {
+  color:#0e1a2b;
+}
+.toggle input:checked + .toggle-label .left {
+  color:#ffffff;
+}
 
 .hidden { display:none; }
 
@@ -123,7 +133,7 @@ button {
 details {
   margin-top:10px;
   font-size:13px;
-  opacity:.85;
+  opacity:.9;
 }
 summary {
   cursor:pointer;
@@ -150,7 +160,7 @@ summary {
 
 <div id="bidBlock">
   <label>Report Time (FDP)</label>
-  <input type="time" id="bidReport">
+  <input type="time" id="bidReport" required>
 </div>
 
 <div id="scrBlock" class="hidden">
@@ -240,14 +250,20 @@ document.getElementById('form').addEventListener('submit',e=>{
     const end=rpt+limitHrs*60;
 
     details = `
-      Controlling Limit: Table ${pilots===2?'B':'C'}<br>
-      FDP limit determined from report time window and segment count.
-    `;
+<strong>Bid / LCR FDP Limits</strong><br><br>
+FDP length is determined from the applicable FAR 117 table based on:
+<ul>
+<li>FDP report time</li>
+<li>Number of flight segments</li>
+<li>Crew augmentation and rest class (if applicable)</li>
+</ul>
+<strong>Controlling Limit:</strong> Table ${pilots===2?'B':'C'}
+`;
 
     html=`
-      <div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
-      <div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
-      <details><summary>More info</summary>${details}</details>`;
+<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+<div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
+<details><summary>More info</summary>${details}</details>`;
   } else {
     const rap=toMin(rapTime.value);
     const fdp=toMin(fdpTime.value);
@@ -257,30 +273,54 @@ document.getElementById('form').addEventListener('submit',e=>{
     if(pilots===2){
       const tb=tableB[r][seg];
       limits=[
-        {n:'RAP + 16 hours',h:16,v:rap+960},
-        {n:'FDP + Table B',h:tb,v:fdp+tb*60},
-        {n:'RAP + Table B + 4',h:tb+4,v:rap+tb*60+240}
+        {n:'Table B + 4 hours (from RAP)',h:tb+4,v:rap+tb*60+240},
+        {n:'16 hours from RAP start',h:16,v:rap+960},
+        {n:'Table B (from FDP report)',h:tb,v:fdp+tb*60}
       ];
+
+      details = `
+<strong>Short-Call Reserve — Unaugmented Operations</strong><br><br>
+
+Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.
+The FDP is limited by the earliest of the following:<br><br>
+
+• <strong>Table B limit + four hours</strong>, beginning at RAP start time<br><br>
+• <strong>16 hours</strong>, beginning at RAP start time (RAP + FDP)<br><br>
+• <strong>Table B limit</strong>, beginning at FDP report time
+(extendable by up to two hours with pilot concurrence)<br><br>
+• <strong>PWA scheduled duty day limits</strong>, beginning at FDP report time<br><br>
+
+<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
+<em>Note:</em> Extensions may not cause any exceedance of cumulative limits.
+`;
     } else {
       const tc=tableC[rest][pilots][r];
       limits=[
-        {n:'FDP + Table C',h:tc,v:fdp+tc*60},
-        {n:'RAP + Table C + 4',h:tc+4,v:rap+tc*60+240}
+        {n:'Table C + 4 hours (from RAP)',h:tc+4,v:rap+tc*60+240},
+        {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
       ];
+
+      details = `
+<strong>Short-Call Reserve — Augmented Operations</strong><br><br>
+
+Three “clocks” limit the length of the FDP on short-call reserve for
+three- or four-pilot crews:<br><br>
+
+• <strong>Table C limit + four hours</strong>, beginning at RAP start time<br><br>
+• <strong>Table C limit</strong>, beginning at FDP report time
+(extendable by up to two hours with PIC concurrence)<br><br>
+
+<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}
+`;
     }
 
     limits.sort((a,b)=>a.v-b.v);
     limitHrs=limits[0].h;
 
-    details = `
-      Controlling Limit: ${limits[0].n}<br><br>
-      ${limits.map(l=>`${l.n} → ${l.h} hours`).join('<br>')}
-    `;
-
     html=`
-      <div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
-      <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
-      <details><summary>More info</summary>${details}</details>`;
+<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+<div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
+<details><summary>More info</summary>${details}</details>`;
   }
 
   output.innerHTML=html;

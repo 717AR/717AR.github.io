@@ -242,7 +242,7 @@ document.getElementById('form').addEventListener('submit',e=>{
     details = `
 <strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
 • FDP report time: ${bidReport.value}<br>
-• Flight segments selected: ${seg+1}<br>
+${pilots === 2 ? `• Flight segments selected: ${seg+1}<br>` : ``}
 • Crew: ${pilots} pilots<br>
 • Crew rest class: ${pilots===2 ? 'Not applicable (unaugmented)' : 'Class ' + rest}
 ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.` : ``}
@@ -251,43 +251,6 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
     html=`
 <div class="computed-limit">FDP Limit: ${limitHrs} hours (Table ${tableUsed})</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
-<details><summary>Show me the math</summary>${details}</details>`;
-  } else {
-    if(!rapTime.value || !fdpTime.value) return;
-
-    const rap=toMin(rapTime.value);
-    const fdp=toMin(fdpTime.value);
-    const r=row(fdp);
-
-    let limits=[];
-    if(pilots===2){
-      const tb=tableB[r][seg];
-      limits=[
-        {n:'Table B + 4 hours (from RAP)',h:tb+4,v:rap+tb*60+240},
-        {n:'16 hours from RAP start',h:16,v:rap+960},
-        {n:'Table B (from FDP report)',h:tb,v:fdp+tb*60}
-      ];
-
-      details = `<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
-    } else {
-      const tc=tableC[rest][pilots][r];
-      limits=[
-        {n:'Table C + 4 hours (from RAP)',h:tc+4,v:rap+tc*60+240},
-        {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
-      ];
-
-      details = `
-<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
-<em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.
-`;
-    }
-
-    limits.sort((a,b)=>a.v-b.v);
-    limitHrs=limits[0].h;
-
-    html=`
-<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
 <details><summary>Show me the math</summary>${details}</details>`;
   }
 

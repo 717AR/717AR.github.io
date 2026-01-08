@@ -332,10 +332,10 @@ ${pilots === 2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> F
       const controlling = limits[0];
       const displayHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
-      details = `
-Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.<br><br>
+      details = `<br><br>
+Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.
 Duty time is limited by the earliest of the following:<br><br>
-RAP Start + Table B + 4 hours → ${tbRap+4} hrs ${toTime(rap+(tbRap+4)*60)}<br>
+RAP Start + Table B + 4 hrs = ${tbRap+4} hrs (${toTime(rap+(tbRap+4)*60)})<br>
 RAP Start + 16 hours → 16 hrs ${toTime(rap+16*60)}<br>
 ${fdp!==null ? `${tableB[fdpRow][seg]} hrs → Table B from FDP → ${toTime(fdp+tableB[fdpRow][seg]*60)}<br>` : ''}
 PWA Limit (Not yet programmed)<br>
@@ -364,7 +364,8 @@ ${notes}<br><em>Today's limit:</em> ${controlling.name}
       const displayHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
-<em>Note:</em> Flight segments are not a factor in augmented operations calculations<br>
+      <br><br>
+<em>Note:</em> Flight segments are not a factor in augmented operations calculations<br><br>
 Three “clocks” limit the length of duty for a short-call reserve in augmented operations (3- or 4-pilot crews).<br><br>
 Limit is the earliest of the following:<br><br>
 RAP Start + Table C + 4 hours → ${tcRap+4} hrs ${toTime(rap+(tcRap+4)*60)}<br>

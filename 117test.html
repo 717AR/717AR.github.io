@@ -22,7 +22,6 @@ h1 { text-align:center; }
   border-radius:12px;
 }
 
-/* Inline label and input */
 .label-inline {
   display: flex;
   align-items: center;
@@ -52,7 +51,6 @@ button {
   cursor:pointer;
 }
 
-/* ---------- Slider ---------- */
 .toggle {
   position:relative;
   height:44px;
@@ -101,7 +99,6 @@ button {
 
 .hidden { display:none; }
 
-/* ---------- Results ---------- */
 .result {
   margin-top:16px;
   background:rgba(255,255,255,0.07);
@@ -217,6 +214,7 @@ const restBlock = document.getElementById('restBlock');
 const segmentsSel = document.getElementById('segments');
 const output = document.getElementById('output');
 const errorMsg = document.getElementById('errorMsg');
+
 const bidReport = document.getElementById('bidReport');
 const rapTime   = document.getElementById('rapTime');
 const fdpTime   = document.getElementById('fdpTime');
@@ -239,114 +237,45 @@ const toMin=t=>{const[a,b]=t.split(':').map(Number);return a*60+b;}
 const toTime=m=>`${String(Math.floor((m%1440)/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 
 const ranges=[0,240,300,360,420,720,780,1020,1320,1380];
-const tableB=[
-[9,9,9,9,9,9,9],[10,10,10,10,9,9,9],[12,12,12,12,11.5,11,10.5],
-[13,13,12,12,11.5,11,10.5],[14,14,13,13,12.5,12,11.5],
-[13,13,13,13,12.5,12,11.5],[12,12,12,12,11.5,11,10.5],
-[12,12,11,11,10,9,9],[11,11,10,10,9,9,9],[10,10,10,9,9,9,9]
-];
-const tableC={
-1:{3:[15,16,17,18,19,18,17,17,16,15],4:[17,18.5,19,20,21,20,19,19,18,17]},
-2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]},
-3:{3:[13,14,15,16,17,16,15,15,14,13],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]}
-};
+const tableB=[[9,9,9,9,9,9,9],[10,10,10,10,9,9,9],[12,12,12,12,11.5,11,10.5],[13,13,12,12,11.5,11,10.5],[14,14,13,13,12.5,12,11.5],[13,13,13,13,12.5,12,11.5],[12,12,12,12,11.5,11,10.5],[12,12,11,11,10,9,9],[11,11,10,10,9,9,9],[10,10,10,9,9,9,9]];
+const tableC={1:{3:[15,16,17,18,19,18,17,17,16,15],4:[17,18.5,19,20,21,20,19,19,18,17]},2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]},3:{3:[13,14,15,16,17,16,15,15,14,13],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]}};
 const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
 
 document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
   output.classList.add('hidden');
   errorMsg.classList.add('hidden');
-  errorMsg.textContent='';
 
   const seg=+segments.value-1;
   const pilots=+pilotsSel.value;
   const rest=+restClass.value;
+
   let html='', details='', limitHrs=0;
 
-  /* ---------- BID / LCR ---------- */
-  if(!modeToggle.checked){
-    if(!bidReport.value){ errorMsg.textContent='Please enter Report Time (FDP).'; errorMsg.classList.remove('hidden'); return; }
-    const rpt=toMin(bidReport.value);
-    const r=row(rpt);
-    const tableUsed = pilots===2 ? 'B' : 'C';
-    limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
-    const end=rpt+limitHrs*60;
-    limitHrs = Number.isInteger(limitHrs) ? limitHrs : limitHrs.toFixed(2);
-
-    details = `
-<strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
-• FDP report time: ${bidReport.value}<br>
-${pilots === 2 ? `• Flight segments selected: ${seg+1}<br>` : ``}
-• Crew: ${pilots} pilots<br>
-${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For augmented operations, flight segments are not used in determining the FDP limit.`}
-`;
-
-    html=`
-<div class="computed-limit">FDP Limit: ${limitHrs} hours (Table ${tableUsed})</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
-<details><summary>Show me the math</summary>${details}</details>`;
-  }
-
-  /* ---------- SCR ---------- */
-  else {
+  if(modeToggle.checked){
     if(!rapTime.value){ errorMsg.textContent='RAP Start Time is required.'; errorMsg.classList.remove('hidden'); return; }
+
     const rap=toMin(rapTime.value);
-    const fdp = fdpTime.value ? toMin(fdpTime.value) : null;
+    const fdp=fdpTime.value?toMin(fdpTime.value):null;
+
+    const rapRow=row(rap);
+    const fdpRow=fdp!==null?row(fdp):null;
+
+    const tcRap=tableC[rest][pilots][rapRow];
+    const limits=[];
+
+    limits.push({name:'RAP + Table C + 4', end:rap+(tcRap+4)*60, hours:tcRap+4});
 
     if(fdp!==null){
-      if(fdp<rap){ errorMsg.textContent='FDP Report Time cannot be before RAP Start Time.'; errorMsg.classList.remove('hidden'); return; }
-      if(fdp-rap>12*60){ errorMsg.textContent='FDP Report Time cannot be more than 12 hours after RAP Start Time.'; errorMsg.classList.remove('hidden'); return; }
+      const tcFdp=tableC[rest][pilots][fdpRow];
+      limits.push({name:'FDP + Table C', end:fdp+tcFdp*60, hours:tcFdp});
     }
 
-    const r=fdp!==null ? row(fdp) : row(rap);
+    limits.sort((a,b)=>a.end-b.end);
+    const controlling=limits[0];
 
-    let limits=[], notes='';
-    if(pilots===2){
-      const tb=tableB[r][seg];
-      limits.push({name:'Table B + 4 hours from RAP',end:rap+(tb+4)*60,hours:tb+4,start:'RAP'});
-      limits.push({name:'16 hours from RAP',end:rap+16*60,hours:16,start:'RAP'});
-      if(fdp!==null) limits.push({name:'Table B from FDP',end:fdp+tb*60,hours:tb,start:'FDP'});
-      else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table B.</em>';
-      limits.sort((a,b)=>a.end-b.end);
-      const controlling = limits[0];
-      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-
-      details = `
-Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.<br><br>
-Duty time is limited by the earliest of the following:<br><br>
-RAP Start + Table B + 4 hours → ${tb+4} hrs ${toTime(rap+(tb+4)*60)}<br>
-RAP Start + 16 hours → 16 hrs ${toTime(rap+16*60)}<br>
-${fdp!==null ? `${tb} hrs → Table B from FDP → ${toTime(fdp+tb*60)}<br>` : ''}
-PWA Limit (Not yet programmed)
-${notes}<br><em>Today's limit:</em> ${controlling.name}
-`;
-    } else {
-      const tc=tableC[rest][pilots][r];
-      limits.push({name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'});
-      if(fdp!==null) limits.push({name:'Table C from FDP report',end:fdp+tc*60,hours:tc,start:'FDP'});
-      else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table C.</em>';
-      limits.sort((a,b)=>a.end-b.end);
-      const controlling = limits[0];
-      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-
-      details = `
-	  <br>
-	  <em>Note:</em> Flight segments are not a factor in augmented operations calculations<br>
-Three “clocks” limit the length of duty for a short-call reserve in augmented operations (3- or 4-pilot crews).<br><br>
-Limit is the earliest of the following:<br><br>
-RAP Start + Table C + 4 hours → ${tc+4} hrs ${toTime(rap+(tc+4)*60)}<br>
-FDP Report + Table C from FDP report → ${fdp!==null ? `${tc} hrs → ${toTime(fdp+tc*60)}<br>` : ''}
-PWA(TBA)<br>
-${notes}<br>
-<em>Today's Controlling limit:</em> ${controlling.name}<br>
-
-`;
-    }
-
-    html=`
-<div class="computed-limit">Limit: ${limitHrs} hrs</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].end)}</div>
-<details><summary>Show me the math</summary>${details}</details>`;
+    html=`<div class="computed-limit">Limit: ${controlling.hours} hrs</div>
+          <div class="pumpkin-time">Pumpkin Time: ${toTime(controlling.end)}</div>`;
   }
 
   output.innerHTML=html;

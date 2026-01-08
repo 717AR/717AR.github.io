@@ -245,6 +245,7 @@ document.getElementById('form').addEventListener('submit',e=>{
 • Flight segments selected: ${seg+1}<br>
 • Crew: ${pilots} pilots<br>
 • Crew rest class: ${pilots===2 ? 'Not applicable (unaugmented)' : 'Class ' + rest}
+${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.` : ``}
 `;
 
     html=`
@@ -275,7 +276,10 @@ document.getElementById('form').addEventListener('submit',e=>{
         {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
       ];
 
-      details = `<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
+      details = `
+<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
+<em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.
+`;
     }
 
     limits.sort((a,b)=>a.v-b.v);

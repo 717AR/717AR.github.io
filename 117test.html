@@ -130,6 +130,12 @@ summary {
   cursor:pointer;
   font-weight:bold;
 }
+
+.error {
+  margin-top:10px;
+  color:#ff5555;
+  font-weight:bold;
+}
 </style>
 </head>
 
@@ -186,7 +192,7 @@ summary {
 
 <div id="restBlock" class="hidden">
   <div class="label-inline">
-    <label>Crew Rest Facility Class</label>
+    <label>Crew Rest Facility</label>
     <select id="restClass">
       <option value="1">Class 1</option>
       <option value="2">Class 2</option>
@@ -198,6 +204,7 @@ summary {
 <button type="submit">Calculate</button>
 </form>
 
+<div id="errorMsg" class="error hidden"></div>
 <div id="output" class="result hidden"></div>
 </div>
 
@@ -209,6 +216,7 @@ const pilotsSel = document.getElementById('pilots');
 const restBlock = document.getElementById('restBlock');
 const segmentsSel = document.getElementById('segments');
 const output = document.getElementById('output');
+const errorMsg = document.getElementById('errorMsg');
 
 modeToggle.addEventListener('change', ()=>{
   bidBlock.classList.toggle('hidden', modeToggle.checked);
@@ -241,6 +249,9 @@ const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
 
 document.getElementById('form').addEventListener('submit',e=>{
   e.preventDefault();
+  output.classList.add('hidden');
+  errorMsg.classList.add('hidden');
+  errorMsg.textContent='';
 
   const seg=+segments.value-1;
   const pilots=+pilotsSel.value;
@@ -249,7 +260,7 @@ document.getElementById('form').addEventListener('submit',e=>{
 
   /* ---------- BID / LCR ---------- */
   if(!modeToggle.checked){
-    if(!bidReport.value) return;
+    if(!bidReport.value){ errorMsg.textContent='Please enter Report Time (FDP).'; errorMsg.classList.remove('hidden'); return; }
     const rpt=toMin(bidReport.value);
     const r=row(rpt);
     const tableUsed = pilots===2 ? 'B' : 'C';
@@ -262,8 +273,7 @@ document.getElementById('form').addEventListener('submit',e=>{
 • FDP report time: ${bidReport.value}<br>
 ${pilots === 2 ? `• Flight segments selected: ${seg+1}<br>` : ``}
 • Crew: ${pilots} pilots<br>
-• Crew rest class: ${pilots===2 ? 'Not applicable (unaugmented)' : 'Class ' + rest}
-${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.` : ``}
+${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For augmented operations, flight segments are not used in determining the FDP limit.`}
 `;
 
     html=`
@@ -274,21 +284,24 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
 
   /* ---------- SCR ---------- */
   else {
-    if(!rapTime.value || !fdpTime.value) return;
-
+    if(!rapTime.value){ errorMsg.textContent='RAP Start Time is required.'; errorMsg.classList.remove('hidden'); return; }
     const rap=toMin(rapTime.value);
-    const fdp=toMin(fdpTime.value);
-    const r=row(fdp);
+    const fdp = fdpTime.value ? toMin(fdpTime.value) : null;
 
-    let limits=[];
+    if(fdp!==null){
+      if(fdp<rap){ errorMsg.textContent='FDP Report Time cannot be before RAP Start Time.'; errorMsg.classList.remove('hidden'); return; }
+      if(fdp-rap>12*60){ errorMsg.textContent='FDP Report Time cannot be more than 12 hours after RAP Start Time.'; errorMsg.classList.remove('hidden'); return; }
+    }
 
+    const r=fdp!==null ? row(fdp) : row(rap);
+
+    let limits=[], notes='';
     if(pilots===2){
       const tb=tableB[r][seg];
-      limits=[
-        {name:'Table B + 4 hours from RAP',end:rap+(tb+4)*60,hours:tb+4,start:'RAP'},
-        {name:'16 hours from RAP',end:rap+16*60,hours:16,start:'RAP'},
-        {name:'Table B from FDP',end:fdp+tb*60,hours:tb,start:'FDP'}
-      ];
+      limits.push({name:'Table B + 4 hours from RAP',end:rap+(tb+4)*60,hours:tb+4,start:'RAP'});
+      limits.push({name:'16 hours from RAP',end:rap+16*60,hours:16,start:'RAP'});
+      if(fdp!==null) limits.push({name:'Table B from FDP',end:fdp+tb*60,hours:tb,start:'FDP'});
+      else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table B.</em>';
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
@@ -296,17 +309,16 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
       details = `
 Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
 The FDP is limited by the earliest of the following:<br><br>
-• Table B limit + 4 hours, beginning at RAP start time → ${tb+4} hrs → ${toTime(rap+(tb+4)*60)}<br>
-• 16 hours, beginning at RAP start time (RAP + FDP) → 16 hrs → ${toTime(rap+16*60)}<br>
-• Table B limit, beginning at FDP report time → ${tb} hrs → ${toTime(fdp+tb*60)}<br><br>
-<em>Controlling limit:</em> ${controlling.name}
+${tb+4} hrs → Table B + 4 hours, from RAP → ${toTime(rap+(tb+4)*60)}<br>
+16 hrs → 16 hours from RAP → ${toTime(rap+16*60)}<br>
+${fdp!==null ? `${tb} hrs → Table B from FDP → ${toTime(fdp+tb*60)}<br>` : ''}
+${notes}<br><em>Controlling limit:</em> ${controlling.name}
 `;
     } else {
       const tc=tableC[rest][pilots][r];
-      limits=[
-        {name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'},
-        {name:'Table C from FDP report',end:fdp+tc*60,hours:tc,start:'FDP'}
-      ];
+      limits.push({name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'});
+      if(fdp!==null) limits.push({name:'Table C from FDP report',end:fdp+tc*60,hours:tc,start:'FDP'});
+      else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table C.</em>';
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
@@ -314,8 +326,9 @@ The FDP is limited by the earliest of the following:<br><br>
       details = `
 Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
 The FDP is limited by the earliest of the following:<br><br>
-• Table C limit + 4 hours, beginning at RAP start time → ${tc+4} hrs → ${toTime(rap+(tc+4)*60)}<br>
-• Table C limit, beginning at FDP report time → ${tc} hrs → ${toTime(fdp+tc*60)}<br><br>
+${tc+4} hrs → Table C + 4 hours, from RAP → ${toTime(rap+(tc+4)*60)}<br>
+${fdp!==null ? `${tc} hrs → Table C from FDP report → ${toTime(fdp+tc*60)}<br>` : ''}
+${notes}<br>
 <em>Controlling limit:</em> ${controlling.name}<br>
 <em>Note:</em> Flight segments are not used in augmented operations.
 `;

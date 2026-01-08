@@ -336,7 +336,7 @@ ${pilots === 2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> F
 Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.
 Duty time is limited by the earliest of the following:<br><br>
 RAP Start + Table B + 4 hrs = ${tbRap+4} hrs (${toTime(rap+(tbRap+4)*60)})<br>
-RAP Start + 16 hours → 16 hrs (${toTime(rap+16*60)})<br>
+RAP Start + 16 hours = 16 hrs (${toTime(rap+16*60)})<br>
 FDP Start + Table B =  ${fdp!==null ? `${tableB[fdpRow][seg]} hrs (${toTime(fdp+tableB[fdpRow][seg]*60)})<br>` : ''}
 PWA Limit (Not yet programmed)<br>
 ${notes}<br><em>Today's limit:</em> ${controlling.name}

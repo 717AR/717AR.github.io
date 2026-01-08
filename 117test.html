@@ -48,7 +48,7 @@ button {
   cursor:pointer;
 }
 
-/* ---------- Slider (Readable) ---------- */
+/* ---------- Slider ---------- */
 .toggle {
   position:relative;
   height:44px;
@@ -91,22 +91,9 @@ button {
   z-index:1;
 }
 
-/* Bid / LCR selected */
-.toggle input:not(:checked) + .toggle-label .left {
-  color:#0e1a2b;
-}
-.toggle input:not(:checked) + .toggle-label .right {
-  color:#ffffff;
-}
-
-/* SCR selected */
+.toggle input:not(:checked) + .toggle-label .left { color:#0e1a2b; }
 .toggle input:checked + .toggle-label .toggle-knob { left:50%; }
-.toggle input:checked + .toggle-label .right {
-  color:#0e1a2b;
-}
-.toggle input:checked + .toggle-label .left {
-  color:#ffffff;
-}
+.toggle input:checked + .toggle-label .right { color:#0e1a2b; }
 
 .hidden { display:none; }
 
@@ -160,7 +147,7 @@ summary {
 
 <div id="bidBlock">
   <label>Report Time (FDP)</label>
-  <input type="time" id="bidReport" required>
+  <input type="time" id="bidReport">
 </div>
 
 <div id="scrBlock" class="hidden">
@@ -244,27 +231,29 @@ document.getElementById('form').addEventListener('submit',e=>{
   let html='', details='', limitHrs=0;
 
   if(!modeToggle.checked){
+    if(!bidReport.value) return;
+
     const rpt=toMin(bidReport.value);
     const r=row(rpt);
+    const tableUsed = pilots===2 ? 'B' : 'C';
     limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
     const end=rpt+limitHrs*60;
 
     details = `
-<strong>Bid / LCR FDP Limits</strong><br><br>
-FDP length is determined from the applicable FAR 117 table based on:
-<ul>
-<li>FDP report time</li>
-<li>Number of flight segments</li>
-<li>Crew augmentation and rest class (if applicable)</li>
-</ul>
-<strong>Controlling Limit:</strong> Table ${pilots===2?'B':'C'}
+<strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
+• FDP report time: ${bidReport.value}<br>
+• Flight segments selected: ${seg+1}<br>
+• Crew: ${pilots} pilots<br>
+• Crew rest class: ${pilots===2 ? 'Not applicable (unaugmented)' : 'Class ' + rest}
 `;
 
     html=`
-<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+<div class="computed-limit">FDP Limit: ${limitHrs} hours (Table ${tableUsed})</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
-<details><summary>More info</summary>${details}</details>`;
+<details><summary>Show me the math</summary>${details}</details>`;
   } else {
+    if(!rapTime.value || !fdpTime.value) return;
+
     const rap=toMin(rapTime.value);
     const fdp=toMin(fdpTime.value);
     const r=row(fdp);
@@ -278,21 +267,7 @@ FDP length is determined from the applicable FAR 117 table based on:
         {n:'Table B (from FDP report)',h:tb,v:fdp+tb*60}
       ];
 
-      details = `
-
-<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
-
-Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.
-The FDP is limited by the earliest of the following:<br><br>
-
-• <strong>Table B limit + four hours</strong>, beginning at RAP start time<br><br>
-• <strong>16 hours</strong>, beginning at RAP start time (RAP + FDP)<br><br>
-• <strong>Table B limit</strong>, beginning at FDP report time
-(extendable by up to two hours with pilot concurrence)<br><br>
-• <strong>PWA scheduled duty day limits</strong>, beginning at FDP report time<br><br>
-
-<em>Note:</em> Extensions may not cause any exceedance of cumulative limits.
-`;
+      details = `<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
     } else {
       const tc=tableC[rest][pilots][r];
       limits=[
@@ -300,25 +275,16 @@ The FDP is limited by the earliest of the following:<br><br>
         {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
       ];
 
-      details = `
-Three “clocks” limit the length of the FDP on short-call reserve for
-three- or four-pilot crews:<br><br>
-
-• <strong>Table C limit + four hours</strong>, beginning at RAP start time<br><br>
-• <strong>Table C limit</strong>, beginning at FDP report time
-(extendable by up to two hours with PIC concurrence)<br><br>
-
-<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}
-`;
+      details = `<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
     }
 
     limits.sort((a,b)=>a.v-b.v);
     limitHrs=limits[0].h;
 
     html=`
-<div class="computed-limit">Limit: ${limitHrs} hours</div>
+<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
-<details><summary>More info</summary>${details}</details>`;
+<details><summary>Show me the math</summary>${details}</details>`;
   }
 
   output.innerHTML=html;

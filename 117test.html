@@ -196,10 +196,7 @@ const output = document.getElementById('output');
 modeToggle.addEventListener('change', ()=>{
   bidBlock.classList.toggle('hidden', modeToggle.checked);
   scrBlock.classList.toggle('hidden', !modeToggle.checked);
-  // Reset inputs and output
-  document.getElementById('form').reset();
-  output.innerHTML = '';
-  output.classList.add('hidden');
+  // Removed reset of inputs/results
 });
 
 pilotsSel.addEventListener('change', ()=>{

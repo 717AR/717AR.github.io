@@ -144,7 +144,7 @@ summary {
 
 <body>
 
-<h1>Max FDP Calculator</h1>
+<h1>117 Calculator</h1>
 
 <div class="card">
 <form id="form">
@@ -279,7 +279,8 @@ FDP length is determined from the applicable FAR 117 table based on:
       ];
 
       details = `
-<strong>Short-Call Reserve — Unaugmented Operations</strong><br><br>
+
+<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
 
 Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.
 The FDP is limited by the earliest of the following:<br><br>
@@ -290,7 +291,6 @@ The FDP is limited by the earliest of the following:<br><br>
 (extendable by up to two hours with pilot concurrence)<br><br>
 • <strong>PWA scheduled duty day limits</strong>, beginning at FDP report time<br><br>
 
-<strong>Controlling Limit:</strong> ${limits.sort((a,b)=>a.v-b.v)[0].n}<br><br>
 <em>Note:</em> Extensions may not cause any exceedance of cumulative limits.
 `;
     } else {
@@ -301,8 +301,6 @@ The FDP is limited by the earliest of the following:<br><br>
       ];
 
       details = `
-<strong>Short-Call Reserve — Augmented Operations</strong><br><br>
-
 Three “clocks” limit the length of the FDP on short-call reserve for
 three- or four-pilot crews:<br><br>
 
@@ -318,7 +316,7 @@ three- or four-pilot crews:<br><br>
     limitHrs=limits[0].h;
 
     html=`
-<div class="computed-limit">Computed Limit: ${limitHrs} hours</div>
+<div class="computed-limit">Limit: ${limitHrs} hours</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
 <details><summary>More info</summary>${details}</details>`;
   }

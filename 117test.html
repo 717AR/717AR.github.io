@@ -269,10 +269,14 @@ document.getElementById('form').addEventListener('submit',e=>{
     const r=row(rpt);
     const tableUsed = pilots===2 ? 'B' : 'C';
     limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
-    flightTimeLimit = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
+
+    // Flight Time Limit
+    if(pilots===2){ flightTimeLimit = 14; } // Table A max for unaugmented
+    if(pilots===3){ flightTimeLimit=13;}
+    if(pilots===4){ flightTimeLimit=17;}
+
     const end=rpt+limitHrs*60;
     limitHrs = Number.isInteger(limitHrs) ? limitHrs : limitHrs.toFixed(2);
-    flightTimeLimit = Number.isInteger(flightTimeLimit) ? flightTimeLimit : flightTimeLimit.toFixed(2);
 
     details = `
 <strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
@@ -310,18 +314,16 @@ ${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For
       if(fdp!==null) limits.push({name:'Table B from FDP',end:fdp+tb*60,hours:tb,start:'FDP'});
       else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table B.</em>';
       limits.sort((a,b)=>a.end-b.end);
-      const controlling = limits[0];
-      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-      flightTimeLimit = tb;
+      limitHrs = Number.isInteger(limits[0].hours) ? limits[0].hours : limits[0].hours.toFixed(2);
+      flightTimeLimit = 14; // Table A for unaugmented
     } else {
       const tc=tableC[rest][pilots][r];
       limits.push({name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'});
       if(fdp!==null) limits.push({name:'Table C from FDP report',end:fdp+tc*60,hours:tc,start:'FDP'});
       else notes='<em>Note: FDP-based limit not included; final limit might be further reduced by FDP/Table C.</em>';
       limits.sort((a,b)=>a.end-b.end);
-      const controlling = limits[0];
-      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-      flightTimeLimit = tc;
+      limitHrs = Number.isInteger(limits[0].hours) ? limits[0].hours : limits[0].hours.toFixed(2);
+      flightTimeLimit = pilots===3 ? 13 : 17; // Augmented flight time limit
     }
 
     html=`

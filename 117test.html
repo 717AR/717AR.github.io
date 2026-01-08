@@ -17,29 +17,24 @@ h1 { text-align:center; }
 .card {
   background:#11243b;
   padding:16px;
-  max-width:560px;
+  max-width:520px;
   margin:auto;
   border-radius:12px;
 }
 
-.row {
-  display:flex;
-  align-items:center;
-  gap:10px;
+label {
   margin-top:10px;
-}
-.row label {
-  flex:1;
+  display:block;
   font-weight:bold;
 }
-.row input,
-.row select {
-  flex:1;
+
+input, select {
   padding:8px;
   border-radius:6px;
   border:1px solid #4a90e2;
   background:#1a2a44;
   color:white;
+  margin-left:8px;
 }
 
 button {
@@ -53,13 +48,14 @@ button {
   cursor:pointer;
 }
 
-/* Toggle */
+/* ---------- Slider (Readable) ---------- */
 .toggle {
   position:relative;
   height:44px;
   margin-bottom:16px;
 }
 .toggle input { display:none; }
+
 .toggle-label {
   display:block;
   height:100%;
@@ -68,6 +64,7 @@ button {
   position:relative;
   cursor:pointer;
 }
+
 .toggle-label span {
   position:absolute;
   top:50%;
@@ -76,7 +73,9 @@ button {
   text-align:center;
   font-weight:bold;
   z-index:2;
+  color:#ffffff;
 }
+
 .toggle-label .left { left:0; }
 .toggle-label .right { right:0; }
 
@@ -85,228 +84,3 @@ button {
   top:2px;
   left:2px;
   width:calc(50% - 4px);
-  height:calc(100% - 4px);
-  background:#1fa2ff;
-  border-radius:24px;
-  transition:left .25s;
-  z-index:1;
-}
-.toggle input:checked + .toggle-label .toggle-knob { left:50%; }
-
-.hidden { display:none; }
-
-.result {
-  margin-top:16px;
-  background:rgba(255,255,255,0.07);
-  padding:14px;
-  border-radius:10px;
-}
-.computed-limit {
-  font-size:22px;
-  font-weight:bold;
-}
-.pumpkin-time {
-  font-size:14px;
-  font-weight:bold;
-  margin-top:4px;
-}
-.flight-time {
-  font-size:13px;
-  margin-top:6px;
-  opacity:.9;
-}
-details {
-  margin-top:10px;
-  font-size:13px;
-}
-summary {
-  cursor:pointer;
-  font-weight:bold;
-}
-</style>
-</head>
-
-<body>
-<h1>117 Calculator</h1>
-
-<div class="card">
-<form id="form">
-
-<div class="toggle">
-  <input type="checkbox" id="modeToggle">
-  <label class="toggle-label" for="modeToggle">
-    <span class="left">Bid / LCR</span>
-    <span class="right">SCR</span>
-    <div class="toggle-knob"></div>
-  </label>
-</div>
-
-<div id="bidBlock">
-  <div class="row">
-    <label>Report Time (FDP)</label>
-    <input type="time" id="bidReport">
-  </div>
-</div>
-
-<div id="scrBlock" class="hidden">
-  <div class="row">
-    <label>RAP Start Time</label>
-    <input type="time" id="rapTime">
-  </div>
-  <div class="row">
-    <label>Report Time (FDP)</label>
-    <input type="time" id="fdpTime">
-  </div>
-</div>
-
-<div class="row">
-  <label>Flight Segments</label>
-  <select id="segments">
-    <option>1</option><option>2</option><option>3</option>
-    <option>4</option><option>5</option><option>6</option><option>7</option>
-  </select>
-</div>
-
-<div class="row">
-  <label>Number of Pilots</label>
-  <select id="pilots">
-    <option value="2">2 (Unaugmented)</option>
-    <option value="3">3 (Augmented)</option>
-    <option value="4">4 (Augmented)</option>
-  </select>
-</div>
-
-<div id="restBlock" class="hidden">
-  <div class="row">
-    <label>Crew Rest Facility</label>
-    <select id="restClass">
-      <option value="1">Class 1</option>
-      <option value="2">Class 2</option>
-      <option value="3">Class 3</option>
-    </select>
-  </div>
-</div>
-
-<button type="submit">Calculate</button>
-</form>
-
-<div id="output" class="result hidden"></div>
-</div>
-
-<script>
-const toMin = t => {
-  if(!t) return null;
-  const [h,m] = t.split(':').map(Number);
-  return h*60 + m;
-};
-const toTime = m =>
-  `${String(Math.floor((m%1440)/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
-const fmt = h => Number.isInteger(h) ? h : h.toFixed(1);
-
-const ranges=[0,300,360,420,780,1020,1320,1440];
-const tableA=[8,9,10,12,11,10,9,8];
-const tableB=[
-[9,9,9,9,9,9,9],[10,10,10,10,9,9,9],[12,12,12,12,11.5,11,10.5],
-[13,13,12,12,11.5,11,10.5],[14,14,13,13,12.5,12,11.5],
-[13,13,13,13,12.5,12,11.5],[12,12,12,12,11.5,11,10.5],
-[11,11,10,10,9,9,9]
-];
-const tableC={
-1:{3:[15,16,17,18,19,18,17,17],4:[17,18.5,19,20,21,20,19,19]},
-2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5]},
-3:{3:[13,14,15,16,17,16,15,15],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15]}
-};
-const row = t => ranges.findIndex((v,i)=>t>=v && t<(ranges[i+1]||1440));
-
-const modeToggle=document.getElementById('modeToggle');
-const bidBlock=document.getElementById('bidBlock');
-const scrBlock=document.getElementById('scrBlock');
-const pilotsSel=document.getElementById('pilots');
-const restBlock=document.getElementById('restBlock');
-const segmentsSel=document.getElementById('segments');
-const output=document.getElementById('output');
-
-modeToggle.onchange=()=>{
-  output.classList.add('hidden');
-  bidBlock.classList.toggle('hidden',modeToggle.checked);
-  scrBlock.classList.toggle('hidden',!modeToggle.checked);
-};
-
-pilotsSel.onchange=()=>{
-  const aug = pilotsSel.value!=='2';
-  restBlock.classList.toggle('hidden',!aug);
-  segmentsSel.disabled = aug;
-  segmentsSel.style.opacity = aug ? .5 : 1;
-};
-
-document.getElementById('form').onsubmit=e=>{
-e.preventDefault();
-output.innerHTML='';
-
-const pilots=+pilotsSel.value;
-const seg=+segmentsSel.value-1;
-
-if(modeToggle.checked){
-  const rap=toMin(rapTime.value);
-  if(rap===null){
-    output.innerHTML=`<div class="computed-limit">Error</div>
-    <div class="pumpkin-time">RAP Start Time is required.</div>`;
-    output.classList.remove('hidden');
-    return;
-  }
-
-  const fdp=toMin(fdpTime.value);
-  const r = fdp!==null ? row(fdp) : row(rap);
-  let limits=[], details='';
-
-  if(pilots===2){
-    const tb=tableB[r][seg];
-    limits.push({n:'Table B + 4 from RAP',h:tb+4,v:rap+(tb+4)*60});
-    limits.push({n:'16 hours from RAP',h:16,v:rap+960});
-    if(fdp!==null) limits.push({n:'Table B from FDP',h:tb,v:fdp+tb*60});
-    details = `<strong>Unaugmented SCR Clocks</strong><br><br>
-• Table B + 4 hrs from RAP (${fmt(tb+4)} hrs)<br>
-• 16 hrs from RAP<br>
-${fdp!==null?'• Table B from FDP report<br>':''}
-${fdp===null?'<em>Note: FDP report time not entered; limit may be further reduced.</em>':''}`;
-  } else {
-    const tc=tableC[+restClass.value][pilots][r];
-    limits.push({n:'Table C + 4 from RAP',h:tc+4,v:rap+(tc+4)*60});
-    if(fdp!==null) limits.push({n:'Table C from FDP',h:tc,v:fdp+tc*60});
-    details = `<strong>Augmented SCR Clocks</strong><br><br>
-• Table C + 4 hrs from RAP (${fmt(tc+4)} hrs)<br>
-${fdp!==null?'• Table C from FDP report<br>':''}
-${fdp===null?'<em>Note: FDP report time not entered; limit may be further reduced.</em>':''}`;
-  }
-
-  limits.sort((a,b)=>a.v-b.v);
-  output.innerHTML=`
-<div class="computed-limit">Limit: ${fmt(limits[0].h)} hrs</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].v)}</div>
-<details><summary>Show me the math</summary>${details}</details>`;
-}
-else{
-  const rpt=toMin(bidReport.value);
-  const r=row(rpt);
-  const limit=pilots===2?tableB[r][seg]:tableC[+restClass.value][pilots][r];
-  const end=rpt+limit*60;
-  const ft=pilots===2?tableA[r]:(pilots===3?13:17);
-
-  output.innerHTML=`
-<div class="computed-limit">FDP Limit: ${fmt(limit)} hrs (${pilots===2?'Table B':'Table C'})</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
-<div class="flight-time">Max Flight Time: ${ft} hrs</div>
-<details><summary>Show me the math</summary>
-Table ${pilots===2?'B':'C'} used<br>
-Pilots: ${pilots}<br>
-${pilots===2?`Segments: ${seg+1}<br>`:''}
-${pilots!==2?`Crew Rest Facility: Class ${restClass.value}<br>`:''}
-${pilots!==2?'<em>For augmented ops, flight segments are not used.</em>':''}
-</details>`;
-}
-
-output.classList.remove('hidden');
-};
-</script>
-</body>
-</html>

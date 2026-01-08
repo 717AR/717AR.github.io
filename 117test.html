@@ -206,20 +206,17 @@ const toMin=t=>{const[a,b]=t.split(':').map(Number);return a*60+b;}
 const toTime=m=>`${String(Math.floor((m%1440)/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
 
 const ranges=[0,240,300,360,420,720,780,1020,1320,1380];
-
 const tableB=[
 [9,9,9,9,9,9,9],[10,10,10,10,9,9,9],[12,12,12,12,11.5,11,10.5],
 [13,13,12,12,11.5,11,10.5],[14,14,13,13,12.5,12,11.5],
 [13,13,13,13,12.5,12,11.5],[12,12,12,12,11.5,11,10.5],
 [12,12,11,11,10,9,9],[11,11,10,10,9,9,9],[10,10,10,9,9,9,9]
 ];
-
 const tableC={
 1:{3:[15,16,17,18,19,18,17,17,16,15],4:[17,18.5,19,20,21,20,19,19,18,17]},
 2:{3:[14,15,16.5,17.5,18.5,17.5,16.5,16,15,14],4:[15.5,16.5,18,18.5,19.5,18.5,18,16.5,15.5,15]},
 3:{3:[13,14,15,16,17,16,15,15,14,13],4:[13.5,14.5,15.5,16.5,17.5,16.5,15.5,15,14.5,14]}
 };
-
 const row=s=>ranges.findIndex((v,i)=>s>=v && s<(ranges[i+1]||1440));
 
 document.getElementById('form').addEventListener('submit',e=>{
@@ -262,41 +259,52 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
     const fdp=toMin(fdpTime.value);
     const r=row(fdp);
 
-    let limits=[];
+    let limits=[], detailsArr=[];
+
     if(pilots===2){
       const tb=tableB[r][seg];
       limits=[
-        {n:'Table B + 4 hours (from RAP)',h:tb+4,v:rap+(tb+4)*60},
-        {n:'16 hours from RAP start',h:16,v:rap+16*60},
-        {n:'Table B (from FDP report)',h:tb,v:fdp+tb*60}
+        {name:'Table B + 4 hours from RAP',end:rap+(tb+4)*60,hours:tb+4,start:'RAP'},
+        {name:'16 hours from RAP',end:rap+16*60,hours:16,start:'RAP'},
+        {name:'Table B from FDP',end:fdp+tb*60,hours:tb,start:'FDP'}
       ];
+      limits.sort((a,b)=>a.end-b.end);
+      const controlling = limits[0];
+      // Compute FDP Limit relative to FDP report
+      limitHrs = ((controlling.end - fdp)/60).toFixed(2);
 
-      details = `<strong>All calculated limits:</strong><br>
-• Table B + 4 hours from RAP: ${tb+4} hrs → ${toTime(rap+(tb+4)*60)}<br>
-• 16 hours from RAP: 16 hrs → ${toTime(rap+16*60)}<br>
-• Table B from FDP: ${tb} hrs → ${toTime(fdp+tb*60)}<br><br>
-<em>Controlling limit:</em> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
+      // details text
+      details = `
+Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
+The FDP is limited by the earliest of the following:<br><br>
+• Table B limit + 4 hours, beginning at RAP start time → ${tb+4} hrs → ${toTime(rap+(tb+4)*60)}<br>
+• 16 hours, beginning at RAP start time (RAP + FDP) → 16 hrs → ${toTime(rap+16*60)}<br>
+• Table B limit, beginning at FDP report time → ${tb} hrs → ${toTime(fdp+tb*60)}<br><br>
+<em>Controlling limit:</em> ${controlling.name}
+`;
     } else {
       const tc=tableC[rest][pilots][r];
       limits=[
-        {n:'Table C + 4 hours (from RAP)',h:tc+4,v:rap+(tc+4)*60},
-        {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
+        {name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'},
+        {name:'Table C from FDP report',end:fdp+tc*60,hours:tc,start:'FDP'}
       ];
+      limits.sort((a,b)=>a.end-b.end);
+      const controlling = limits[0];
+      limitHrs = ((controlling.end - fdp)/60).toFixed(2);
 
-      details = `<strong>All calculated limits:</strong><br>
-• Table C + 4 hours from RAP: ${tc+4} hrs → ${toTime(rap+(tc+4)*60)}<br>
-• Table C from FDP report: ${tc} hrs → ${toTime(fdp+tc*60)}<br><br>
-<em>Controlling limit:</em> ${limits.sort((a,b)=>a.v-b.v)[0].n}
-<br><br><em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.`;
+      details = `
+Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
+The FDP is limited by the earliest of the following:<br><br>
+• Table C limit + 4 hours, beginning at RAP start time → ${tc+4} hrs → ${toTime(rap+(tc+4)*60)}<br>
+• Table C limit, beginning at FDP report time → ${tc} hrs → ${toTime(fdp+tc*60)}<br><br>
+<em>Controlling limit:</em> ${controlling.name}<br>
+<em>Note:</em> Flight segments are not used in augmented operations.
+`;
     }
-
-    limits.sort((a,b)=>a.v-b.v);
-    const end=limits[0].v;
-    limitHrs=((end-fdp)/60).toFixed(1);
 
     html=`
 <div class="computed-limit">FDP Limit: ${limitHrs} hours</div>
-<div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
+<div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].end)}</div>
 <details><summary>Show me the math</summary>${details}</details>`;
   }
 

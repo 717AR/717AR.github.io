@@ -364,12 +364,12 @@ ${notes}<br><em>Today's limit:</em> ${controlling.name}
       const displayHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
-      <br>
+<br>
 <em>Note:</em> Flight segments are not a factor in augmented operations calculations<br><br>
 Three “clocks” limit the length of duty for a short-call reserve in augmented operations (3- or 4-pilot crews).
 Limit is the earliest of:<br><br>
 RAP Start + Table C + 4 hrs = ${tcRap+4} hrs (${toTime(rap+(tcRap+4)*60)})<br>
-FDP Report + Table C = ${fdp!==null ? `${tableB[fdpRow][seg]} hrs (${toTime(fdp+tableC[rest][pilots][fdpRow]*60)}<br>` : ''})<br>
+${fdp!==null ? `FDP Report + Table C = ${tableC[rest][pilots][fdpRow]} hrs (${toTime(fdp+tableC[rest][pilots][fdpRow]*60)})<br>` : ''}
 PWA (TBA)<br>
 ${notes}<br>
 <em>Today's Controlling limit:</em> ${controlling.name}

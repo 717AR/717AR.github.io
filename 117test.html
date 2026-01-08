@@ -336,8 +336,8 @@ ${pilots === 2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> F
 Four “clocks” limit the length of duty on short-call reserve for unaugmented operations.
 Duty time is limited by the earliest of the following:<br><br>
 RAP Start + Table B + 4 hrs = ${tbRap+4} hrs (${toTime(rap+(tbRap+4)*60)})<br>
-RAP Start + 16 hours → 16 hrs ${toTime(rap+16*60)}<br>
-${fdp!==null ? `${tableB[fdpRow][seg]} hrs → Table B from FDP → ${toTime(fdp+tableB[fdpRow][seg]*60)}<br>` : ''}
+RAP Start + 16 hours → 16 hrs (${toTime(rap+16*60)})<br>
+FDP Start + Table B =  ${fdp!==null ? `${tableB[fdpRow][seg]} hrs (${toTime(fdp+tableB[fdpRow][seg]*60)})<br>` : ''}
 PWA Limit (Not yet programmed)<br>
 ${notes}<br><em>Today's limit:</em> ${controlling.name}
 `;
@@ -368,7 +368,7 @@ ${notes}<br><em>Today's limit:</em> ${controlling.name}
 <em>Note:</em> Flight segments are not a factor in augmented operations calculations<br><br>
 Three “clocks” limit the length of duty for a short-call reserve in augmented operations (3- or 4-pilot crews).<br><br>
 Limit is the earliest of the following:<br><br>
-RAP Start + Table C + 4 hrs = ${tcRap+4} hrs ${toTime(rap+(tcRap+4)*60)}<br>
+RAP Start + Table C + 4 hrs = ${tcRap+4} hrs (${toTime(rap+(tcRap+4)*60)})<br>
 ${fdp!==null ? `FDP Report + Table C → ${tableC[rest][pilots][fdpRow]} hrs ${toTime(fdp+tableC[rest][pilots][fdpRow]*60)}<br>` : ''}
 PWA (TBA)<br>
 ${notes}<br>

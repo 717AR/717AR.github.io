@@ -270,10 +270,8 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
       ];
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
-      // Compute FDP Limit relative to FDP report
-      limitHrs = ((controlling.end - fdp)/60).toFixed(2);
+      limitHrs = controlling.hours.toFixed(2); // <-- change applied here
 
-      // details text
       details = `
 Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
 The FDP is limited by the earliest of the following:<br><br>
@@ -290,7 +288,7 @@ The FDP is limited by the earliest of the following:<br><br>
       ];
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
-      limitHrs = ((controlling.end - fdp)/60).toFixed(2);
+      limitHrs = controlling.hours.toFixed(2); // <-- change applied here
 
       details = `
 Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
@@ -303,7 +301,7 @@ The FDP is limited by the earliest of the following:<br><br>
     }
 
     html=`
-<div class="computed-limit">FDP Limit: ${limitHrs} hours</div>
+<div class="computed-limit">Limit: ${limitHrs} hrs</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].end)}</div>
 <details><summary>Show me the math</summary>${details}</details>`;
   }

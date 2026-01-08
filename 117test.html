@@ -233,7 +233,6 @@ document.getElementById('form').addEventListener('submit',e=>{
   /* ---------- BID / LCR ---------- */
   if(!modeToggle.checked){
     if(!bidReport.value) return;
-
     const rpt=toMin(bidReport.value);
     const r=row(rpt);
     const tableUsed = pilots===2 ? 'B' : 'C';
@@ -255,7 +254,7 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
 <details><summary>Show me the math</summary>${details}</details>`;
   }
 
-  /* ---------- SCR (FIXED) ---------- */
+  /* ---------- SCR ---------- */
   else {
     if(!rapTime.value || !fdpTime.value) return;
 
@@ -267,26 +266,33 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
     if(pilots===2){
       const tb=tableB[r][seg];
       limits=[
-        {n:'Table B + 4 hours (from RAP)',v:rap+(tb+4)*60},
-        {n:'16 hours from RAP start',v:rap+16*60},
-        {n:'Table B (from FDP report)',v:fdp+tb*60}
+        {n:'Table B + 4 hours (from RAP)',h:tb+4,v:rap+(tb+4)*60},
+        {n:'16 hours from RAP start',h:16,v:rap+16*60},
+        {n:'Table B (from FDP report)',h:tb,v:fdp+tb*60}
       ];
+
+      details = `<strong>All calculated limits:</strong><br>
+• Table B + 4 hours from RAP: ${tb+4} hrs → ${toTime(rap+(tb+4)*60)}<br>
+• 16 hours from RAP: 16 hrs → ${toTime(rap+16*60)}<br>
+• Table B from FDP: ${tb} hrs → ${toTime(fdp+tb*60)}<br><br>
+<em>Controlling limit:</em> ${limits.sort((a,b)=>a.v-b.v)[0].n}`;
     } else {
       const tc=tableC[rest][pilots][r];
       limits=[
-        {n:'Table C + 4 hours (from RAP)',v:rap+(tc+4)*60},
-        {n:'Table C (from FDP report)',v:fdp+tc*60}
+        {n:'Table C + 4 hours (from RAP)',h:tc+4,v:rap+(tc+4)*60},
+        {n:'Table C (from FDP report)',h:tc,v:fdp+tc*60}
       ];
+
+      details = `<strong>All calculated limits:</strong><br>
+• Table C + 4 hours from RAP: ${tc+4} hrs → ${toTime(rap+(tc+4)*60)}<br>
+• Table C from FDP report: ${tc} hrs → ${toTime(fdp+tc*60)}<br><br>
+<em>Controlling limit:</em> ${limits.sort((a,b)=>a.v-b.v)[0].n}
+<br><br><em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.`;
     }
 
     limits.sort((a,b)=>a.v-b.v);
     const end=limits[0].v;
-    limitHrs=((end-(fdp))/60).toFixed(1);
-
-    details = `
-<strong>Controlling limit:</strong> ${limits[0].n}<br><br>
-${pilots!==2 ? `<em>Note:</em> For augmented operations (three- or four-pilot crews), the number of flight segments is not used in determining the FDP limit.` : ``}
-`;
+    limitHrs=((end-fdp)/60).toFixed(1);
 
     html=`
 <div class="computed-limit">FDP Limit: ${limitHrs} hours</div>

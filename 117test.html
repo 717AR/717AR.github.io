@@ -196,6 +196,10 @@ const output = document.getElementById('output');
 modeToggle.addEventListener('change', ()=>{
   bidBlock.classList.toggle('hidden', modeToggle.checked);
   scrBlock.classList.toggle('hidden', !modeToggle.checked);
+  // Reset inputs and output
+  document.getElementById('form').reset();
+  output.innerHTML = '';
+  output.classList.add('hidden');
 });
 
 pilotsSel.addEventListener('change', ()=>{
@@ -235,6 +239,8 @@ document.getElementById('form').addEventListener('submit',e=>{
     const tableUsed = pilots===2 ? 'B' : 'C';
     limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
     const end=rpt+limitHrs*60;
+    // remove decimals for whole numbers
+    limitHrs = Number.isInteger(limitHrs) ? limitHrs : limitHrs.toFixed(2);
 
     details = `
 <strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
@@ -270,7 +276,7 @@ ${pilots !== 2 ? `<br><br><em>Note:</em> For augmented operations (three- or fou
       ];
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
-      limitHrs = controlling.hours.toFixed(2); // <-- change applied here
+      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
 Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
@@ -288,7 +294,7 @@ The FDP is limited by the earliest of the following:<br><br>
       ];
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
-      limitHrs = controlling.hours.toFixed(2); // <-- change applied here
+      limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
 
       details = `
 Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>

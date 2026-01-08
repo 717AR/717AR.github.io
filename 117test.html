@@ -22,7 +22,6 @@ h1 { text-align:center; }
   border-radius:12px;
 }
 
-/* Inline label and input */
 .label-inline {
   display: flex;
   align-items: center;
@@ -52,7 +51,6 @@ button {
   cursor:pointer;
 }
 
-/* ---------- Slider ---------- */
 .toggle {
   position:relative;
   height:44px;
@@ -101,7 +99,6 @@ button {
 
 .hidden { display:none; }
 
-/* ---------- Results ---------- */
 .result {
   margin-top:16px;
   background:rgba(255,255,255,0.07);
@@ -119,6 +116,13 @@ button {
   font-weight:bold;
   opacity:.9;
   margin-top:4px;
+}
+
+.flight-time-limit {
+  font-size:14px;
+  font-weight:bold;
+  opacity:.9;
+  margin-top:2px;
 }
 
 details {
@@ -256,7 +260,7 @@ document.getElementById('form').addEventListener('submit',e=>{
   const seg=+segments.value-1;
   const pilots=+pilotsSel.value;
   const rest=+restClass.value;
-  let html='', details='', limitHrs=0;
+  let html='', details='', limitHrs=0, flightTimeLimit=0;
 
   /* ---------- BID / LCR ---------- */
   if(!modeToggle.checked){
@@ -265,8 +269,10 @@ document.getElementById('form').addEventListener('submit',e=>{
     const r=row(rpt);
     const tableUsed = pilots===2 ? 'B' : 'C';
     limitHrs = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
+    flightTimeLimit = pilots===2 ? tableB[r][seg] : tableC[rest][pilots][r];
     const end=rpt+limitHrs*60;
     limitHrs = Number.isInteger(limitHrs) ? limitHrs : limitHrs.toFixed(2);
+    flightTimeLimit = Number.isInteger(flightTimeLimit) ? flightTimeLimit : flightTimeLimit.toFixed(2);
 
     details = `
 <strong>FDP length is determined using Table ${tableUsed}</strong><br><br>
@@ -279,6 +285,7 @@ ${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For
     html=`
 <div class="computed-limit">FDP Limit: ${limitHrs} hours (Table ${tableUsed})</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(end)}</div>
+<div class="flight-time-limit">Flight Time Limit: ${flightTimeLimit} hours</div>
 <details><summary>Show me the math</summary>${details}</details>`;
   }
 
@@ -294,8 +301,8 @@ ${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For
     }
 
     const r=fdp!==null ? row(fdp) : row(rap);
-
     let limits=[], notes='';
+
     if(pilots===2){
       const tb=tableB[r][seg];
       limits.push({name:'Table B + 4 hours from RAP',end:rap+(tb+4)*60,hours:tb+4,start:'RAP'});
@@ -305,15 +312,7 @@ ${pilots===2 ? `` : `• Crew Rest Facility: Class ${rest}<br><em>Note:</em> For
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-
-      details = `
-Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
-The FDP is limited by the earliest of the following:<br><br>
-${tb+4} hrs → Table B + 4 hours, from RAP → ${toTime(rap+(tb+4)*60)}<br>
-16 hrs → 16 hours from RAP → ${toTime(rap+16*60)}<br>
-${fdp!==null ? `${tb} hrs → Table B from FDP → ${toTime(fdp+tb*60)}<br>` : ''}
-${notes}<br><em>Controlling limit:</em> ${controlling.name}
-`;
+      flightTimeLimit = tb;
     } else {
       const tc=tableC[rest][pilots][r];
       limits.push({name:'Table C + 4 hours from RAP',end:rap+(tc+4)*60,hours:tc+4,start:'RAP'});
@@ -322,22 +321,28 @@ ${notes}<br><em>Controlling limit:</em> ${controlling.name}
       limits.sort((a,b)=>a.end-b.end);
       const controlling = limits[0];
       limitHrs = Number.isInteger(controlling.hours) ? controlling.hours : controlling.hours.toFixed(2);
-
-      details = `
-Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
-The FDP is limited by the earliest of the following:<br><br>
-${tc+4} hrs → Table C + 4 hours, from RAP → ${toTime(rap+(tc+4)*60)}<br>
-${fdp!==null ? `${tc} hrs → Table C from FDP report → ${toTime(fdp+tc*60)}<br>` : ''}
-${notes}<br>
-<em>Controlling limit:</em> ${controlling.name}<br>
-<em>Note:</em> Flight segments are not used in augmented operations.
-`;
+      flightTimeLimit = tc;
     }
 
     html=`
 <div class="computed-limit">Limit: ${limitHrs} hrs</div>
 <div class="pumpkin-time">Pumpkin Time: ${toTime(limits[0].end)}</div>
-<details><summary>Show me the math</summary>${details}</details>`;
+<div class="flight-time-limit">Flight Time Limit: ${flightTimeLimit} hrs</div>
+<details><summary>Show me the math</summary>
+${pilots===2 ? `
+Four “clocks” limit the length of the FDP on short-call reserve for unaugmented operations.<br><br>
+${tb+4} hrs → Table B + 4 hours, from RAP → ${toTime(rap+(tb+4)*60)}<br>
+16 hrs → 16 hours from RAP → ${toTime(rap+16*60)}<br>
+${fdp!==null ? `${tb} hrs → Table B from FDP → ${toTime(fdp+tb*60)}<br>` : ''}
+${notes}` 
+: `
+Three “clocks” limit the length of the FDP on short-call reserve for augmented operations (3- or 4-pilot crews).<br><br>
+${tc+4} hrs → Table C + 4 hours, from RAP → ${toTime(rap+(tc+4)*60)}<br>
+${fdp!==null ? `${tc} hrs → Table C from FDP report → ${toTime(fdp+tc*60)}<br>` : ''}
+${notes}<br>
+<em>Note:</em> Flight segments are not used in augmented operations.`}
+</details>`;
+
   }
 
   output.innerHTML=html;
